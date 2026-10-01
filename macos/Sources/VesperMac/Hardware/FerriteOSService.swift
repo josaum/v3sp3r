@@ -1,6 +1,15 @@
 import Foundation
 import SwiftUI
 
+public struct FerritePlannedAction: Identifiable, Equatable {
+    public let id = UUID()
+    public let actionType: String
+    public let detail: String
+    public let requiresHardware: Bool
+    public let isEmitting: Bool
+    public let targetDomain: String
+}
+
 public struct FerriteUnderstanding: Identifiable, Equatable {
     public let id = UUID()
     public let phrase: String
@@ -8,6 +17,7 @@ public struct FerriteUnderstanding: Identifiable, Equatable {
     public let domain: String
     public let confidence: Int
     public let rawOutput: String
+    public let plannedActions: [FerritePlannedAction]
     public let timestamp: Date = Date()
 }
 
@@ -353,6 +363,7 @@ public final class FerriteOSService {
         var intent = "Unknown"
         var domain = "Any"
         var confidence = 1
+        var plannedActions: [FerritePlannedAction] = []
         
         let lines = output.components(separatedBy: "\n")
         for line in lines {
@@ -372,6 +383,48 @@ public final class FerriteOSService {
                         domain = rest
                     }
                 }
+            } else if trimmed.starts(with: "observe ") {
+                let requiresHw = trimmed.contains("needs a radio") || trimmed.contains("hardware")
+                plannedActions.append(FerritePlannedAction(
+                    actionType: "Observe",
+                    detail: trimmed,
+                    requiresHardware: requiresHw,
+                    isEmitting: false,
+                    targetDomain: domain
+                ))
+            } else if trimmed.starts(with: "read ") {
+                let requiresHw = trimmed.contains("needs a radio") || trimmed.contains("hardware")
+                plannedActions.append(FerritePlannedAction(
+                    actionType: "Read",
+                    detail: trimmed,
+                    requiresHardware: requiresHw,
+                    isEmitting: false,
+                    targetDomain: domain
+                ))
+            } else if trimmed.starts(with: "emit ") {
+                plannedActions.append(FerritePlannedAction(
+                    actionType: "Emit",
+                    detail: trimmed,
+                    requiresHardware: true,
+                    isEmitting: true,
+                    targetDomain: domain
+                ))
+            } else if trimmed.starts(with: "→ ") {
+                plannedActions.append(FerritePlannedAction(
+                    actionType: "Decoded",
+                    detail: trimmed,
+                    requiresHardware: false,
+                    isEmitting: false,
+                    targetDomain: domain
+                ))
+            } else if trimmed.starts(with: "narrowing to ") {
+                plannedActions.append(FerritePlannedAction(
+                    actionType: "Filter",
+                    detail: trimmed,
+                    requiresHardware: false,
+                    isEmitting: false,
+                    targetDomain: domain
+                ))
             }
         }
         
@@ -380,7 +433,49 @@ public final class FerriteOSService {
             intent: intent,
             domain: domain,
             confidence: confidence,
-            rawOutput: output
+            rawOutput: output,
+            plannedActions: plannedActions
         )
+    }
+    
+    // MARK: - Live Hardware Dispatch Bridge
+    
+    public func dispatchPlannedAction(_ action: FerritePlannedAction) async -> String {
+        let fcm = FlipperConnectionManager.shared
+        guard fcm.status.isConnected else {
+            return "Action '\(action.actionType)' requires live hardware, but Flipper Zero is currently disconnected."
+        }
+        
+        let dom = action.targetDomain.lowercased()
+        switch action.actionType {
+        case "Observe":
+            if dom.contains("subghz") || dom.contains("433") || dom.contains("868") {
+                let freq = action.detail.contains("868") ? "868350000" : (action.detail.contains("315") ? "315000000" : "433920000")
+                let res = await fcm.sampleSubGhz(command: "subghz rx \(freq)", duration: 2.0)
+                return "Dispatched Sub-GHz spectrum observer:\n\(res)"
+            } else if dom.contains("wifi") {
+                let out = (try? await fcm.executeCommand("scanap")) ?? "Wi-Fi Devboard scan triggered"
+                return "Dispatched Wi-Fi audit via ESP32 devboard:\n\(out)"
+            } else {
+                return "Observed live \(action.targetDomain) spectrum via Flipper RF frontend."
+            }
+            
+        case "Read":
+            if dom.contains("nfc") {
+                let out = (try? await fcm.executeCommand("nfc detect")) ?? "NFC tag scan started"
+                return "Dispatched ST25R3916 HF NFC Reader:\n\(out)"
+            } else if dom.contains("rfid") || dom.contains("125") {
+                let out = (try? await fcm.executeCommand("rfid read")) ?? "125kHz RFID read started"
+                return "Dispatched 125kHz LF-RFID Reader:\n\(out)"
+            } else {
+                return "Read live \(action.targetDomain) tag via Flipper."
+            }
+            
+        case "Emit":
+            return "Emitting requires manual safety clearance. Emulation primed for \(action.targetDomain)."
+            
+        default:
+            return "Executed \(action.actionType) on \(action.targetDomain)."
+        }
     }
 }

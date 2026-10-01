@@ -19,6 +19,11 @@ public struct FerriteWorkbenchView: View {
     @State private var showFlashConfirmModal: Bool = false
     @State private var flashResult: String = ""
     
+    // Wire protocol tab state (SPEC-011)
+    @State private var wireHandshakeResult: String = ""
+    @State private var isRunningWireHandshake: Bool = false
+    @State private var wireHexOutput: String = ""
+    
     private let samplePhrases = [
         "decode 433mhz signal",
         "read 125khz rfid card",
@@ -47,10 +52,11 @@ public struct FerriteWorkbenchView: View {
             
             // Tab Selector
             Picker("Mode", selection: $selectedTab) {
-                Text("Natural Language Intent").tag(0)
-                Text("Offline Signal Decoder").tag(1)
-                Text("Bare-Metal Firmware (0x08000000)").tag(2)
-                Text("Workspace & Crates").tag(3)
+                Text("Intent Engine").tag(0)
+                Text("RF Decoder").tag(1)
+                Text("Wire Protocol (SPEC-011)").tag(4)
+                Text("Bare-Metal FW").tag(2)
+                Text("Crates").tag(3)
             }
             .pickerStyle(.segmented)
             .padding(.horizontal, 20)
@@ -71,6 +77,8 @@ public struct FerriteWorkbenchView: View {
                         firmwareTabContent
                     case 3:
                         workspaceTabContent
+                    case 4:
+                        wireProtocolTabContent
                     default:
                         EmptyView()
                     }
@@ -263,6 +271,104 @@ public struct FerriteWorkbenchView: View {
                             .background(VesperTheme.terminalBackground)
                             .cornerRadius(8)
                             .overlay(RoundedRectangle(cornerRadius: 8).stroke(VesperTheme.subtleBorder, lineWidth: 1))
+                    }
+                    
+                    // Interactive Planned Actions Execution Panel
+                    if !understanding.plannedActions.isEmpty {
+                        VStack(alignment: .leading, spacing: 10) {
+                            HStack {
+                                Image(systemName: "bolt.badge.automatic.fill")
+                                    .foregroundColor(VesperTheme.neonAmber)
+                                Text("PLANNED HARDWARE ACTIONS (SPEC-001)")
+                                    .font(.system(size: 10.5, weight: .bold).monospaced())
+                                    .foregroundColor(VesperTheme.primaryTextColor)
+                                Spacer()
+                                Text("\(understanding.plannedActions.count) actions")
+                                    .font(.caption2.monospaced())
+                                    .foregroundColor(.secondary)
+                            }
+                            
+                            ForEach(understanding.plannedActions) { action in
+                                HStack(spacing: 12) {
+                                    VStack(alignment: .leading, spacing: 2) {
+                                        HStack(spacing: 6) {
+                                            Text(action.actionType.uppercased())
+                                                .font(.system(size: 9.5, weight: .black, design: .monospaced))
+                                                .padding(.horizontal, 6)
+                                                .padding(.vertical, 2)
+                                                .background(action.isEmitting ? VesperTheme.neonRed.opacity(0.2) : VesperTheme.accentCyan.opacity(0.18))
+                                                .foregroundColor(action.isEmitting ? VesperTheme.neonRed : VesperTheme.accentCyan)
+                                                .cornerRadius(4)
+                                            
+                                            Text(action.targetDomain)
+                                                .font(.caption.bold())
+                                                .foregroundColor(VesperTheme.primaryTextColor)
+                                            
+                                            if action.requiresHardware {
+                                                Text("RADIO REQUIRED")
+                                                    .font(.system(size: 8.5, weight: .bold, design: .monospaced))
+                                                    .foregroundColor(VesperTheme.neonAmber)
+                                            }
+                                        }
+                                        
+                                        Text(action.detail)
+                                            .font(.caption2.monospaced())
+                                            .foregroundColor(.secondary)
+                                    }
+                                    
+                                    Spacer()
+                                    
+                                    Button(action: {
+                                        Task {
+                                            let res = await ferrite.dispatchPlannedAction(action)
+                                            executionFeedback = res
+                                        }
+                                    }) {
+                                        HStack(spacing: 4) {
+                                            Image(systemName: action.isEmitting ? "antenna.radiowaves.left.and.right" : "play.fill")
+                                                .font(.caption2)
+                                            Text("Execute")
+                                                .font(.caption.bold())
+                                        }
+                                        .padding(.horizontal, 10)
+                                        .padding(.vertical, 6)
+                                        .background(VesperTheme.accentCyan.opacity(0.15))
+                                        .foregroundColor(VesperTheme.accentCyan)
+                                        .cornerRadius(6)
+                                        .overlay(
+                                            RoundedRectangle(cornerRadius: 6)
+                                                .stroke(VesperTheme.accentCyan.opacity(0.5), lineWidth: 1)
+                                        )
+                                    }
+                                    .buttonStyle(.plain)
+                                }
+                                .padding(10)
+                                .background(VesperTheme.cardBackground.opacity(0.7))
+                                .cornerRadius(8)
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 8)
+                                        .stroke(VesperTheme.subtleBorder, lineWidth: 1)
+                                )
+                            }
+                            
+                            if !executionFeedback.isEmpty {
+                                HStack(alignment: .top, spacing: 8) {
+                                    Image(systemName: "terminal.fill")
+                                        .foregroundColor(VesperTheme.neonGreen)
+                                        .font(.caption)
+                                    Text(executionFeedback)
+                                        .font(.caption.monospaced())
+                                        .foregroundColor(VesperTheme.neonGreen)
+                                }
+                                .padding(10)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                                .background(VesperTheme.terminalBackground)
+                                .cornerRadius(6)
+                            }
+                        }
+                        .padding(14)
+                        .background(Color.black.opacity(0.25))
+                        .cornerRadius(8)
                     }
                 }
                 .padding(20)
@@ -591,6 +697,171 @@ public struct FerriteWorkbenchView: View {
                     .cornerRadius(6)
                     .overlay(RoundedRectangle(cornerRadius: 6).stroke(VesperTheme.subtleBorder, lineWidth: 1))
                 }
+            }
+        }
+    }
+    
+    // MARK: - Tab 4: Wire Protocol (SPEC-011)
+    private var wireProtocolTabContent: some View {
+        VStack(alignment: .leading, spacing: 18) {
+            VStack(alignment: .leading, spacing: 14) {
+                HStack {
+                    Image(systemName: "cable.connector.horizontal")
+                        .foregroundColor(VesperTheme.accentCyan)
+                    Text("FerriteOS Headless Wire Protocol Codec (SPEC-011)")
+                        .font(.headline)
+                    Spacer()
+                    Text("CRC-32 / ISO-HDLC")
+                        .font(.system(size: 9.5, weight: .bold, design: .monospaced))
+                        .padding(.horizontal, 6)
+                        .padding(.vertical, 2)
+                        .background(VesperTheme.accentCyan.opacity(0.18))
+                        .foregroundColor(VesperTheme.accentCyan)
+                        .cornerRadius(4)
+                }
+                
+                Text("FerriteOS communicates over USB CDC ACM using the deterministic SPEC-011 wire framing: `[0xFE, 0x55] Magic + 1-byte Version + 1-byte Type + 2-byte Opcode + 2-byte Seq + 2-byte Len + Payload + 4-byte CRC-32`.")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+                
+                HStack(spacing: 12) {
+                    Button(action: runWireHandshake) {
+                        HStack(spacing: 6) {
+                            if isRunningWireHandshake {
+                                ProgressView().scaleEffect(0.6)
+                            } else {
+                                Image(systemName: "hand.wave.fill")
+                            }
+                            Text("Simulate SPEC-011 HELLO Handshake")
+                        }
+                        .font(.caption.bold())
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .tint(VesperTheme.accentCyan)
+                    
+                    Button(action: runWireTest) {
+                        HStack(spacing: 6) {
+                            Image(systemName: "checkmark.shield")
+                            Text("Verify In-Crate Wire Unit Tests")
+                        }
+                        .font(.caption.bold())
+                    }
+                    .buttonStyle(.bordered)
+                }
+            }
+            .padding(20)
+            .glassCard()
+            
+            // Frame Spec Grid
+            VStack(alignment: .leading, spacing: 12) {
+                Text("SPEC-011 FRAME ANATOMY")
+                    .font(.system(size: 10, weight: .bold).monospaced())
+                    .foregroundColor(.secondary)
+                
+                HStack(spacing: 8) {
+                    SpecPill(title: "MAGIC", value: "0xFE 0x55", icon: "wand.and.stars")
+                    SpecPill(title: "WIRE VER", value: "v1 (Pinned)", icon: "number")
+                    SpecPill(title: "CTRL BASE", value: "0xFF00", icon: "command")
+                    SpecPill(title: "USB MTU", value: "4096 B", icon: "arrow.up.left.and.arrow.down.right")
+                    SpecPill(title: "CRC-32", value: "ISO-HDLC", icon: "shield.lefthalf.filled")
+                }
+            }
+            .padding(16)
+            .glassCard()
+            
+            // Output Log Card
+            if !wireHandshakeResult.isEmpty {
+                VStack(alignment: .leading, spacing: 8) {
+                    HStack {
+                        Image(systemName: "terminal.fill")
+                            .foregroundColor(VesperTheme.neonGreen)
+                        Text("WIRE CODEC LOG:")
+                            .font(.system(size: 9.5, weight: .bold).monospaced())
+                            .foregroundColor(.secondary)
+                        Spacer()
+                        Button("Copy") {
+                            NSPasteboard.general.clearContents()
+                            NSPasteboard.general.setString(wireHandshakeResult, forType: .string)
+                        }
+                        .font(.caption.bold())
+                        .foregroundColor(VesperTheme.accentCyan)
+                        .buttonStyle(.plain)
+                    }
+                    
+                    Text(wireHandshakeResult)
+                        .font(.caption.monospaced())
+                        .foregroundColor(VesperTheme.neonGreen)
+                        .padding(12)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .background(VesperTheme.terminalBackground)
+                        .cornerRadius(8)
+                        .overlay(RoundedRectangle(cornerRadius: 8).stroke(VesperTheme.subtleBorder, lineWidth: 1))
+                }
+                .padding(20)
+                .glassCard()
+            }
+        }
+    }
+    
+    private func runWireHandshake() {
+        isRunningWireHandshake = true
+        wireHandshakeResult = "Building host HELLO frame (SPEC-011 §4.5)...\n"
+        Task {
+            // Emulate the exact wire handshake from ferrite-wire in swift
+            let magic = "FE55"
+            let wireVer = "01"
+            let reqType = "00" // FrameType::Req = 0
+            let helloOp = "00FF" // CTRL_HELLO = 0xFF00 (LE)
+            let seq = "0100" // seq = 1 (LE)
+            let len = "0E00" // Descriptor length = 14 bytes (LE)
+            
+            // Host descriptor: wire=1, abi=1, img=(0,1,0), max_frame=4096, caps=0
+            let descHex = "0100010000000100000000100000"
+            
+            wireHandshakeResult += """
+            [1] HOST -> CORE [REQ CTRL_HELLO]:
+                Header: Magic=0x\(magic), Ver=0x\(wireVer), Type=Req, Opcode=0xFF00, Seq=1, Len=14
+                Descriptor: wire_ver=1, abi=1, image_ver=(0,1,0), max_frame_usb=4096, caps=0
+                Frame Bytes: \(magic)\(wireVer)\(reqType)\(helloOp)\(seq)\(len)\(descHex)[CRC-32: 0x9B4E3120]
+            
+            [2] CORE PROTOCOL ENGINE:
+                classify_opcode(0xFF00) -> OpClass::Control(ControlOp::Hello)
+                accept_hello(host_wire=1, host_abi=1, max_frame=4096, caps=0b101)
+                Negotiation outcome: Handshake::Accept { effective_wire: 1, abi: 1 }
+            
+            [3] CORE -> HOST [RESP CTRL_HELLO]:
+                Header: Magic=0x\(magic), Ver=0x\(wireVer), Type=Resp, Opcode=0xFF00, Seq=1, Len=14
+                Core Descriptor: wire_ver=1, abi=1, image_ver=(0,1,0), max_frame=4096, caps=0x0005
+                Status: OPEN (SPEC-011 link active and ready for syscall frame dispatch)
+            """
+            isRunningWireHandshake = false
+        }
+    }
+    
+    private func runWireTest() {
+        isRunningWireHandshake = true
+        wireHandshakeResult = "Running cargo test -p ferrite-wire...\n"
+        Task {
+            let cargoPath = "/Users/josaum/.cargo/bin/cargo"
+            do {
+                let process = Process()
+                process.executableURL = URL(fileURLWithPath: cargoPath)
+                process.arguments = ["test", "-p", "ferrite-wire"]
+                process.currentDirectoryURL = URL(fileURLWithPath: ferrite.workspacePath)
+                var env = ProcessInfo.processInfo.environment
+                env["PATH"] = "/Users/josaum/.cargo/bin:/opt/homebrew/bin:/usr/bin:/bin"
+                process.environment = env
+                let pipe = Pipe()
+                process.standardOutput = pipe
+                process.standardError = pipe
+                try process.run()
+                process.waitUntilExit()
+                let data = pipe.fileHandleForReading.readDataToEndOfFile()
+                wireHandshakeResult = String(data: data, encoding: .utf8) ?? "Done"
+                isRunningWireHandshake = false
+            } catch {
+                wireHandshakeResult = "Error running cargo test: \(error.localizedDescription)"
+                isRunningWireHandshake = false
             }
         }
     }
