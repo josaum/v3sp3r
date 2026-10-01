@@ -208,9 +208,36 @@ public final class FlipperToolExecutor {
                 return ToolResult(toolCallId: "", output: "USB DFU Devices (dfu-util):\n\n\(out)")
                 
             case "ferrite_probe_scan":
-                let ferrite = FerriteOSService.shared
-                let out = await ferrite.scanProbeDevices()
-                return ToolResult(toolCallId: "", output: "SWD Debug Probes (probe-rs):\n\n\(out)")
+                let probeService = DebugProbeService.shared
+                await probeService.refreshProbes()
+                let probeList = probeService.probes.map { "\($0.index): \($0.name) (\($0.vid):\($0.pid)) [Serial: \($0.serial)]" }.joined(separator: "\n")
+                return ToolResult(toolCallId: "", output: probeList.isEmpty ? "No debug probes detected." : "SWD Debug Probes:\n\(probeList)\n\nSelected: \(probeService.selectedProbe?.name ?? "None")")
+                
+            case "probe_inspect":
+                let probeService = DebugProbeService.shared
+                if let chip = params["chip"], !chip.isEmpty {
+                    probeService.selectedChip = chip
+                }
+                await probeService.inspectTargetChip()
+                return ToolResult(toolCallId: "", output: probeService.consoleOutput)
+                
+            case "probe_read_memory":
+                let probeService = DebugProbeService.shared
+                if let addr = params["address"] {
+                    probeService.memoryInspectAddressHex = addr
+                }
+                if let wordsStr = params["words"], let words = Int(wordsStr) {
+                    probeService.memoryInspectWordsCount = min(max(1, words), 64)
+                }
+                await probeService.readMemoryChunk()
+                let formatted = probeService.memoryData.map { String(format: "0x%08X: %@ | %@", $0.address, $0.hexValue, $0.asciiRepresentation) }.joined(separator: "\n")
+                return ToolResult(toolCallId: "", output: formatted.isEmpty ? probeService.consoleOutput : "Memory Read from \(probeService.memoryInspectAddressHex):\n\(formatted)")
+                
+            case "probe_reset":
+                let probeService = DebugProbeService.shared
+                let halt = params["halt"] == "true"
+                await probeService.resetTarget(halt: halt)
+                return ToolResult(toolCallId: "", output: probeService.consoleOutput)
                 
             case "flash_ferrite_os":
                 let forApp = params["standalone"] != "true"

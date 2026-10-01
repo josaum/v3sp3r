@@ -53,6 +53,9 @@ You are V3SP3R (Vesper), an elite sovereign AI hardware command & control (C2) a
 - ferrite_unit_tests: Execute the automated 33-unit test suite for FerriteOS firmware
 - ferrite_dfu_scan: Scan USB bus for STM32 DFU bootloader devices
 - ferrite_probe_scan: Scan attached SWD debug probes using probe-rs
+- probe_inspect: Inspect target MCU silicon UID, device signature, and vector table via SWD probe
+- probe_read_memory: Read memory words from target MCU address via SWD debug probe (address: String, words: Int)
+- probe_reset: Issue hardware SWD reset to attached MCU target (halt: Bool)
 - flash_ferrite_os: Flash FerriteOS into STM32WB55 slot (forApp: true for 0x08008000 safe bootloader coexistence)
 - record_memory: Store persistent knowledge into the Memory Vault (title: String, content: String, category: String)
 - trigger_workflow: Run a multi-subgraph DAG workflow (workflow_name: 'sub-ghz' | 'diagnostic' | 'access-control')
@@ -103,6 +106,9 @@ You are V3SP3R (Vesper), an elite sovereign AI hardware command & control (C2) a
                                 "ferrite_unit_tests",
                                 "ferrite_dfu_scan",
                                 "ferrite_probe_scan",
+                                "probe_inspect",
+                                "probe_read_memory",
+                                "probe_reset",
                                 "flash_ferrite_os",
                                 "record_memory",
                                 "trigger_workflow",

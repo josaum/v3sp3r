@@ -714,6 +714,50 @@ public final class WebMcpServer {
                 ]
             ],
             [
+                "name": "probe_inspect",
+                "description": "Directly inspect target MCU silicon UID, device signature, and vector table via attached SWD probe.",
+                "inputSchema": [
+                    "type": "object",
+                    "properties": [
+                        "chip": [
+                            "type": "string",
+                            "description": "Target MCU chip (default: STM32WB55RGVx)"
+                        ]
+                    ]
+                ]
+            ],
+            [
+                "name": "probe_read_memory",
+                "description": "Read 32-bit memory words from target MCU address via SWD debug probe.",
+                "inputSchema": [
+                    "type": "object",
+                    "properties": [
+                        "address": [
+                            "type": "string",
+                            "description": "Hex address (e.g. 0x1FFF7580, 0x08000000, 0x20000000)"
+                        ],
+                        "words": [
+                            "type": "integer",
+                            "description": "Number of 32-bit words to read (1-64)"
+                        ]
+                    ],
+                    "required": ["address"]
+                ]
+            ],
+            [
+                "name": "probe_reset",
+                "description": "Issue hardware SWD reset to attached MCU target.",
+                "inputSchema": [
+                    "type": "object",
+                    "properties": [
+                        "halt": [
+                            "type": "boolean",
+                            "description": "Whether to halt execution / connect under reset"
+                        ]
+                    ]
+                ]
+            ],
+            [
                 "name": "pi_harness_status",
                 "description": "Inspect host Pi Coding Agent harness executable, path, and ~/.pi/agent configurations.",
                 "inputSchema": [

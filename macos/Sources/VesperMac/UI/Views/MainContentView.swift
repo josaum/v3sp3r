@@ -6,6 +6,7 @@ public enum NavigationSection: String, CaseIterable, Identifiable {
     case microDocs = "Field Manual & Docs"
     case firmwareHub = "Firmware & Flashing"
     case memoryVault = "Memory Vault"
+    case debugProbe = "SWD Debug Probe Lab"
     case ferriteWorkbench = "FerriteOS Workbench"
     case swarmMission = "AI Swarm Missions"
     case device = "Device HUD"
@@ -30,6 +31,7 @@ public enum NavigationSection: String, CaseIterable, Identifiable {
         case .microDocs: return "book.pages.fill"
         case .firmwareHub: return "arrow.triangle.2.circlepath.circle.fill"
         case .memoryVault: return "brain"
+        case .debugProbe: return "cpu.fill"
         case .ferriteWorkbench: return "atom"
         case .swarmMission: return "bolt.horizontal.circle.fill"
         case .device: return "cpu"
@@ -167,6 +169,7 @@ public struct MainContentView: View {
                     Section("HARDWARE & CONTROLS") {
                         sidebarRow(section: .device, indicatorDot: connection.status.isConnected ? VesperTheme.neonGreen : nil)
                         sidebarRow(section: .virtualFlipper, indicatorDot: connection.status.isConnected ? VesperTheme.flipperOrange : nil)
+                        sidebarRow(section: .debugProbe, badge: DebugProbeService.shared.targetTelemetry.isConnected ? "SWD" : (DebugProbeService.shared.selectedProbe != nil ? "PROBE" : nil), badgeColor: VesperTheme.accentCyan)
                         sidebarRow(section: .firmwareHub)
                         sidebarRow(section: .marauder)
                     }
@@ -257,6 +260,8 @@ public struct MainContentView: View {
                     FirmwareHubView()
                 case .memoryVault:
                     MemoryVaultView()
+                case .debugProbe:
+                    DebugProbeWorkbenchView()
                 case .ferriteWorkbench:
                     FerriteWorkbenchView()
                 case .swarmMission:

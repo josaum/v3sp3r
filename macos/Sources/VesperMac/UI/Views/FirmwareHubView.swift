@@ -88,6 +88,7 @@ public struct FirmwareHubView: View {
             Picker("Mode", selection: $selectedTab) {
                 Text("Flipper Zero Firmware").tag(0)
                 Text("GPIO & WiFi Devboards").tag(1)
+                Text("SWD Debug Probes").tag(4)
                 Text("Pinout & Wiring Guide").tag(2)
                 Text("Diagnostics & Preflight").tag(3)
             }
@@ -103,6 +104,8 @@ public struct FirmwareHubView: View {
                     flipperFirmwareTab
                 case 1:
                     gpioDevboardsTab
+                case 4:
+                    DebugProbeWorkbenchView()
                 case 2:
                     pinoutWiringTab
                 case 3:

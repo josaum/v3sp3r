@@ -675,13 +675,21 @@ public final class FirmwareFlashService {
             detail: dfuPresent ? "Installed at \(ferrite.dfuUtilPath)" : "Missing dfu-util. Install via 'brew install dfu-util'."
         ))
         
-        // 7. SWD Debug Probe (probe-rs)
-        let probePresent = ferrite.isProbeRsPresent
+        // 7. SWD Debug Probe (probe-rs) & Connected Probe Hardware
+        let probeService = DebugProbeService.shared
+        let probePresent = probeService.isInstalled
+        var probeDetail = probePresent ? "Installed at \(probeService.probeRsPath)" : "probe-rs not found."
+        if let activeProbe = probeService.selectedProbe {
+            probeDetail += " • Attached: \(activeProbe.name) (\(activeProbe.vid):\(activeProbe.pid))"
+            if probeService.targetTelemetry.isConnected {
+                probeDetail += " • Target MCU: \(probeService.targetTelemetry.chip) (UID: \(probeService.targetTelemetry.uid))"
+            }
+        }
         results.append(DiagnosticCheckResult(
-            title: "SWD Debug Probe Utility (probe-rs)",
-            category: "Host Toolchain",
-            passed: probePresent,
-            detail: probePresent ? "Installed at \(ferrite.probeRsPath)" : "probe-rs not found."
+            title: "SWD Debug Probe Utility & Target Link",
+            category: "Hardware Probes",
+            passed: probePresent && probeService.selectedProbe != nil,
+            detail: probeDetail
         ))
         
         self.diagnosticResults = results
