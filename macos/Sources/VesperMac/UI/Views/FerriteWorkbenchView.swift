@@ -843,6 +843,29 @@ public struct FerriteWorkbenchView: View {
                     
                     Spacer()
                     
+                    Button(action: {
+                        Task {
+                            let probeService = DebugProbeService.shared
+                            do {
+                                let base = (ferrite.manifestInfo?.flashBase == 0x08008000) ? "0x08008000" : "0x08000000"
+                                let bin = (base == "0x08008000") ? ferrite.firmwareAppBinPath : ferrite.firmwareBinPath
+                                flashResult = try await probeService.flashBinary(binaryPath: bin, baseAddressHex: base)
+                            } catch {
+                                flashResult = "SWD Flash Error: \(error.localizedDescription)"
+                            }
+                        }
+                    }) {
+                        let baseStr = (ferrite.manifestInfo?.flashBase == 0x08008000) ? "0x08008000" : "0x08000000"
+                        Label("Flash via SWD (\(baseStr))", systemImage: "bolt.fill")
+                            .font(.caption.bold())
+                            .foregroundColor(.black)
+                            .padding(.horizontal, 12)
+                            .padding(.vertical, 7)
+                            .background(VesperTheme.neonGreen)
+                            .cornerRadius(8)
+                    }
+                    .buttonStyle(.plain)
+                    
                     Button(action: { showFlashConfirmModal = true }) {
                         let baseStr = (ferrite.manifestInfo?.flashBase == 0x08008000) ? "0x08008000" : "0x08000000"
                         Label("Flash via DFU (\(baseStr))", systemImage: "flame.fill")

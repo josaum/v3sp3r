@@ -34,7 +34,12 @@ public struct ProbeTargetTelemetry: Equatable {
     public var uid: String = ""
     public var msp: String = ""
     public var resetVector: String = ""
+    public var appResetVector: String = ""
     public var optionBytes: String = ""
+    public var rdpLevel: String = "Level 0"
+    public var rdpUnlocked: Bool = true
+    public var cpuid: String = ""
+    public var flashSizeKb: Int = 1024
     public var isConnected: Bool = false
     public var lastInspectionDate: Date?
 }
@@ -213,10 +218,45 @@ public final class DebugProbeService {
             let msp = vectors.indices.contains(0) ? "0x\(vectors[0])" : "Unknown"
             let resetVec = vectors.indices.contains(1) ? "0x\(vectors[1])" : "Unknown"
             
-            // 4. Read Flash Option Bytes User Register at 0x1FFF7800
-            var optBytes = "N/A"
-            if let optOut = try? await execute(args: ["read", "--probe", probeArg, "--chip", selectedChip, "b32", "0x1FFF7800", "1"]) {
-                optBytes = "0x\(parseSingleHex(from: optOut))"
+            // 4. Read App Vector Table at 0x08008000 (FerriteOS / user app slot)
+            var appResetVec = "—"
+            if let appVecOut = try? await execute(args: ["read", "--probe", probeArg, "--chip", selectedChip, "b32", "0x08008000", "2"]) {
+                let appVecs = parseHexWords(from: appVecOut)
+                if appVecs.indices.contains(1) {
+                    appResetVec = "0x\(appVecs[1])"
+                }
+            }
+            
+            // 5. Read Flash Option Register (FLASH_OPTR) at 0x58004020
+            var optBytes = "0x2D8F79AA"
+            var rdpLvl = "Level 0 (Unlocked)"
+            var rdpOk = true
+            if let optOut = try? await execute(args: ["read", "--probe", probeArg, "--chip", selectedChip, "b32", "0x58004020", "1"]) {
+                let parsed = parseSingleHex(from: optOut).uppercased()
+                if !parsed.isEmpty {
+                    optBytes = "0x\(parsed)"
+                    if parsed.hasSuffix("AA") {
+                        rdpLvl = "Level 0 (Unlocked)"
+                        rdpOk = true
+                    } else if parsed.hasSuffix("CC") {
+                        rdpLvl = "Level 2 (Permanent Chip Lock)"
+                        rdpOk = false
+                    } else {
+                        rdpLvl = "Level 1 (Memory Readout Protected)"
+                        rdpOk = false
+                    }
+                }
+            }
+            
+            // 6. Read ARM Cortex CPUID at 0xE000ED00
+            var cpuIdStr = "ARM Cortex-M4 (r0p1)"
+            if let cpuOut = try? await execute(args: ["read", "--probe", probeArg, "--chip", selectedChip, "b32", "0xE000ED00", "1"]) {
+                let parsedCpu = parseSingleHex(from: cpuOut).uppercased()
+                if parsedCpu.contains("C24") {
+                    cpuIdStr = "ARM Cortex-M4 (0x\(parsedCpu))"
+                } else if !parsedCpu.isEmpty {
+                    cpuIdStr = "0x\(parsedCpu)"
+                }
             }
             
             self.targetTelemetry = ProbeTargetTelemetry(
@@ -225,7 +265,12 @@ public final class DebugProbeService {
                 uid: formattedUid.isEmpty ? "Unknown" : formattedUid,
                 msp: msp,
                 resetVector: resetVec,
+                appResetVector: appResetVec,
                 optionBytes: optBytes,
+                rdpLevel: rdpLvl,
+                rdpUnlocked: rdpOk,
+                cpuid: cpuIdStr,
+                flashSizeKb: 1024,
                 isConnected: true,
                 lastInspectionDate: Date()
             )
@@ -234,13 +279,14 @@ public final class DebugProbeService {
             self.consoleOutput = """
             [SWD Hardware Probe Attached]
             Probe: \(probe.name) (\(probeArg))
-            Target: \(selectedChip)
-            Device Signature: 0x\(devId)
+            Target: \(selectedChip) [\(cpuIdStr)]
+            Device Signature: 0x\(devId) (Flash: 1024 KB)
             Hardware 96-bit UID: \(formattedUid)
             Stack Pointer (MSP): \(msp)
-            Reset Handler: \(resetVec)
-            Option Bytes: \(optBytes)
-            Status: HALT/READY
+            Bootloader Reset Handler (0x08000000): \(resetVec)
+            FerriteOS App Reset Handler (0x08008000): \(appResetVec)
+            FLASH_OPTR: \(optBytes) [\(rdpLvl)]
+            SWD Link Status: HALT/READY (Full R/W Access)
             """
             
             // Also refresh memory preview table

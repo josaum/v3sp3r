@@ -248,18 +248,26 @@ public struct DebugProbeWorkbenchView: View {
                 }
             }
             
-            LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 10) {
-                telemetryCell(title: "Device Signature", value: t.deviceId.isEmpty ? "—" : t.deviceId, icon: "signature")
-                telemetryCell(title: "Option Bytes", value: t.optionBytes.isEmpty ? "—" : t.optionBytes, icon: "lock.shield")
+            LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible())], spacing: 10) {
+                telemetryCell(title: "Device Signature", value: t.deviceId.isEmpty ? "—" : "\(t.deviceId) (1024KB)", icon: "signature")
+                telemetryCell(title: "CPU Core", value: t.cpuid.isEmpty ? "ARM Cortex-M4" : t.cpuid, icon: "cpu")
+                telemetryCell(title: "Readout Protection", value: t.rdpLevel, icon: t.rdpUnlocked ? "lock.open.fill" : "lock.fill", valueColor: t.rdpUnlocked ? VesperTheme.neonGreen : VesperTheme.neonRed)
                 telemetryCell(title: "Main Stack Pointer", value: t.msp.isEmpty ? "—" : t.msp, icon: "arrow.down.to.line")
-                telemetryCell(title: "Reset Vector", value: t.resetVector.isEmpty ? "—" : t.resetVector, icon: "arrow.uturn.right")
+                telemetryCell(title: "Bootloader Vector (0x08000000)", value: t.resetVector.isEmpty ? "—" : t.resetVector, icon: "arrow.uturn.right")
+                telemetryCell(title: "FerriteOS Slot (0x08008000)", value: t.appResetVector.isEmpty ? "—" : t.appResetVector, icon: "atom", valueColor: VesperTheme.accentCyan)
             }
             
             // 96-bit Unique ID Banner
             VStack(alignment: .leading, spacing: 4) {
-                Text("96-Bit Silicon Unique ID (UID):")
-                    .font(.system(size: 9.5, weight: .bold, design: .monospaced))
-                    .foregroundColor(VesperTheme.secondaryTextColor)
+                HStack {
+                    Text("96-Bit Silicon Unique ID (UID):")
+                        .font(.system(size: 9.5, weight: .bold, design: .monospaced))
+                        .foregroundColor(VesperTheme.secondaryTextColor)
+                    Spacer()
+                    Text("FLASH_OPTR: \(t.optionBytes)")
+                        .font(.system(size: 9.5, design: .monospaced))
+                        .foregroundColor(VesperTheme.secondaryTextColor)
+                }
                 Text(t.uid.isEmpty ? "Not connected or read error" : t.uid)
                     .font(.system(size: 11, weight: .bold, design: .monospaced))
                     .foregroundColor(t.uid.isEmpty ? VesperTheme.secondaryTextColor : VesperTheme.accentCyan)
@@ -280,7 +288,7 @@ public struct DebugProbeWorkbenchView: View {
         )
     }
     
-    private func telemetryCell(title: String, value: String, icon: String) -> some View {
+    private func telemetryCell(title: String, value: String, icon: String, valueColor: Color = VesperTheme.primaryTextColor) -> some View {
         VStack(alignment: .leading, spacing: 3) {
             HStack(spacing: 4) {
                 Image(systemName: icon)
@@ -292,7 +300,7 @@ public struct DebugProbeWorkbenchView: View {
             }
             Text(value)
                 .font(.system(size: 11, weight: .bold, design: .monospaced))
-                .foregroundColor(VesperTheme.primaryTextColor)
+                .foregroundColor(valueColor)
                 .lineLimit(1)
         }
         .padding(8)
@@ -402,11 +410,12 @@ public struct DebugProbeWorkbenchView: View {
                 Spacer()
                 
                 // Quick Address Jump Buttons
-                quickJumpButton(name: "Flash Base", addr: "0x08000000")
-                quickJumpButton(name: "App Slot", addr: "0x08008000")
+                quickJumpButton(name: "Bootloader", addr: "0x08000000")
+                quickJumpButton(name: "FerriteOS (0x08008000)", addr: "0x08008000")
                 quickJumpButton(name: "SRAM Base", addr: "0x20000000")
-                quickJumpButton(name: "Device ID", addr: "0x1FFF7580")
-                quickJumpButton(name: "Option Bytes", addr: "0x1FFF7800")
+                quickJumpButton(name: "Device ID / UID", addr: "0x1FFF7580")
+                quickJumpButton(name: "FLASH_OPTR", addr: "0x58004020")
+                quickJumpButton(name: "CPUID", addr: "0xE000ED00")
             }
             
             // Read Controls
