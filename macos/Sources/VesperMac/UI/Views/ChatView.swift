@@ -13,6 +13,7 @@ public struct ChatView: View {
     public init() {}
     
     private let quickPrompts = [
+        "Ask FerriteOS: decode 433mhz signal and plan hardware actions",
         "🎯 /goal Audit RF spectrum on 433.92 & 315 MHz and decode captures",
         "🎯 /goal Inspect SD card /ext and catalog all payloads and keys",
         "Run Sub-GHz Spectrum Recon Workflow",

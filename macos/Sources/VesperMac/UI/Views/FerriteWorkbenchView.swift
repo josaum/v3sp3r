@@ -36,8 +36,10 @@ public struct FerriteWorkbenchView: View {
     
     private let sampleFiles = [
         ("NFC NTAG216", "/Users/josaum/projects/FerriteOS/crates/ferrite-rf/testdata/nfc/Ntag216.nfc"),
+        ("Sub-GHz Holtek 40b", "/Users/josaum/projects/FerriteOS/crates/ferrite-rf/testdata/static_holtek_raw.sub"),
+        ("Sub-GHz CAME Atomo", "/Users/josaum/projects/FerriteOS/crates/ferrite-rf/testdata/static_came_atomo_raw.sub"),
+        ("Sub-GHz Doitrand", "/Users/josaum/projects/FerriteOS/crates/ferrite-rf/testdata/static_gates_doitrand_raw.sub"),
         ("Sub-GHz RAW (Marantec)", "/Users/josaum/projects/FerriteOS/crates/ferrite-rf/testdata/marantec_raw.sub"),
-        ("Sub-GHz Holtek", "/Users/josaum/projects/FerriteOS/crates/ferrite-rf/testdata/holtek_ht12x.sub"),
         ("NFC Vicinity (ISO15693)", "/Users/josaum/projects/FerriteOS/crates/ferrite-rf/testdata/nfc_vicinity/Slix_cap_default.nfc")
     ]
     
@@ -661,42 +663,131 @@ public struct FerriteWorkbenchView: View {
     // MARK: - Tab 3: Workspace & Crates
     private var workspaceTabContent: some View {
         VStack(alignment: .leading, spacing: 18) {
-            Text("FerriteOS Rust Workspace Architecture")
-                .font(.title3.bold())
-                .foregroundColor(VesperTheme.primaryTextColor)
+            VStack(alignment: .leading, spacing: 12) {
+                HStack {
+                    Image(systemName: "shippingbox.fill")
+                        .foregroundColor(VesperTheme.neonAmber)
+                    Text("FerriteOS Architecture & Verified Subsystems")
+                        .font(.headline)
+                        .foregroundColor(VesperTheme.primaryTextColor)
+                    Spacer()
+                    Text("9 NO_STD CRATES")
+                        .font(.system(size: 9.5, weight: .bold, design: .monospaced))
+                        .padding(.horizontal, 6)
+                        .padding(.vertical, 2)
+                        .background(VesperTheme.neonAmber.opacity(0.18))
+                        .foregroundColor(VesperTheme.neonAmber)
+                        .cornerRadius(4)
+                }
+                
+                Text("Every FerriteOS crate is strictly `#![no_std]` and `#![forbid(unsafe_code)]` with formal invariant models. Execute in-crate test suites directly below.")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+            }
+            .padding(18)
+            .glassCard()
             
-            Text("FerriteOS is organized as a clean Rust Cargo workspace with separation between host evaluation crates and on-target STM32 firmware.")
-                .font(.subheadline)
-                .foregroundColor(.secondary)
-            
-            let crates = [
-                ("ferrite-agent", "Natural language lexical matching, token routing, and slot-filling."),
-                ("ferrite-rf", "55+ Sub-GHz, NFC, and LF RFID decoders and raw timing stream parsers."),
-                ("ferrite-core", "Core types, error models, and allocation-free hardware dispatch interfaces."),
-                ("ferrite-drivers", "Per-chip hardware drivers for CC1101, ST25R3916 NFC, and displays."),
-                ("ferrite-console", "Interactive CLI host binary for instant signal analysis and memory sessions."),
-                ("firmware", "Standalone bare-metal Cortex-M4 firmware image (225 KB) for STM32WB55.")
-            ]
-            
-            VStack(spacing: 8) {
-                ForEach(crates, id: \.0) { name, desc in
-                    HStack(spacing: 12) {
-                        Text(name)
-                            .font(.system(size: 13, weight: .bold, design: .monospaced))
-                            .foregroundColor(VesperTheme.accentCyan)
-                            .frame(width: 150, alignment: .leading)
-                        
-                        Text(desc)
-                            .font(.caption)
-                            .foregroundColor(.secondary)
+            // Crate Grid
+            VStack(spacing: 10) {
+                ForEach(ferrite.crates) { crate in
+                    HStack(spacing: 14) {
+                        VStack(alignment: .leading, spacing: 4) {
+                            HStack(spacing: 8) {
+                                Text(crate.name)
+                                    .font(.system(size: 13, weight: .bold, design: .monospaced))
+                                    .foregroundColor(VesperTheme.accentCyan)
+                                
+                                Text(crate.specReference)
+                                    .font(.system(size: 8.5, weight: .bold, design: .monospaced))
+                                    .padding(.horizontal, 5)
+                                    .padding(.vertical, 2)
+                                    .background(VesperTheme.secondaryCardBackground)
+                                    .foregroundColor(VesperTheme.cyberPurple)
+                                    .cornerRadius(4)
+                                
+                                if crate.isPureNoStd {
+                                    Text("no_std")
+                                        .font(.system(size: 8, weight: .bold, design: .monospaced))
+                                        .foregroundColor(VesperTheme.neonGreen)
+                                }
+                                
+                                if let status = crate.lastTestStatus {
+                                    Text(status)
+                                        .font(.system(size: 8.5, weight: .black, design: .monospaced))
+                                        .padding(.horizontal, 5)
+                                        .padding(.vertical, 2)
+                                        .background((crate.passed ?? false) ? VesperTheme.neonGreen.opacity(0.2) : VesperTheme.neonRed.opacity(0.2))
+                                        .foregroundColor((crate.passed ?? false) ? VesperTheme.neonGreen : VesperTheme.neonRed)
+                                        .cornerRadius(4)
+                                }
+                            }
+                            
+                            Text(crate.description)
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                        }
                         
                         Spacer()
+                        
+                        Button(action: {
+                            Task {
+                                _ = await ferrite.runCrateTest(crateName: crate.name)
+                            }
+                        }) {
+                            HStack(spacing: 5) {
+                                if ferrite.testingCrateName == crate.name {
+                                    ProgressView().scaleEffect(0.6)
+                                } else {
+                                    Image(systemName: "play.circle.fill")
+                                }
+                                Text("Test")
+                                    .font(.caption.bold())
+                            }
+                            .padding(.horizontal, 10)
+                            .padding(.vertical, 5)
+                            .background(VesperTheme.secondaryCardBackground)
+                            .cornerRadius(6)
+                            .overlay(RoundedRectangle(cornerRadius: 6).stroke(VesperTheme.subtleBorder, lineWidth: 1))
+                        }
+                        .buttonStyle(.plain)
+                        .disabled(ferrite.testingCrateName != nil)
                     }
-                    .padding(10)
+                    .padding(14)
                     .background(VesperTheme.cardBackground)
-                    .cornerRadius(6)
-                    .overlay(RoundedRectangle(cornerRadius: 6).stroke(VesperTheme.subtleBorder, lineWidth: 1))
+                    .cornerRadius(8)
+                    .overlay(RoundedRectangle(cornerRadius: 8).stroke(VesperTheme.subtleBorder, lineWidth: 1))
                 }
+            }
+            
+            // Crate Test Output Log
+            if !ferrite.crateTestOutput.isEmpty {
+                VStack(alignment: .leading, spacing: 8) {
+                    HStack {
+                        Image(systemName: "terminal.fill")
+                            .foregroundColor(VesperTheme.neonGreen)
+                        Text("CRATE TEST RESULTS")
+                            .font(.system(size: 10, weight: .bold).monospaced())
+                            .foregroundColor(.secondary)
+                        Spacer()
+                        Button("Clear") {
+                            ferrite.crateTestOutput = ""
+                        }
+                        .font(.caption.bold())
+                        .foregroundColor(VesperTheme.accentCyan)
+                        .buttonStyle(.plain)
+                    }
+                    
+                    Text(ferrite.crateTestOutput)
+                        .font(.caption.monospaced())
+                        .foregroundColor(VesperTheme.neonGreen)
+                        .padding(12)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .background(VesperTheme.terminalBackground)
+                        .cornerRadius(8)
+                        .overlay(RoundedRectangle(cornerRadius: 8).stroke(VesperTheme.subtleBorder, lineWidth: 1))
+                }
+                .padding(18)
+                .glassCard()
             }
         }
     }

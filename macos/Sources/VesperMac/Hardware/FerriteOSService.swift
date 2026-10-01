@@ -38,6 +38,16 @@ public struct FerriteManifestInfo: Codable, Equatable {
     }
 }
 
+public struct FerriteCrateInfo: Identifiable, Equatable {
+    public var id: String { name }
+    public let name: String
+    public let description: String
+    public let specReference: String
+    public let isPureNoStd: Bool
+    public var lastTestStatus: String?
+    public var passed: Bool?
+}
+
 @MainActor
 @Observable
 public final class FerriteOSService {
@@ -65,11 +75,25 @@ public final class FerriteOSService {
     public var lastUnderstanding: FerriteUnderstanding?
     public var recentOutputs: [FerriteUnderstanding] = []
     
+    public var crates: [FerriteCrateInfo] = [
+        FerriteCrateInfo(name: "ferrite-agent", description: "Deterministic on-device intent classifier and action planner.", specReference: "SPEC-001", isPureNoStd: true),
+        FerriteCrateInfo(name: "ferrite-rf", description: "RF pipeline, DSP, capture ring, and 55+ protocol decoders.", specReference: "SPEC-005", isPureNoStd: true),
+        FerriteCrateInfo(name: "ferrite-core", description: "Kernel supervisor, task scheduler, and capability brokers.", specReference: "SPEC-003", isPureNoStd: true),
+        FerriteCrateInfo(name: "ferrite-types", description: "Shared architectural types, invariants, memory layouts.", specReference: "SPEC-000", isPureNoStd: true),
+        FerriteCrateInfo(name: "ferrite-wire", description: "SPEC-011 wire protocol codec, framing, and HELLO negotiation.", specReference: "SPEC-011", isPureNoStd: true),
+        FerriteCrateInfo(name: "ferrite-cap", description: "O(1) capability broker and runtime facility accounting.", specReference: "SPEC-004", isPureNoStd: true),
+        FerriteCrateInfo(name: "ferrite-pack", description: "Signed protocol pack loader, declarative matchers.", specReference: "SPEC-008", isPureNoStd: true),
+        FerriteCrateInfo(name: "ferrite-store", description: "Log-structured journal, KV index, provenance binding.", specReference: "SPEC-009", isPureNoStd: true),
+        FerriteCrateInfo(name: "ferrite-console", description: "Host CLI interactive REPL and headless signal session.", specReference: "HOST-CLI", isPureNoStd: false)
+    ]
+    
     public var isExecuting: Bool = false
     public var isPreflightRunning: Bool = false
     public var isTestRunning: Bool = false
     public var isBuilding: Bool = false
     public var isFlashingDfu: Bool = false
+    public var testingCrateName: String? = nil
+    public var crateTestOutput: String = ""
     
     public var lastPreflightOutput: String = ""
     public var preflightPassed: Bool? = nil
@@ -260,6 +284,32 @@ public final class FerriteOSService {
         } catch {
             let err = error.localizedDescription
             self.buildLog = "Build failed: \(err)"
+            return (false, err)
+        }
+    }
+    
+    public func runCrateTest(crateName: String) async -> (success: Bool, output: String) {
+        self.testingCrateName = crateName
+        defer { self.testingCrateName = nil }
+        
+        let cargoPath = "/Users/josaum/.cargo/bin/cargo"
+        let args = ["test", "-p", crateName]
+        do {
+            let output = try await runCommand(executable: cargoPath, args: args, cwd: workspacePath)
+            let passed = output.contains("test result: ok")
+            self.crateTestOutput = output
+            if let idx = crates.firstIndex(where: { $0.name == crateName }) {
+                crates[idx].passed = passed
+                crates[idx].lastTestStatus = passed ? "PASS" : "FAIL"
+            }
+            return (passed, output)
+        } catch {
+            let err = error.localizedDescription
+            self.crateTestOutput = "Crate test error: \(err)"
+            if let idx = crates.firstIndex(where: { $0.name == crateName }) {
+                crates[idx].passed = false
+                crates[idx].lastTestStatus = "ERROR"
+            }
             return (false, err)
         }
     }
