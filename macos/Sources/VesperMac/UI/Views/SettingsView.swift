@@ -13,6 +13,8 @@ public struct SettingsView: View {
     @State private var piHarnessTestSuccess: Bool = false
     @State private var webMcp = WebMcpServer.shared
     @State private var copiedMcpToast: String?
+    @State private var leaderboardService = OpenRouterLeaderboardService.shared
+    @State private var customOpenRouterModelInput: String = ""
     
     public init() {}
     
@@ -194,6 +196,38 @@ public struct SettingsView: View {
                                     .font(.caption)
                                     .foregroundColor(.secondary)
                                 
+                                if let top1 = leaderboardService.leaderboard.first {
+                                    Button(action: {
+                                        settings.piHarnessModel = top1.id
+                                        customPiModelInput = top1.id
+                                    }) {
+                                        HStack(spacing: 6) {
+                                            Image(systemName: "trophy.fill")
+                                                .foregroundColor(.yellow)
+                                            Text("Use #1 Leaderboard: \(top1.name)")
+                                                .font(.caption.bold())
+                                            Text("(\(top1.id))")
+                                                .font(.caption2.monospaced())
+                                                .foregroundColor(.secondary)
+                                            Spacer()
+                                            if settings.piHarnessModel == top1.id {
+                                                Text("ACTIVE")
+                                                    .font(.system(size: 9, weight: .heavy, design: .monospaced))
+                                                    .foregroundColor(VesperTheme.neonGreen)
+                                            }
+                                        }
+                                        .padding(.horizontal, 10)
+                                        .padding(.vertical, 6)
+                                        .background(settings.piHarnessModel == top1.id ? VesperTheme.neonGreen.opacity(0.15) : Color.black.opacity(0.3))
+                                        .cornerRadius(6)
+                                        .overlay(
+                                            RoundedRectangle(cornerRadius: 6)
+                                                .stroke(settings.piHarnessModel == top1.id ? VesperTheme.neonGreen : VesperTheme.subtleBorder, lineWidth: 1)
+                                        )
+                                    }
+                                    .buttonStyle(.plain)
+                                }
+                                
                                 ForEach(AppSettings.piHarnessPresets, id: \.id) { preset in
                                     HStack(alignment: .top) {
                                         RadioButton(isSelected: settings.piHarnessModel == preset.id) {
@@ -355,43 +389,261 @@ public struct SettingsView: View {
                 .padding(20)
                 .glassCard()
                 
-                // AI Model Selection
-                VStack(alignment: .leading, spacing: 14) {
-                    HStack {
-                        Image(systemName: "cpu")
-                            .foregroundColor(VesperTheme.cyberPurple)
-                        Text("AI Model Intelligence")
-                            .font(.headline)
+                // OpenRouter Model Intelligence & Live Rankings Leaderboard
+                VStack(alignment: .leading, spacing: 16) {
+                    HStack(alignment: .center) {
+                        Image(systemName: "trophy.fill")
+                            .foregroundColor(.yellow)
+                        
+                        VStack(alignment: .leading, spacing: 2) {
+                            HStack(spacing: 8) {
+                                Text("OpenRouter Model Leaderboard")
+                                    .font(.headline)
+                                
+                                Link(destination: URL(string: "https://openrouter.ai/rankings")!) {
+                                    HStack(spacing: 4) {
+                                        Text("openrouter.ai/rankings")
+                                            .font(.caption2.monospaced())
+                                        Image(systemName: "arrow.up.right")
+                                            .font(.system(size: 8))
+                                    }
+                                    .foregroundColor(VesperTheme.accentCyan)
+                                    .padding(.horizontal, 6)
+                                    .padding(.vertical, 2)
+                                    .background(VesperTheme.accentCyan.opacity(0.12))
+                                    .cornerRadius(4)
+                                }
+                            }
+                            
+                            Text("Real-time token volume rankings from openrouter.ai/rankings. Top models auto-tune inference speed & context depth.")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                        }
+                        
+                        Spacer()
+                        
+                        // Live Sync Button
+                        Button(action: {
+                            Task {
+                                await leaderboardService.fetchLiveLeaderboard()
+                            }
+                        }) {
+                            HStack(spacing: 6) {
+                                if leaderboardService.isLoading {
+                                    ProgressView()
+                                        .controlSize(.small)
+                                } else {
+                                    Image(systemName: "arrow.clockwise")
+                                }
+                                Text(leaderboardService.isLoading ? "Syncing..." : "Sync Rankings")
+                                    .font(.caption.bold())
+                            }
+                            .padding(.horizontal, 10)
+                            .padding(.vertical, 6)
+                            .background(VesperTheme.accentCyan.opacity(0.18))
+                            .foregroundColor(VesperTheme.accentCyan)
+                            .cornerRadius(6)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 6)
+                                    .stroke(VesperTheme.accentCyan.opacity(0.5), lineWidth: 1)
+                            )
+                        }
+                        .buttonStyle(.plain)
+                        .disabled(leaderboardService.isLoading)
                     }
                     
-                    ForEach(AppSettings.availableModels, id: \.id) { model in
-                        HStack(alignment: .top) {
-                            RadioButton(isSelected: settings.selectedModel == model.id) {
-                                settings.selectedModel = model.id
-                            }
-                            
-                            VStack(alignment: .leading, spacing: 2) {
-                                Text(model.name)
-                                    .font(.subheadline.bold())
-                                Text(model.desc)
-                                    .font(.caption)
-                                    .foregroundColor(.secondary)
-                            }
-                            
-                            Spacer()
-                            
-                            Text(model.id)
+                    // Status & Timestamp Banner
+                    HStack {
+                        Image(systemName: "antenna.radiowaves.left.and.right")
+                            .font(.caption2)
+                            .foregroundColor(VesperTheme.neonGreen)
+                        
+                        Text(leaderboardService.statusMessage.isEmpty ? "Live Leaderboard Active" : leaderboardService.statusMessage)
+                            .font(.caption2.monospaced())
+                            .foregroundColor(.secondary)
+                        
+                        Spacer()
+                        
+                        if let lastUpdated = leaderboardService.lastUpdated {
+                            Text("Updated: \(lastUpdated.formatted(date: .omitted, time: .standard))")
                                 .font(.caption2.monospaced())
                                 .foregroundColor(.secondary)
                         }
-                        .padding(10)
-                        .background(settings.selectedModel == model.id ? VesperTheme.secondaryCardBackground : Color.clear)
+                    }
+                    .padding(.horizontal, 10)
+                    .padding(.vertical, 6)
+                    .background(Color.black.opacity(0.25))
+                    .cornerRadius(6)
+                    
+                    // Ranked Models List
+                    let modelsToDisplay = leaderboardService.leaderboard.isEmpty ? settings.effectiveLeaderboard : leaderboardService.leaderboard
+                    
+                    ForEach(modelsToDisplay) { model in
+                        let isSelected = settings.selectedModel == model.id
+                        HStack(alignment: .top, spacing: 12) {
+                            RadioButton(isSelected: isSelected) {
+                                settings.selectedModel = model.id
+                                customOpenRouterModelInput = model.id
+                            }
+                            .padding(.top, 4)
+                            
+                            // Rank Badge
+                            ZStack {
+                                RoundedRectangle(cornerRadius: 6)
+                                    .fill(rankBadgeBackgroundColor(rank: model.rank))
+                                    .frame(width: 38, height: 32)
+                                    .overlay(
+                                        RoundedRectangle(cornerRadius: 6)
+                                            .stroke(rankBadgeBorderColor(rank: model.rank), lineWidth: 1)
+                                    )
+                                
+                                Text("#\(model.rank)")
+                                    .font(.system(size: 13, weight: .black, design: .monospaced))
+                                    .foregroundColor(rankBadgeTextColor(rank: model.rank))
+                            }
+                            
+                            VStack(alignment: .leading, spacing: 4) {
+                                HStack(spacing: 8) {
+                                    Text(model.name)
+                                        .font(.subheadline.bold())
+                                        .foregroundColor(isSelected ? VesperTheme.accentCyan : VesperTheme.primaryTextColor)
+                                    
+                                    // Author Chip
+                                    Text(model.author.uppercased())
+                                        .font(.system(size: 9, weight: .bold, design: .monospaced))
+                                        .padding(.horizontal, 6)
+                                        .padding(.vertical, 2)
+                                        .background(Color.white.opacity(0.1))
+                                        .cornerRadius(4)
+                                        .foregroundColor(.secondary)
+                                    
+                                    // Volume Chip
+                                    Text(model.tokensProcessed)
+                                        .font(.system(size: 9, weight: .bold, design: .monospaced))
+                                        .padding(.horizontal, 6)
+                                        .padding(.vertical, 2)
+                                        .background(VesperTheme.neonGreen.opacity(0.15))
+                                        .cornerRadius(4)
+                                        .foregroundColor(VesperTheme.neonGreen)
+                                    
+                                    // Growth Chip
+                                    if !model.growth.isEmpty {
+                                        Text(model.growth)
+                                            .font(.system(size: 9, weight: .bold, design: .monospaced))
+                                            .padding(.horizontal, 6)
+                                            .padding(.vertical, 2)
+                                            .background(growthChipColor(model.growth).opacity(0.15))
+                                            .cornerRadius(4)
+                                            .foregroundColor(growthChipColor(model.growth))
+                                    }
+                                    
+                                    // Context Chip
+                                    Text(formatContextLength(model.contextLength))
+                                        .font(.system(size: 9, weight: .bold, design: .monospaced))
+                                        .padding(.horizontal, 6)
+                                        .padding(.vertical, 2)
+                                        .background(VesperTheme.cyberPurple.opacity(0.2))
+                                        .cornerRadius(4)
+                                        .foregroundColor(VesperTheme.cyberPurple)
+                                    
+                                    if model.isFree {
+                                        Text("FREE")
+                                            .font(.system(size: 9, weight: .black, design: .monospaced))
+                                            .padding(.horizontal, 6)
+                                            .padding(.vertical, 2)
+                                            .background(Color.green.opacity(0.2))
+                                            .cornerRadius(4)
+                                            .foregroundColor(.green)
+                                    }
+                                }
+                                
+                                if !model.description.isEmpty {
+                                    Text(model.description)
+                                        .font(.caption)
+                                        .foregroundColor(.secondary)
+                                        .lineLimit(2)
+                                }
+                                
+                                HStack {
+                                    Text(model.id)
+                                        .font(.caption2.monospaced())
+                                        .foregroundColor(isSelected ? VesperTheme.accentCyan : .secondary)
+                                    
+                                    Spacer()
+                                    
+                                    if isSelected {
+                                        HStack(spacing: 4) {
+                                            Circle()
+                                                .fill(VesperTheme.neonGreen)
+                                                .frame(width: 6, height: 6)
+                                            Text("ACTIVE INFERENCE MODEL")
+                                                .font(.system(size: 9, weight: .heavy, design: .monospaced))
+                                                .foregroundColor(VesperTheme.neonGreen)
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        .padding(12)
+                        .background(isSelected ? VesperTheme.accentCyan.opacity(0.08) : VesperTheme.secondaryCardBackground)
                         .cornerRadius(8)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 8)
+                                .stroke(isSelected ? VesperTheme.accentCyan.opacity(0.7) : VesperTheme.subtleBorder, lineWidth: 1)
+                        )
                         .contentShape(Rectangle())
                         .onTapGesture {
                             settings.selectedModel = model.id
+                            customOpenRouterModelInput = model.id
                         }
                     }
+                    
+                    // Custom OpenRouter Model Input Field
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("Custom OpenRouter Model Identifier")
+                            .font(.caption.bold())
+                            .foregroundColor(.secondary)
+                        
+                        HStack {
+                            TextField("e.g. anthropic/claude-3-7-sonnet or x-ai/grok-4.7", text: $customOpenRouterModelInput)
+                                .textFieldStyle(.roundedBorder)
+                                .font(.caption.monospaced())
+                            
+                            Button("Set Model") {
+                                let trimmed = customOpenRouterModelInput.trimmingCharacters(in: .whitespacesAndNewlines)
+                                if !trimmed.isEmpty {
+                                    settings.selectedModel = trimmed
+                                }
+                            }
+                            .buttonStyle(.borderedProminent)
+                        }
+                        
+                        // Quick Presets
+                        HStack(spacing: 8) {
+                            Text("Classics:")
+                                .font(.caption2)
+                                .foregroundColor(.secondary)
+                            
+                            ForEach(["x-ai/grok-4.7", "anthropic/claude-sonnet-5.5", "nousresearch/hermes-4"], id: \.self) { preset in
+                                Button(action: {
+                                    settings.selectedModel = preset
+                                    customOpenRouterModelInput = preset
+                                }) {
+                                    Text(preset.components(separatedBy: "/").last ?? preset)
+                                        .font(.caption2.monospaced())
+                                        .padding(.horizontal, 6)
+                                        .padding(.vertical, 3)
+                                        .background(settings.selectedModel == preset ? VesperTheme.accentCyan.opacity(0.2) : Color.white.opacity(0.05))
+                                        .cornerRadius(4)
+                                        .foregroundColor(settings.selectedModel == preset ? VesperTheme.accentCyan : .secondary)
+                                }
+                                .buttonStyle(.plain)
+                            }
+                        }
+                    }
+                    .padding(12)
+                    .background(Color.black.opacity(0.25))
+                    .cornerRadius(8)
                 }
                 .padding(20)
                 .glassCard()
@@ -693,8 +945,57 @@ public struct SettingsView: View {
             apiKeyInput = settings.openRouterApiKey
             customPiPathInput = settings.customPiBinaryPath.isEmpty ? piHarness.executablePath : settings.customPiBinaryPath
             customPiModelInput = settings.piHarnessModel
+            customOpenRouterModelInput = settings.selectedModel
             piHarness.refreshStatus()
+            Task {
+                await leaderboardService.fetchLiveLeaderboard()
+            }
         }
+    }
+    
+    // MARK: - Leaderboard Visual Helpers
+    
+    private func rankBadgeBackgroundColor(rank: Int) -> Color {
+        switch rank {
+        case 1: return Color.yellow.opacity(0.2)
+        case 2: return Color.white.opacity(0.15)
+        case 3: return Color.orange.opacity(0.2)
+        default: return VesperTheme.cyberPurple.opacity(0.15)
+        }
+    }
+    
+    private func rankBadgeBorderColor(rank: Int) -> Color {
+        switch rank {
+        case 1: return Color.yellow
+        case 2: return Color.white.opacity(0.6)
+        case 3: return Color.orange
+        default: return VesperTheme.subtleBorder
+        }
+    }
+    
+    private func rankBadgeTextColor(rank: Int) -> Color {
+        switch rank {
+        case 1: return Color.yellow
+        case 2: return Color.white
+        case 3: return Color.orange
+        default: return VesperTheme.accentCyan
+        }
+    }
+    
+    private func growthChipColor(_ growth: String) -> Color {
+        if growth.contains("-") {
+            return Color.red.opacity(0.8)
+        }
+        return VesperTheme.neonGreen
+    }
+    
+    private func formatContextLength(_ len: Int) -> String {
+        if len >= 1_000_000 {
+            return String(format: "%.1fM ctx", Double(len) / 1_000_000.0).replacingOccurrences(of: ".0M", with: "M")
+        } else if len >= 1_000 {
+            return "\(len / 1_000)K ctx"
+        }
+        return "\(len) ctx"
     }
 }
 

@@ -155,16 +155,41 @@ public final class AppSettings {
         
         self.enableWebMcpServer = defaults.object(forKey: "enableWebMcpServer") as? Bool ?? true
         self.webMcpPort = defaults.integer(forKey: "webMcpPort") == 0 ? 8768 : defaults.integer(forKey: "webMcpPort")
+        
+        if let cachedData = defaults.data(forKey: "cachedLeaderboardModels"),
+           let decoded = try? JSONDecoder().decode([OpenRouterLeaderboardEntry].self, from: cachedData),
+           !decoded.isEmpty {
+            self.leaderboardModels = decoded
+        }
+    }
+    
+    public var leaderboardModels: [OpenRouterLeaderboardEntry] = []
+    
+    public var effectiveLeaderboard: [OpenRouterLeaderboardEntry] {
+        if !leaderboardModels.isEmpty {
+            return leaderboardModels
+        }
+        return OpenRouterLeaderboardService.shared.leaderboard
+    }
+    
+    public func updateWithLeaderboard(_ entries: [OpenRouterLeaderboardEntry]) {
+        self.leaderboardModels = entries
+        if let encoded = try? JSONEncoder().encode(entries) {
+            defaults.set(encoded, forKey: "cachedLeaderboardModels")
+        }
     }
     
     public static let availableModels: [(id: String, name: String, desc: String)] = [
-        ("x-ai/grok-4.7", "Grok 4.7 (xAI)", "SOTA reasoning, deep analysis & hardware control (Recommended)"),
-        ("x-ai/grok-4.5", "Grok 4.5 (xAI)", "High-performance low-latency xAI intelligence"),
-        ("nousresearch/hermes-4", "Hermes 4", "Purpose-built for tool-use & agent workflows"),
-        ("anthropic/claude-sonnet-4", "Claude Sonnet 4", "Best balance of speed and intelligence"),
-        ("anthropic/claude-opus-4.6", "Claude Opus 4.6", "Deep reasoning model for complex RF/firmware"),
-        ("anthropic/claude-haiku-4", "Claude Haiku 4", "Blazing fast for simple reads and queries"),
-        ("openai/gpt-4o", "GPT-4o", "Strong general multimodal alternative")
+        ("stealth/space-bunny-alpha", "Space Bunny Alpha (#1)", "Frontier reasoning engine leading OpenRouter rankings"),
+        ("deepseek/deepseek-v4.1-flash", "DeepSeek V4.1 Flash (#2)", "Ultra low-latency MoE model with exceptional reasoning throughput"),
+        ("z-ai/glm-5.3-flash", "GLM 5.3 Flash (#3)", "1M context Chinese & English reasoning specialist"),
+        ("xiaomi/mimo-v2.6-flash", "MiMo-V2.6-Flash (#4)", "Fast edge-optimized multi-modal model"),
+        ("openai/gpt-5.6-luna", "GPT-5.6 Luna (#5)", "OpenAI flagship reasoning and agentic workflow model"),
+        ("tencent/hy4-preview", "Hy4 Preview (#6)", "Advanced agentic coding & hardware analysis engine"),
+        ("nvidia/nemotron-3.5-lightning:free", "Nemotron 3.5 Lightning (Free)", "High-throughput NVIDIA architecture (Free tier eligible)"),
+        ("anthropic/claude-sonnet-5.5", "Claude Sonnet 5.5", "SOTA code generation, tool-use, and firmware synthesis"),
+        ("x-ai/grok-4.7", "Grok 4.7 (xAI)", "SOTA reasoning, deep analysis & hardware control"),
+        ("nousresearch/hermes-4", "Hermes 4", "Purpose-built for tool-use & agent workflows")
     ]
     
     public static let piHarnessPresets: [(id: String, name: String, desc: String)] = [
