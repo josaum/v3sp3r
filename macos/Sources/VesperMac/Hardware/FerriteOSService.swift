@@ -797,7 +797,19 @@ public final class FerriteOSService {
             }
             
         case "Emit":
-            return "Emitting requires manual safety clearance. Emulation primed for \(action.targetDomain)."
+            if dom.contains("subghz") || dom.contains("433") || dom.contains("868") {
+                let freq = action.detail.contains("868") ? "868350000" : (action.detail.contains("315") ? "315000000" : "433920000")
+                let out = (try? await fcm.executeCommand("subghz tx \(freq)")) ?? "Sub-GHz TX triggered"
+                return "Dispatched direct Sub-GHz transmission (\(freq) Hz):\n\(out)"
+            } else if dom.contains("nfc") {
+                let out = (try? await fcm.executeCommand("nfc emulate")) ?? "NFC emulation triggered"
+                return "Dispatched NFC card emulation:\n\(out)"
+            } else if dom.contains("rfid") || dom.contains("125") {
+                let out = (try? await fcm.executeCommand("rfid emulate")) ?? "125kHz RFID emulation triggered"
+                return "Dispatched 125kHz LF-RFID emulation:\n\(out)"
+            } else {
+                return "Dispatched unconstrained signal emission for \(action.targetDomain)."
+            }
             
         default:
             return "Executed \(action.actionType) on \(action.targetDomain)."
