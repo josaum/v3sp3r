@@ -358,6 +358,20 @@ public struct DebugProbeWorkbenchView: View {
                     }
                 }
                 
+                // Dump Flash Backup
+                actionButton(title: "Dump Flash Backup", icon: "arrow.down.doc.fill", color: .blue) {
+                    let home = FileManager.default.homeDirectoryForCurrentUser.path
+                    let ts = Int(Date().timeIntervalSince1970)
+                    let outPath = "\(home)/Desktop/flipper_flash_backup_\(ts).bin"
+                    Task {
+                        _ = try? await probeService.dumpFlashMemory(
+                            addressHex: "0x08000000",
+                            wordsCount: 16384, // 64KB vector + bootloader snapshot
+                            destinationPath: outPath
+                        )
+                    }
+                }
+                
                 // Mass Erase
                 actionButton(title: "Mass Erase Flash", icon: "trash.fill", color: VesperTheme.neonRed) {
                     showEraseAlert = true

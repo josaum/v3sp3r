@@ -758,6 +758,27 @@ public final class WebMcpServer {
                 ]
             ],
             [
+                "name": "probe_dump_flash",
+                "description": "Dump binary snapshot of MCU flash memory directly to local disk for forensics and recovery.",
+                "inputSchema": [
+                    "type": "object",
+                    "properties": [
+                        "address": [
+                            "type": "string",
+                            "description": "Start address in hex (default: 0x08000000)"
+                        ],
+                        "words": [
+                            "type": "integer",
+                            "description": "Word count (default: 16384 for 64KB)"
+                        ],
+                        "destination": [
+                            "type": "string",
+                            "description": "Output file path on host"
+                        ]
+                    ]
+                ]
+            ],
+            [
                 "name": "pi_harness_status",
                 "description": "Inspect host Pi Coding Agent harness executable, path, and ~/.pi/agent configurations.",
                 "inputSchema": [

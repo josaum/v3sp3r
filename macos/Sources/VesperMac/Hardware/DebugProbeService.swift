@@ -418,6 +418,33 @@ public final class DebugProbeService {
         return out
     }
     
+    public func dumpFlashMemory(addressHex: String = "0x08000000", wordsCount: Int = 16384, destinationPath: String) async throws -> String {
+        guard let probe = selectedProbe else {
+            throw NSError(domain: "DebugProbeService", code: -1, userInfo: [NSLocalizedDescriptionKey: "No probe selected"])
+        }
+        
+        var probeArg = "\(probe.vid):\(probe.pid)"
+        if !probe.serial.isEmpty { probeArg += ":\(probe.serial)" }
+        
+        isExecuting = true
+        statusMessage = "Dumping \(wordsCount * 4) bytes from \(addressHex) to disk..."
+        defer { isExecuting = false }
+        
+        let args = [
+            "read",
+            "--probe", probeArg,
+            "--chip", selectedChip,
+            "--format", "binary",
+            "--output", destinationPath,
+            "b32", addressHex, "\(wordsCount)"
+        ]
+        
+        let out = try await execute(args: args)
+        statusMessage = "Dumped \(wordsCount * 4) bytes to \(destinationPath)"
+        self.consoleOutput = "Flash Dump Success:\nSaved \(wordsCount * 4) bytes to \(destinationPath)\n\(out)"
+        return destinationPath
+    }
+    
     public func eraseChip() async throws -> String {
         guard let probe = selectedProbe else {
             throw NSError(domain: "DebugProbeService", code: -1, userInfo: [NSLocalizedDescriptionKey: "No probe selected"])

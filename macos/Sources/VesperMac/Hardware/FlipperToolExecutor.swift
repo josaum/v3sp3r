@@ -239,6 +239,14 @@ public final class FlipperToolExecutor {
                 await probeService.resetTarget(halt: halt)
                 return ToolResult(toolCallId: "", output: probeService.consoleOutput)
                 
+            case "probe_dump_flash":
+                let probeService = DebugProbeService.shared
+                let addr = params["address"] ?? "0x08000000"
+                let words = Int(params["words"] ?? "16384") ?? 16384
+                let dest = params["destination"] ?? "\(FileManager.default.homeDirectoryForCurrentUser.path)/Desktop/flash_dump_\(Int(Date().timeIntervalSince1970)).bin"
+                let out = try await probeService.dumpFlashMemory(addressHex: addr, wordsCount: words, destinationPath: dest)
+                return ToolResult(toolCallId: "", output: "Flash memory successfully dumped to: \(out)\n\n\(probeService.consoleOutput)")
+                
             case "flash_ferrite_os":
                 let forApp = params["standalone"] != "true"
                 try await FirmwareFlashService.shared.flashFerriteOsDfu(forApp: forApp)
