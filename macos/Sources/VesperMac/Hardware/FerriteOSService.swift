@@ -10,6 +10,57 @@ public struct FerritePlannedAction: Identifiable, Equatable {
     public let targetDomain: String
 }
 
+public struct FerritePulseEdge: Identifiable, Equatable {
+    public let id = UUID()
+    public let isHigh: Bool
+    public let durationMicros: Int
+    
+    public init(isHigh: Bool, durationMicros: Int) {
+        self.isHigh = isHigh
+        self.durationMicros = durationMicros
+    }
+}
+
+public struct FerriteCaptureMetadata: Equatable {
+    public var filetype: String = ""
+    public var frequency: String = ""
+    public var preset: String = ""
+    public var protocolName: String = ""
+    public var deviceType: String = ""
+    public var uid: String = ""
+    public var totalSamples: Int = 0
+}
+
+public struct FerriteDecodedFinding: Codable, Equatable {
+    public let summary: String
+    public let protocolName: String?
+    public let keyHex: String?
+    public let bits: Int?
+    public let details: String?
+    
+    enum CodingKeys: String, CodingKey {
+        case summary
+        case protocolName = "protocol"
+        case keyHex = "key_hex"
+        case bits
+        case details
+    }
+}
+
+public struct FerriteDecodedCapture: Identifiable, Equatable {
+    public let id = UUID()
+    public let status: String
+    public let intent: String
+    public let domain: String
+    public let confidence: Int
+    public let filePath: String
+    public let finding: FerriteDecodedFinding?
+    public let rawOutput: String
+    public let metadata: FerriteCaptureMetadata
+    public let pulses: [FerritePulseEdge]
+    public let timestamp: Date = Date()
+}
+
 public struct FerriteUnderstanding: Identifiable, Equatable {
     public let id = UUID()
     public let phrase: String
@@ -73,6 +124,7 @@ public final class FerriteOSService {
     
     public var manifestInfo: FerriteManifestInfo?
     public var lastUnderstanding: FerriteUnderstanding?
+    public var lastDecodedCapture: FerriteDecodedCapture?
     public var recentOutputs: [FerriteUnderstanding] = []
     
     public var crates: [FerriteCrateInfo] = [
@@ -174,7 +226,8 @@ public final class FerriteOSService {
         return parsed
     }
     
-    public func decodeCapture(filePath: String, phrase: String = "what is this") async throws -> String {
+    @discardableResult
+    public func decodeCapture(filePath: String, phrase: String = "what is this") async throws -> FerriteDecodedCapture {
         guard isAvailable else {
             throw NSError(
                 domain: "FerriteOSService",
@@ -186,8 +239,72 @@ public final class FerriteOSService {
         self.isExecuting = true
         defer { self.isExecuting = false }
         
-        let output = try await runCommand(executable: binaryPath, args: [phrase, filePath], cwd: workspacePath)
-        return output
+        // Run with --json for deterministic machine parsing
+        let jsonOutput = try await runCommand(executable: binaryPath, args: ["--json", phrase, filePath], cwd: workspacePath)
+        
+        // Extract pulses and capture metadata asynchronously from local file
+        let (metadata, pulses) = parseFileArtifacts(filePath: filePath)
+        
+        var decodedFinding: FerriteDecodedFinding? = nil
+        var intent = "Decode"
+        var domain = "SubGhz"
+        var confidence = 2
+        var status = "success"
+        
+        // Parse the JSON line(s)
+        for line in jsonOutput.components(separatedBy: "\n") {
+            let trimmed = line.trimmingCharacters(in: .whitespacesAndNewlines)
+            guard trimmed.starts(with: "{") && trimmed.contains("\"finding\"") else { continue }
+            
+            if let data = trimmed.data(using: .utf8),
+               let obj = try? JSONSerialization.jsonObject(with: data) as? [String: Any] {
+                status = obj["status"] as? String ?? "success"
+                intent = obj["intent"] as? String ?? intent
+                domain = obj["domain"] as? String ?? domain
+                confidence = obj["confidence"] as? Int ?? confidence
+                
+                if let findingDict = obj["finding"] as? [String: Any] {
+                    let summary = findingDict["summary"] as? String ?? ""
+                    let proto = findingDict["protocol"] as? String
+                    let key = findingDict["key_hex"] as? String
+                    let bits = findingDict["bits"] as? Int
+                    let details = findingDict["details"] as? String
+                    decodedFinding = FerriteDecodedFinding(
+                        summary: summary,
+                        protocolName: proto,
+                        keyHex: key,
+                        bits: bits,
+                        details: details
+                    )
+                }
+                break
+            }
+        }
+        
+        let result = FerriteDecodedCapture(
+            status: status,
+            intent: intent,
+            domain: domain,
+            confidence: confidence,
+            filePath: filePath,
+            finding: decodedFinding,
+            rawOutput: jsonOutput,
+            metadata: metadata,
+            pulses: pulses
+        )
+        
+        self.lastDecodedCapture = result
+        
+        // Also feed Vesper memory store
+        if let finding = decodedFinding {
+            VesperMemoryStore.shared.addMemory(
+                category: .ferritePlan,
+                title: "FerriteOS Decoded: \(finding.protocolName ?? domain)",
+                content: "File: \(filePath)\nSummary: \(finding.summary)\nDetails: \(finding.details ?? "")"
+            )
+        }
+        
+        return result
     }
     
     public func inspectSubGhz(filePath: String, decoderFlag: String? = nil) async throws -> String {
@@ -527,5 +644,62 @@ public final class FerriteOSService {
         default:
             return "Executed \(action.actionType) on \(action.targetDomain)."
         }
+    }
+    
+    // MARK: - Capture File Artifacts & Waveform Parser
+    
+    private func parseFileArtifacts(filePath: String) -> (metadata: FerriteCaptureMetadata, pulses: [FerritePulseEdge]) {
+        var meta = FerriteCaptureMetadata()
+        var pulses: [FerritePulseEdge] = []
+        
+        guard let content = try? String(contentsOfFile: filePath, encoding: .utf8) else {
+            return (meta, pulses)
+        }
+        
+        let lines = content.components(separatedBy: "\n")
+        var rawNumberTokens: [Int] = []
+        
+        for line in lines {
+            let trimmed = line.trimmingCharacters(in: .whitespaces)
+            if trimmed.starts(with: "Filetype:") {
+                meta.filetype = trimmed.replacingOccurrences(of: "Filetype:", with: "").trimmingCharacters(in: .whitespaces)
+            } else if trimmed.starts(with: "Frequency:") {
+                let hz = trimmed.replacingOccurrences(of: "Frequency:", with: "").trimmingCharacters(in: .whitespaces)
+                if let hzInt = Int(hz) {
+                    meta.frequency = "\(Double(hzInt) / 1_000_000.0) MHz"
+                } else {
+                    meta.frequency = hz
+                }
+            } else if trimmed.starts(with: "Preset:") {
+                meta.preset = trimmed.replacingOccurrences(of: "Preset:", with: "").trimmingCharacters(in: .whitespaces)
+            } else if trimmed.starts(with: "Protocol:") {
+                meta.protocolName = trimmed.replacingOccurrences(of: "Protocol:", with: "").trimmingCharacters(in: .whitespaces)
+            } else if trimmed.starts(with: "Device type:") {
+                meta.deviceType = trimmed.replacingOccurrences(of: "Device type:", with: "").trimmingCharacters(in: .whitespaces)
+            } else if trimmed.starts(with: "UID:") {
+                meta.uid = trimmed.replacingOccurrences(of: "UID:", with: "").trimmingCharacters(in: .whitespaces)
+            } else if trimmed.starts(with: "RAW_Data:") {
+                let rest = trimmed.replacingOccurrences(of: "RAW_Data:", with: "").trimmingCharacters(in: .whitespaces)
+                let parts = rest.split(separator: " ")
+                for part in parts {
+                    if let val = Int(part) {
+                        rawNumberTokens.append(val)
+                    }
+                }
+            }
+        }
+        
+        meta.totalSamples = rawNumberTokens.count
+        
+        // Take up to the first 96 pulses for smooth, high-fidelity UI waveform rendering
+        let sampleLimit = min(rawNumberTokens.count, 96)
+        for i in 0..<sampleLimit {
+            let val = rawNumberTokens[i]
+            let isHigh = val > 0
+            let duration = abs(val)
+            pulses.append(FerritePulseEdge(isHigh: isHigh, durationMicros: duration))
+        }
+        
+        return (meta, pulses)
     }
 }

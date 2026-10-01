@@ -398,6 +398,7 @@ public struct FerriteWorkbenchView: View {
     // MARK: - Tab 1: Offline Signal Decoder
     private var decoderTabContent: some View {
         VStack(alignment: .leading, spacing: 18) {
+            // Signal Picker & Controls Card
             VStack(alignment: .leading, spacing: 14) {
                 HStack {
                     Image(systemName: "waveform.path.ecg")
@@ -405,9 +406,23 @@ public struct FerriteWorkbenchView: View {
                     Text("High-Speed Offline Signal Decoder (ferrite-rf)")
                         .font(.headline)
                     Spacer()
+                    if let capture = ferrite.lastDecodedCapture {
+                        HStack(spacing: 5) {
+                            Circle()
+                                .fill(capture.finding != nil ? VesperTheme.neonGreen : VesperTheme.neonAmber)
+                                .frame(width: 7, height: 7)
+                            Text(capture.finding != nil ? "DECODED" : "ANALYZED")
+                                .font(.system(size: 9.5, weight: .bold, design: .monospaced))
+                                .foregroundColor(capture.finding != nil ? VesperTheme.neonGreen : VesperTheme.neonAmber)
+                        }
+                        .padding(.horizontal, 8)
+                        .padding(.vertical, 4)
+                        .background(VesperTheme.secondaryCardBackground)
+                        .cornerRadius(6)
+                    }
                 }
                 
-                Text("Direct execution of FerriteOS compiled Rust decoders on local files. Decodes Sub-GHz (Hormann, Nice, KeeLoq, Princeton, Marantec), NFC (NTAG, Ultralight, SLIX, ISO15693), and RFID.")
+                Text("Direct execution of FerriteOS compiled Rust decoders on local files. Decodes Sub-GHz (Hormann, Nice, KeeLoq, Princeton, Marantec, Somfy, Chamberlain, Alutech), NFC (NTAG, Ultralight, SLIX, ISO15693), and RFID.")
                     .font(.caption)
                     .foregroundColor(.secondary)
                 
@@ -469,14 +484,149 @@ public struct FerriteWorkbenchView: View {
             .padding(20)
             .glassCard()
             
-            // Decoder Output
+            // Decoded Protocol & Telemetry Card
+            if let capture = ferrite.lastDecodedCapture {
+                VStack(alignment: .leading, spacing: 14) {
+                    HStack {
+                        Image(systemName: "checkmark.seal.fill")
+                            .foregroundColor(VesperTheme.accentCyan)
+                        Text("PROTOCOL DECODE TELEMETRY")
+                            .font(.system(size: 11, weight: .bold).monospaced())
+                            .foregroundColor(VesperTheme.primaryTextColor)
+                        Spacer()
+                        Text(capture.timestamp, style: .time)
+                            .font(.caption2.monospaced())
+                            .foregroundColor(.secondary)
+                    }
+                    
+                    // Metadata Grid
+                    LazyVGrid(columns: [GridItem(.adaptive(minimum: 140))], spacing: 10) {
+                        if let proto = capture.finding?.protocolName ?? (capture.metadata.protocolName.isEmpty ? nil : capture.metadata.protocolName) {
+                            SpecPill(title: "PROTOCOL", value: proto, icon: "antenna.radiowaves.left.and.right")
+                        }
+                        if !capture.domain.isEmpty {
+                            SpecPill(title: "DOMAIN", value: capture.domain, icon: "dot.radiowaves.up.forward")
+                        }
+                        if !capture.metadata.frequency.isEmpty {
+                            SpecPill(title: "FREQUENCY", value: capture.metadata.frequency, icon: "wave.3.forward")
+                        }
+                        if !capture.metadata.preset.isEmpty {
+                            SpecPill(title: "PRESET", value: capture.metadata.preset, icon: "slider.horizontal.3")
+                        }
+                        if let bits = capture.finding?.bits {
+                            SpecPill(title: "PAYLOAD BITS", value: "\(bits) bits", icon: "number")
+                        }
+                        if let key = capture.finding?.keyHex {
+                            SpecPill(title: "HEX KEY", value: key, icon: "key.fill")
+                        }
+                        if !capture.metadata.uid.isEmpty {
+                            SpecPill(title: "CARD UID", value: capture.metadata.uid, icon: "creditcard.fill")
+                        }
+                        if capture.metadata.totalSamples > 0 {
+                            SpecPill(title: "RAW EDGES", value: "\(capture.metadata.totalSamples) pulses", icon: "chart.bar.xaxis")
+                        }
+                    }
+                    
+                    // Summary Banner
+                    if let summary = capture.finding?.summary {
+                        HStack(alignment: .top, spacing: 10) {
+                            Image(systemName: "bolt.fill")
+                                .foregroundColor(VesperTheme.neonAmber)
+                            VStack(alignment: .leading, spacing: 3) {
+                                Text("DECODED PAYLOAD SUMMARY")
+                                    .font(.system(size: 9, weight: .bold).monospaced())
+                                    .foregroundColor(.secondary)
+                                Text(summary)
+                                    .font(.system(size: 12.5, weight: .semibold, design: .monospaced))
+                                    .foregroundColor(VesperTheme.neonGreen)
+                            }
+                        }
+                        .padding(12)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .background(VesperTheme.terminalBackground)
+                        .cornerRadius(8)
+                        .overlay(RoundedRectangle(cornerRadius: 8).stroke(VesperTheme.subtleBorder, lineWidth: 1))
+                    }
+                    
+                    // Detailed Payload / Message Breakdown
+                    if let details = capture.finding?.details, !details.isEmpty {
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text("FIELD METRICS & REGISTERS:")
+                                .font(.system(size: 9, weight: .bold).monospaced())
+                                .foregroundColor(.secondary)
+                            Text(details)
+                                .font(.caption.monospaced())
+                                .foregroundColor(VesperTheme.accentCyan)
+                                .padding(10)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                                .background(Color.black.opacity(0.35))
+                                .cornerRadius(6)
+                        }
+                    }
+                }
+                .padding(20)
+                .glassCard()
+                
+                // Pulse Waveform Viewer (for Sub-GHz RF captures)
+                if !capture.pulses.isEmpty {
+                    VStack(alignment: .leading, spacing: 12) {
+                        HStack {
+                            Image(systemName: "waveform.path")
+                                .foregroundColor(VesperTheme.accentCyan)
+                            Text("DIGITAL PULSE STREAM WAVEFORM (First \(capture.pulses.count) transitions)")
+                                .font(.system(size: 10.5, weight: .bold).monospaced())
+                                .foregroundColor(VesperTheme.primaryTextColor)
+                            Spacer()
+                            Text("Timing in microseconds (µs)")
+                                .font(.caption2.monospaced())
+                                .foregroundColor(.secondary)
+                        }
+                        
+                        // Interactive Pulse Strip
+                        ScrollView(.horizontal, showsIndicators: true) {
+                            HStack(alignment: .bottom, spacing: 2) {
+                                ForEach(capture.pulses) { pulse in
+                                    VStack(spacing: 2) {
+                                        Text("\(pulse.durationMicros)")
+                                            .font(.system(size: 7, weight: .regular, design: .monospaced))
+                                            .foregroundColor(.secondary)
+                                            .lineLimit(1)
+                                        
+                                        Rectangle()
+                                            .fill(pulse.isHigh ? VesperTheme.neonGreen : VesperTheme.accentCyan.opacity(0.35))
+                                            .frame(
+                                                width: max(8, min(42, CGFloat(pulse.durationMicros) / 45.0)),
+                                                height: pulse.isHigh ? 44 : 10
+                                            )
+                                            .cornerRadius(2)
+                                        
+                                        Text(pulse.isHigh ? "H" : "L")
+                                            .font(.system(size: 7.5, weight: .bold, design: .monospaced))
+                                            .foregroundColor(pulse.isHigh ? VesperTheme.neonGreen : .secondary)
+                                    }
+                                }
+                            }
+                            .padding(.vertical, 8)
+                            .padding(.horizontal, 4)
+                        }
+                        .padding(10)
+                        .background(VesperTheme.terminalBackground)
+                        .cornerRadius(8)
+                        .overlay(RoundedRectangle(cornerRadius: 8).stroke(VesperTheme.subtleBorder, lineWidth: 1))
+                    }
+                    .padding(20)
+                    .glassCard()
+                }
+            }
+            
+            // Raw JSON / Console Telemetry Drawer
             if !decoderOutput.isEmpty {
                 VStack(alignment: .leading, spacing: 10) {
                     HStack {
                         Image(systemName: "terminal.fill")
                             .foregroundColor(VesperTheme.accentCyan)
-                        Text("FERRITE-RF DECODER TELEMETRY")
-                            .font(.system(size: 11, weight: .bold).monospaced())
+                        Text("HOST REPL & MACHINE JSON TELEMETRY")
+                            .font(.system(size: 10.5, weight: .bold).monospaced())
                         Spacer()
                         Button("Copy") {
                             NSPasteboard.general.clearContents()
@@ -974,8 +1124,12 @@ public struct FerriteWorkbenchView: View {
         decoderOutput = "Executing FerriteOS decode routine..."
         Task {
             do {
-                let out = try await ferrite.decodeCapture(filePath: path)
-                self.decoderOutput = out
+                let capture = try await ferrite.decodeCapture(filePath: path)
+                if let finding = capture.finding {
+                    self.decoderOutput = "\(finding.summary)\n\nRaw Telemetry:\n\(capture.rawOutput)"
+                } else {
+                    self.decoderOutput = capture.rawOutput
+                }
                 self.isDecoding = false
             } catch {
                 self.decoderOutput = "Decoder error: \(error.localizedDescription)"
