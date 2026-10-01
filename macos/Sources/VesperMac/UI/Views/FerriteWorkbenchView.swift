@@ -14,6 +14,8 @@ public struct FerriteWorkbenchView: View {
     @State private var selectedDecoderFlag: String = ""
     @State private var decoderOutput: String = ""
     @State private var isDecoding: Bool = false
+    @State private var waveformZoom: Double = 1.0
+    @State private var selectedPulseIndex: Int? = nil
     
     // Firmware tab state
     @State private var showFlashConfirmModal: Bool = false
@@ -569,7 +571,7 @@ public struct FerriteWorkbenchView: View {
                 
                 // Pulse Waveform Viewer (for Sub-GHz RF captures)
                 if !capture.pulses.isEmpty {
-                    VStack(alignment: .leading, spacing: 12) {
+                    VStack(alignment: .leading, spacing: 14) {
                         HStack {
                             Image(systemName: "waveform.path")
                                 .foregroundColor(VesperTheme.accentCyan)
@@ -577,42 +579,117 @@ public struct FerriteWorkbenchView: View {
                                 .font(.system(size: 10.5, weight: .bold).monospaced())
                                 .foregroundColor(VesperTheme.primaryTextColor)
                             Spacer()
-                            Text("Timing in microseconds (µs)")
-                                .font(.caption2.monospaced())
-                                .foregroundColor(.secondary)
+                            
+                            // Zoom controls
+                            HStack(spacing: 6) {
+                                Text("Zoom:")
+                                    .font(.system(size: 9.5, weight: .bold).monospaced())
+                                    .foregroundColor(.secondary)
+                                Button(action: { waveformZoom = max(0.5, waveformZoom - 0.25) }) {
+                                    Image(systemName: "minus.magnifyingglass")
+                                        .font(.caption2)
+                                }
+                                .buttonStyle(.bordered)
+                                .controlSize(.mini)
+                                
+                                Text("\(String(format: "%.1fx", waveformZoom))")
+                                    .font(.system(size: 9.5, weight: .bold, design: .monospaced))
+                                    .foregroundColor(VesperTheme.accentCyan)
+                                    .frame(minWidth: 32)
+                                
+                                Button(action: { waveformZoom = min(3.0, waveformZoom + 0.25) }) {
+                                    Image(systemName: "plus.magnifyingglass")
+                                        .font(.caption2)
+                                }
+                                .buttonStyle(.bordered)
+                                .controlSize(.mini)
+                            }
                         }
                         
-                        // Interactive Pulse Strip
+                        // Interactive Logic Analyzer Pulse Strip
                         ScrollView(.horizontal, showsIndicators: true) {
                             HStack(alignment: .bottom, spacing: 2) {
-                                ForEach(capture.pulses) { pulse in
-                                    VStack(spacing: 2) {
-                                        Text("\(pulse.durationMicros)")
-                                            .font(.system(size: 7, weight: .regular, design: .monospaced))
-                                            .foregroundColor(.secondary)
-                                            .lineLimit(1)
-                                        
-                                        Rectangle()
-                                            .fill(pulse.isHigh ? VesperTheme.neonGreen : VesperTheme.accentCyan.opacity(0.35))
-                                            .frame(
-                                                width: max(8, min(42, CGFloat(pulse.durationMicros) / 45.0)),
-                                                height: pulse.isHigh ? 44 : 10
-                                            )
-                                            .cornerRadius(2)
-                                        
-                                        Text(pulse.isHigh ? "H" : "L")
-                                            .font(.system(size: 7.5, weight: .bold, design: .monospaced))
-                                            .foregroundColor(pulse.isHigh ? VesperTheme.neonGreen : .secondary)
+                                ForEach(Array(capture.pulses.enumerated()), id: \.element.id) { idx, pulse in
+                                    let isSelected = selectedPulseIndex == idx
+                                    let baseWidth = max(10, min(80, CGFloat(pulse.durationMicros) / 35.0)) * CGFloat(waveformZoom)
+                                    
+                                    Button(action: {
+                                        selectedPulseIndex = (selectedPulseIndex == idx) ? nil : idx
+                                    }) {
+                                        VStack(spacing: 4) {
+                                            Text("\(pulse.durationMicros)µs")
+                                                .font(.system(size: 8, weight: isSelected ? .bold : .regular, design: .monospaced))
+                                                .foregroundColor(isSelected ? VesperTheme.neonAmber : .secondary)
+                                                .lineLimit(1)
+                                            
+                                            // Logic level indicator bar with neon glow
+                                            ZStack(alignment: .bottom) {
+                                                RoundedRectangle(cornerRadius: 3)
+                                                    .fill(pulse.isHigh ? VesperTheme.neonGreen : VesperTheme.accentCyan.opacity(0.35))
+                                                    .frame(
+                                                        width: baseWidth,
+                                                        height: pulse.isHigh ? 48 : 12
+                                                    )
+                                                    .overlay(
+                                                        RoundedRectangle(cornerRadius: 3)
+                                                            .stroke(isSelected ? Color.white : (pulse.isHigh ? VesperTheme.neonGreen.opacity(0.8) : Color.clear), lineWidth: isSelected ? 2 : 1)
+                                                    )
+                                                    .shadow(color: pulse.isHigh ? VesperTheme.neonGreen.opacity(0.4) : Color.clear, radius: 4)
+                                            }
+                                            .frame(height: 52, alignment: .bottom)
+                                            
+                                            Text(pulse.isHigh ? "HIGH" : "LOW")
+                                                .font(.system(size: 7.5, weight: .black, design: .monospaced))
+                                                .foregroundColor(pulse.isHigh ? VesperTheme.neonGreen : .secondary)
+                                        }
+                                        .padding(.vertical, 4)
+                                        .padding(.horizontal, 2)
+                                        .background(isSelected ? VesperTheme.cardBackground : Color.clear)
+                                        .cornerRadius(4)
                                     }
+                                    .buttonStyle(.plain)
                                 }
                             }
-                            .padding(.vertical, 8)
-                            .padding(.horizontal, 4)
+                            .padding(.vertical, 10)
+                            .padding(.horizontal, 8)
                         }
                         .padding(10)
                         .background(VesperTheme.terminalBackground)
                         .cornerRadius(8)
                         .overlay(RoundedRectangle(cornerRadius: 8).stroke(VesperTheme.subtleBorder, lineWidth: 1))
+                        
+                        // Selected pulse telemetry callout
+                        if let idx = selectedPulseIndex, idx < capture.pulses.count {
+                            let p = capture.pulses[idx]
+                            HStack(spacing: 12) {
+                                Image(systemName: "scope")
+                                    .foregroundColor(VesperTheme.neonAmber)
+                                Text("TRANSITION #\(idx + 1)")
+                                    .font(.system(size: 9.5, weight: .bold).monospaced())
+                                    .foregroundColor(VesperTheme.neonAmber)
+                                Text("•")
+                                    .foregroundColor(.secondary)
+                                Text("State: \(p.isHigh ? "MARK (Active High)" : "SPACE (Low Gap)")")
+                                    .font(.caption2.monospaced())
+                                    .foregroundColor(VesperTheme.primaryTextColor)
+                                Text("•")
+                                    .foregroundColor(.secondary)
+                                Text("Duration: \(p.durationMicros) µs (\(String(format: "%.2f", Double(p.durationMicros) / 1000.0)) ms)")
+                                    .font(.caption2.monospaced())
+                                    .foregroundColor(VesperTheme.accentCyan)
+                                Spacer()
+                                Button("Deselect") {
+                                    selectedPulseIndex = nil
+                                }
+                                .font(.caption2)
+                                .buttonStyle(.plain)
+                                .foregroundColor(.secondary)
+                            }
+                            .padding(8)
+                            .background(VesperTheme.secondaryCardBackground)
+                            .cornerRadius(6)
+                            .overlay(RoundedRectangle(cornerRadius: 6).stroke(VesperTheme.neonAmber.opacity(0.3), lineWidth: 1))
+                        }
                     }
                     .padding(20)
                     .glassCard()
@@ -1010,6 +1087,71 @@ public struct FerriteWorkbenchView: View {
             .padding(16)
             .glassCard()
             
+            // Live Handshake Outcome Card
+            if let handshake = ferrite.lastWireHandshake {
+                VStack(alignment: .leading, spacing: 14) {
+                    HStack {
+                        Image(systemName: "antenna.radiowaves.left.and.right")
+                            .foregroundColor(VesperTheme.neonGreen)
+                        Text("LIVE HANDSHAKE OUTCOME")
+                            .font(.system(size: 11, weight: .bold).monospaced())
+                            .foregroundColor(VesperTheme.primaryTextColor)
+                        Spacer()
+                        HStack(spacing: 5) {
+                            Circle()
+                                .fill(handshake.handshakeState == "OPEN" ? VesperTheme.neonGreen : VesperTheme.neonRed)
+                                .frame(width: 7, height: 7)
+                            Text(handshake.handshakeState)
+                                .font(.system(size: 9.5, weight: .black, design: .monospaced))
+                                .foregroundColor(handshake.handshakeState == "OPEN" ? VesperTheme.neonGreen : VesperTheme.neonRed)
+                        }
+                        .padding(.horizontal, 8)
+                        .padding(.vertical, 4)
+                        .background(VesperTheme.secondaryCardBackground)
+                        .cornerRadius(6)
+                    }
+                    
+                    LazyVGrid(columns: [GridItem(.adaptive(minimum: 140))], spacing: 10) {
+                        SpecPill(title: "NEGOTIATED WIRE", value: "v\(handshake.effectiveWire)", icon: "number")
+                        SpecPill(title: "CORE ABI", value: "v\(handshake.coreAbi)", icon: "cpu")
+                        SpecPill(title: "CORE IMAGE", value: "\(handshake.coreImage.major).\(handshake.coreImage.minor).\(handshake.coreImage.patch)", icon: "cube.fill")
+                        SpecPill(title: "CAPABILITIES", value: "0x\(String(handshake.caps, radix: 16).uppercased())", icon: "bolt.fill")
+                    }
+                    
+                    if !handshake.requestHex.isEmpty {
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text("HOST HELLO FRAME HEX (WITH CRC-32):")
+                                .font(.system(size: 8.5, weight: .bold).monospaced())
+                                .foregroundColor(.secondary)
+                            Text(handshake.requestHex)
+                                .font(.system(size: 10, design: .monospaced))
+                                .foregroundColor(VesperTheme.accentCyan)
+                                .padding(8)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                                .background(Color.black.opacity(0.35))
+                                .cornerRadius(6)
+                        }
+                    }
+                    
+                    if !handshake.responseHex.isEmpty {
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text("CORE DESCRIPTOR RESPONSE HEX (WITH CRC-32):")
+                                .font(.system(size: 8.5, weight: .bold).monospaced())
+                                .foregroundColor(.secondary)
+                            Text(handshake.responseHex)
+                                .font(.system(size: 10, design: .monospaced))
+                                .foregroundColor(VesperTheme.neonGreen)
+                                .padding(8)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                                .background(Color.black.opacity(0.35))
+                                .cornerRadius(6)
+                        }
+                    }
+                }
+                .padding(20)
+                .glassCard()
+            }
+            
             // Output Log Card
             if !wireHandshakeResult.isEmpty {
                 VStack(alignment: .leading, spacing: 8) {
@@ -1046,36 +1188,16 @@ public struct FerriteWorkbenchView: View {
     
     private func runWireHandshake() {
         isRunningWireHandshake = true
-        wireHandshakeResult = "Building host HELLO frame (SPEC-011 §4.5)...\n"
+        wireHandshakeResult = "Compiling and executing ferrite-wire SPEC-011 protocol engine...\n"
         Task {
-            // Emulate the exact wire handshake from ferrite-wire in swift
-            let magic = "FE55"
-            let wireVer = "01"
-            let reqType = "00" // FrameType::Req = 0
-            let helloOp = "00FF" // CTRL_HELLO = 0xFF00 (LE)
-            let seq = "0100" // seq = 1 (LE)
-            let len = "0E00" // Descriptor length = 14 bytes (LE)
-            
-            // Host descriptor: wire=1, abi=1, img=(0,1,0), max_frame=4096, caps=0
-            let descHex = "0100010000000100000000100000"
-            
-            wireHandshakeResult += """
-            [1] HOST -> CORE [REQ CTRL_HELLO]:
-                Header: Magic=0x\(magic), Ver=0x\(wireVer), Type=Req, Opcode=0xFF00, Seq=1, Len=14
-                Descriptor: wire_ver=1, abi=1, image_ver=(0,1,0), max_frame_usb=4096, caps=0
-                Frame Bytes: \(magic)\(wireVer)\(reqType)\(helloOp)\(seq)\(len)\(descHex)[CRC-32: 0x9B4E3120]
-            
-            [2] CORE PROTOCOL ENGINE:
-                classify_opcode(0xFF00) -> OpClass::Control(ControlOp::Hello)
-                accept_hello(host_wire=1, host_abi=1, max_frame=4096, caps=0b101)
-                Negotiation outcome: Handshake::Accept { effective_wire: 1, abi: 1 }
-            
-            [3] CORE -> HOST [RESP CTRL_HELLO]:
-                Header: Magic=0x\(magic), Ver=0x\(wireVer), Type=Resp, Opcode=0xFF00, Seq=1, Len=14
-                Core Descriptor: wire_ver=1, abi=1, image_ver=(0,1,0), max_frame=4096, caps=0x0005
-                Status: OPEN (SPEC-011 link active and ready for syscall frame dispatch)
-            """
-            isRunningWireHandshake = false
+            do {
+                let res = try await ferrite.simulateWireHandshake()
+                wireHandshakeResult = res.rawOutput
+                isRunningWireHandshake = false
+            } catch {
+                wireHandshakeResult = "Wire simulation error: \(error.localizedDescription)"
+                isRunningWireHandshake = false
+            }
         }
     }
     

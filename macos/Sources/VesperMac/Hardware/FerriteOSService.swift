@@ -61,6 +61,32 @@ public struct FerriteDecodedCapture: Identifiable, Equatable {
     public let timestamp: Date = Date()
 }
 
+public struct FerriteCoreImageVersion: Equatable {
+    public let major: Int
+    public let minor: Int
+    public let patch: Int
+    
+    public init(major: Int, minor: Int, patch: Int) {
+        self.major = major
+        self.minor = minor
+        self.patch = patch
+    }
+}
+
+public struct FerriteWireHandshakeResult: Identifiable, Equatable {
+    public let id = UUID()
+    public let status: String
+    public let handshakeState: String
+    public let effectiveWire: Int
+    public let coreAbi: Int
+    public let coreImage: FerriteCoreImageVersion
+    public let caps: Int
+    public let requestHex: String
+    public let responseHex: String
+    public let rawOutput: String
+    public let timestamp: Date = Date()
+}
+
 public struct FerriteUnderstanding: Identifiable, Equatable {
     public let id = UUID()
     public let phrase: String
@@ -125,6 +151,7 @@ public final class FerriteOSService {
     public var manifestInfo: FerriteManifestInfo?
     public var lastUnderstanding: FerriteUnderstanding?
     public var lastDecodedCapture: FerriteDecodedCapture?
+    public var lastWireHandshake: FerriteWireHandshakeResult?
     public var recentOutputs: [FerriteUnderstanding] = []
     
     public var crates: [FerriteCrateInfo] = [
@@ -208,7 +235,7 @@ public final class FerriteOSService {
         self.isExecuting = true
         defer { self.isExecuting = false }
         
-        let output = try await runCommand(executable: binaryPath, args: [phrase], cwd: workspacePath)
+        let output = try await runCommand(executable: binaryPath, args: ["--json", phrase], cwd: workspacePath)
         let parsed = parseFerriteOutput(phrase: phrase, output: output)
         
         self.lastUnderstanding = parsed
@@ -322,6 +349,55 @@ public final class FerriteOSService {
         let args = ["run", "-p", "ferrite-rf", "--example", "inspect_nfc", "--", flag, filePath]
         let cargoPath = "/Users/josaum/.cargo/bin/cargo"
         return try await runCommand(executable: cargoPath, args: args, cwd: workspacePath)
+    }
+    
+    public func simulateWireHandshake() async throws -> FerriteWireHandshakeResult {
+        let args = ["run", "-p", "ferrite-wire", "--example", "inspect_wire", "--", "--json"]
+        let cargoPath = "/Users/josaum/.cargo/bin/cargo"
+        let output = try await runCommand(executable: cargoPath, args: args, cwd: workspacePath)
+        
+        var handshakeState = "CLOSED"
+        var effectiveWire = 1
+        var coreAbi = 1
+        var coreImage = FerriteCoreImageVersion(major: 0, minor: 1, patch: 0)
+        var caps = 0
+        var reqHex = ""
+        var respHex = ""
+        var status = "success"
+        
+        for line in output.components(separatedBy: "\n") {
+            let trimmed = line.trimmingCharacters(in: .whitespacesAndNewlines)
+            guard trimmed.starts(with: "{") && trimmed.contains("\"handshake\"") else { continue }
+            
+            if let data = trimmed.data(using: .utf8),
+               let obj = try? JSONSerialization.jsonObject(with: data) as? [String: Any] {
+                status = obj["status"] as? String ?? status
+                handshakeState = obj["handshake"] as? String ?? handshakeState
+                effectiveWire = obj["effective_wire"] as? Int ?? effectiveWire
+                coreAbi = obj["core_abi"] as? Int ?? coreAbi
+                if let imgArr = obj["core_image"] as? [Int], imgArr.count == 3 {
+                    coreImage = FerriteCoreImageVersion(major: imgArr[0], minor: imgArr[1], patch: imgArr[2])
+                }
+                caps = obj["caps"] as? Int ?? caps
+                reqHex = obj["req_hex"] as? String ?? reqHex
+                respHex = obj["resp_hex"] as? String ?? respHex
+                break
+            }
+        }
+        
+        let result = FerriteWireHandshakeResult(
+            status: status,
+            handshakeState: handshakeState,
+            effectiveWire: effectiveWire,
+            coreAbi: coreAbi,
+            coreImage: coreImage,
+            caps: caps,
+            requestHex: reqHex,
+            responseHex: respHex,
+            rawOutput: output
+        )
+        self.lastWireHandshake = result
+        return result
     }
     
     // MARK: - Firmware Pre-flight, Build & Verification
@@ -535,6 +611,88 @@ public final class FerriteOSService {
         let lines = output.components(separatedBy: "\n")
         for line in lines {
             let trimmed = line.trimmingCharacters(in: .whitespaces)
+            guard !trimmed.isEmpty else { continue }
+            
+            // Check for JSON mode lines first
+            if trimmed.starts(with: "{") && trimmed.contains("\"status\"") {
+                if let data = trimmed.data(using: .utf8),
+                   let obj = try? JSONSerialization.jsonObject(with: data) as? [String: Any] {
+                    let status = obj["status"] as? String ?? ""
+                    
+                    if status == "intent_classified" {
+                        intent = obj["verb"] as? String ?? intent
+                        domain = obj["domain"] as? String ?? domain
+                        confidence = obj["confidence"] as? Int ?? confidence
+                    } else if status == "requires_hardware" {
+                        let action = obj["action"] as? String ?? "Observe"
+                        let actDomain = obj["domain"] as? String ?? domain
+                        let band = obj["band"] as? String ?? ""
+                        let msg = obj["message"] as? String ?? (band.isEmpty ? "" : "band: \(band)")
+                        let detail = "\(action) \(actDomain)\(msg.isEmpty ? "" : " (\(msg))")"
+                        plannedActions.append(FerritePlannedAction(
+                            actionType: action.capitalized,
+                            detail: detail,
+                            requiresHardware: true,
+                            isEmitting: false,
+                            targetDomain: actDomain
+                        ))
+                    } else if status == "requires_approval" {
+                        let actDomain = obj["domain"] as? String ?? domain
+                        let target = obj["target"] as? String ?? ""
+                        let gated = obj["gated"] as? Bool ?? true
+                        let detail = "emit \(actDomain) target: \(target) (gated: \(gated))"
+                        plannedActions.append(FerritePlannedAction(
+                            actionType: "Emit",
+                            detail: detail,
+                            requiresHardware: true,
+                            isEmitting: true,
+                            targetDomain: actDomain
+                        ))
+                    } else if status == "success" {
+                        if let action = obj["action"] as? String {
+                            if action == "filter" {
+                                let cat = obj["category"] as? String ?? ""
+                                plannedActions.append(FerritePlannedAction(
+                                    actionType: "Filter",
+                                    detail: "narrowing to category \(cat)",
+                                    requiresHardware: false,
+                                    isEmitting: false,
+                                    targetDomain: domain
+                                ))
+                            } else if action == "save" {
+                                let name = obj["name"] as? String ?? ""
+                                plannedActions.append(FerritePlannedAction(
+                                    actionType: "Save",
+                                    detail: "saved capture as '\(name)'",
+                                    requiresHardware: false,
+                                    isEmitting: false,
+                                    targetDomain: domain
+                                ))
+                            } else if action == "stop" {
+                                plannedActions.append(FerritePlannedAction(
+                                    actionType: "Stop",
+                                    detail: "stopped current activity",
+                                    requiresHardware: false,
+                                    isEmitting: false,
+                                    targetDomain: domain
+                                ))
+                            }
+                        } else if let finding = obj["finding"] as? [String: Any] {
+                            let summary = finding["summary"] as? String ?? ""
+                            plannedActions.append(FerritePlannedAction(
+                                actionType: "Decoded",
+                                detail: summary,
+                                requiresHardware: false,
+                                isEmitting: false,
+                                targetDomain: domain
+                            ))
+                        }
+                    }
+                    continue
+                }
+            }
+            
+            // Plaintext fallback parser
             if trimmed.contains(" on ") && trimmed.contains("confidence") {
                 let parts = trimmed.components(separatedBy: " on ")
                 if parts.count >= 2 {
