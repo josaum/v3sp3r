@@ -1,0 +1,718 @@
+import SwiftUI
+
+public struct SettingsView: View {
+    @State private var settings = AppSettings.shared
+    @State private var piHarness = PiHarnessService.shared
+    @State private var apiKeyInput: String = ""
+    @State private var isApiKeyVisible: Bool = false
+    @State private var saveConfirmation: Bool = false
+    @State private var customPiPathInput: String = ""
+    @State private var customPiModelInput: String = ""
+    @State private var isTestingPiHarness: Bool = false
+    @State private var piHarnessTestResult: String?
+    @State private var piHarnessTestSuccess: Bool = false
+    @State private var webMcp = WebMcpServer.shared
+    @State private var copiedMcpToast: String?
+    
+    public init() {}
+    
+    public var body: some View {
+        ScrollView {
+            VStack(alignment: .leading, spacing: 24) {
+                // Header
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("Vesper Configuration")
+                        .font(.title2.bold())
+                    Text("Manage AI model credentials, autonomous risk limits, and hardware interfaces.")
+                        .font(.subheadline)
+                        .foregroundColor(.secondary)
+                }
+                .padding(20)
+                .glassCard()
+                
+                // Appearance & Theme Mode Section
+                VStack(alignment: .leading, spacing: 14) {
+                    HStack {
+                        Image(systemName: "paintpalette.fill")
+                            .foregroundColor(VesperTheme.accentCyan)
+                        Text("Appearance & Theme")
+                            .font(.headline)
+                        Spacer()
+                        Text("Active: \(settings.appTheme.rawValue)")
+                            .font(.caption.monospaced())
+                            .foregroundColor(VesperTheme.neonGreen)
+                    }
+                    
+                    HStack(spacing: 14) {
+                        ForEach(AppThemeMode.allCases, id: \.self) { mode in
+                            Button(action: { settings.appTheme = mode }) {
+                                HStack(spacing: 8) {
+                                    Image(systemName: mode.iconName)
+                                        .font(.subheadline)
+                                        .foregroundColor(settings.appTheme == mode ? VesperTheme.accentCyan : .secondary)
+                                    Text(mode.rawValue)
+                                        .font(.subheadline)
+                                        .fontWeight(settings.appTheme == mode ? .bold : .regular)
+                                }
+                                .padding(.horizontal, 16)
+                                .padding(.vertical, 10)
+                                .frame(maxWidth: .infinity)
+                                .background(settings.appTheme == mode ? VesperTheme.accentCyan.opacity(0.15) : VesperTheme.secondaryCardBackground)
+                                .cornerRadius(8)
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 8)
+                                        .stroke(settings.appTheme == mode ? VesperTheme.accentCyan : VesperTheme.subtleBorder, lineWidth: 1)
+                                )
+                            }
+                            .buttonStyle(.plain)
+                        }
+                    }
+                    
+                    Text("Select Clean Light Mode for daytime high-contrast operation, Cyber Dark Mode for low-light lab environments, or match macOS System appearance.")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                }
+                .padding(20)
+                .glassCard()
+                
+                // AI Engine Architecture Selection
+                VStack(alignment: .leading, spacing: 16) {
+                    HStack {
+                        Image(systemName: "cpu.fill")
+                            .foregroundColor(VesperTheme.accentCyan)
+                        Text("AI Engine Architecture")
+                            .font(.headline)
+                        Spacer()
+                        Text("Selected: \(settings.aiEngine.rawValue)")
+                            .font(.caption.monospaced())
+                            .foregroundColor(VesperTheme.neonGreen)
+                    }
+                    
+                    HStack(spacing: 14) {
+                        ForEach(AiEngineType.allCases, id: \.self) { engine in
+                            Button(action: { settings.aiEngine = engine }) {
+                                HStack(spacing: 8) {
+                                    Image(systemName: engine.iconName)
+                                        .font(.subheadline)
+                                        .foregroundColor(settings.aiEngine == engine ? VesperTheme.accentCyan : .secondary)
+                                    VStack(alignment: .leading, spacing: 2) {
+                                        Text(engine.rawValue)
+                                            .font(.subheadline)
+                                            .fontWeight(settings.aiEngine == engine ? .bold : .regular)
+                                        Text(engine == .piHarness ? "Host Config (Recommended)" : "Direct Cloud API")
+                                            .font(.caption2)
+                                            .foregroundColor(.secondary)
+                                    }
+                                }
+                                .padding(.horizontal, 16)
+                                .padding(.vertical, 10)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                                .background(settings.aiEngine == engine ? VesperTheme.accentCyan.opacity(0.15) : VesperTheme.secondaryCardBackground)
+                                .cornerRadius(8)
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 8)
+                                        .stroke(settings.aiEngine == engine ? VesperTheme.accentCyan : VesperTheme.subtleBorder, lineWidth: 1)
+                                )
+                            }
+                            .buttonStyle(.plain)
+                        }
+                    }
+                    
+                    if settings.aiEngine == .piHarness {
+                        Divider().background(VesperTheme.subtleBorder)
+                        
+                        // Embedded Pi Harness Details
+                        VStack(alignment: .leading, spacing: 12) {
+                            HStack {
+                                Image(systemName: "terminal.fill")
+                                    .foregroundColor(VesperTheme.neonGreen)
+                                Text("Host Pi Coding Agent Harness")
+                                    .font(.subheadline.bold())
+                                
+                                Spacer()
+                                
+                                HStack(spacing: 6) {
+                                    Circle()
+                                        .fill(piHarness.isAvailable ? VesperTheme.neonGreen : VesperTheme.neonRed)
+                                        .frame(width: 8, height: 8)
+                                    Text(piHarness.isAvailable ? "ONLINE (\(piHarness.version))" : "NOT FOUND")
+                                        .font(.caption.monospaced())
+                                        .foregroundColor(piHarness.isAvailable ? VesperTheme.neonGreen : VesperTheme.neonRed)
+                                }
+                                .padding(.horizontal, 8)
+                                .padding(.vertical, 3)
+                                .background(piHarness.isAvailable ? VesperTheme.neonGreen.opacity(0.15) : VesperTheme.neonRed.opacity(0.15))
+                                .cornerRadius(6)
+                            }
+                            
+                            Text("V3SP3R executes directly through your host's installed `pi` coding agent harness (`@earendil-works/pi-coding-agent`), inheriting all models, provider configs, and API tokens from `~/.pi/agent/` without any duplicate credentials.")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                            
+                            // Host Config Summary
+                            if let cfg = piHarness.hostConfig {
+                                Grid(alignment: .leading, horizontalSpacing: 16, verticalSpacing: 6) {
+                                    GridRow {
+                                        Text("Config Path:").font(.caption.bold()).foregroundColor(.secondary)
+                                        Text("\(cfg.configDir)/settings.json").font(.caption.monospaced()).foregroundColor(VesperTheme.accentCyan)
+                                    }
+                                    GridRow {
+                                        Text("Active Provider:").font(.caption.bold()).foregroundColor(.secondary)
+                                        Text(cfg.defaultProvider).font(.caption.monospaced()).foregroundColor(VesperTheme.primaryTextColor)
+                                    }
+                                    GridRow {
+                                        Text("Default Model:").font(.caption.bold()).foregroundColor(.secondary)
+                                        Text(cfg.defaultModel).font(.caption.monospaced()).foregroundColor(VesperTheme.neonGreen)
+                                    }
+                                    GridRow {
+                                        Text("Thinking Level:").font(.caption.bold()).foregroundColor(.secondary)
+                                        Text(cfg.defaultThinkingLevel.uppercased()).font(.caption.monospaced()).foregroundColor(VesperTheme.cyberPurple)
+                                    }
+                                }
+                                .padding(10)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                                .background(Color.black.opacity(0.25))
+                                .cornerRadius(8)
+                            }
+                            
+                            // Pi Harness Model Selection
+                            VStack(alignment: .leading, spacing: 10) {
+                                HStack {
+                                    Image(systemName: "cpu")
+                                        .foregroundColor(VesperTheme.cyberPurple)
+                                    Text("Pi Harness Model Intelligence")
+                                        .font(.subheadline.bold())
+                                    
+                                    Spacer()
+                                    
+                                    Text(settings.piHarnessModel.isEmpty ? "Host Default (\(piHarness.hostConfig?.defaultModel ?? "kimi-k3"))" : settings.piHarnessModel)
+                                        .font(.caption2.monospaced())
+                                        .foregroundColor(VesperTheme.neonGreen)
+                                }
+                                
+                                Text("Choose from popular verified models or enter any custom model supported by pi (e.g. `anthropic/claude-3-7-sonnet`, `xai/grok-4.20-0309-reasoning`, `deepseek/deepseek-reasoner`).")
+                                    .font(.caption)
+                                    .foregroundColor(.secondary)
+                                
+                                ForEach(AppSettings.piHarnessPresets, id: \.id) { preset in
+                                    HStack(alignment: .top) {
+                                        RadioButton(isSelected: settings.piHarnessModel == preset.id) {
+                                            settings.piHarnessModel = preset.id
+                                            customPiModelInput = preset.id
+                                        }
+                                        
+                                        VStack(alignment: .leading, spacing: 2) {
+                                            Text(preset.name)
+                                                .font(.subheadline.bold())
+                                            Text(preset.desc)
+                                                .font(.caption2)
+                                                .foregroundColor(.secondary)
+                                        }
+                                        
+                                        Spacer()
+                                        
+                                        Text(preset.id.isEmpty ? "default" : preset.id)
+                                            .font(.caption2.monospaced())
+                                            .foregroundColor(.secondary)
+                                    }
+                                    .padding(8)
+                                    .background(settings.piHarnessModel == preset.id ? VesperTheme.secondaryCardBackground : Color.clear)
+                                    .cornerRadius(6)
+                                    .contentShape(Rectangle())
+                                    .onTapGesture {
+                                        settings.piHarnessModel = preset.id
+                                        customPiModelInput = preset.id
+                                    }
+                                }
+                                
+                                // Custom Model Input Field
+                                HStack {
+                                    TextField("Custom model (e.g. anthropic/claude-3-7-sonnet)", text: $customPiModelInput)
+                                        .textFieldStyle(.roundedBorder)
+                                        .font(.caption.monospaced())
+                                    
+                                    Button("Set Model") {
+                                        settings.piHarnessModel = customPiModelInput.trimmingCharacters(in: .whitespacesAndNewlines)
+                                    }
+                                    .buttonStyle(.borderedProminent)
+                                    
+                                    if !settings.piHarnessModel.isEmpty {
+                                        Button("Reset") {
+                                            settings.piHarnessModel = ""
+                                            customPiModelInput = ""
+                                        }
+                                        .buttonStyle(.bordered)
+                                    }
+                                }
+                            }
+                            .padding(12)
+                            .background(Color.black.opacity(0.25))
+                            .cornerRadius(8)
+                            
+                            // Custom Binary Path Override
+                            VStack(alignment: .leading, spacing: 6) {
+                                Text("Harness Executable Location")
+                                    .font(.caption.bold())
+                                    .foregroundColor(.secondary)
+                                
+                                HStack {
+                                    TextField("/Users/josaum/.local/bin/pi", text: $customPiPathInput)
+                                        .textFieldStyle(.roundedBorder)
+                                        .font(.caption.monospaced())
+                                    
+                                    Button("Apply") {
+                                        settings.customPiBinaryPath = customPiPathInput
+                                        piHarness.refreshStatus()
+                                    }
+                                    .buttonStyle(.bordered)
+                                    
+                                    Button(action: {
+                                        isTestingPiHarness = true
+                                        piHarnessTestResult = nil
+                                        Task {
+                                            let res = await piHarness.testHarness()
+                                            piHarnessTestSuccess = res.success
+                                            piHarnessTestResult = res.message
+                                            isTestingPiHarness = false
+                                        }
+                                    }) {
+                                        HStack(spacing: 4) {
+                                            if isTestingPiHarness {
+                                                ProgressView().controlSize(.small)
+                                            } else {
+                                                Image(systemName: "play.circle.fill")
+                                            }
+                                            Text("Test Harness")
+                                        }
+                                    }
+                                    .buttonStyle(.borderedProminent)
+                                    .disabled(isTestingPiHarness || !piHarness.isAvailable)
+                                }
+                            }
+                            
+                            if let testMsg = piHarnessTestResult {
+                                HStack {
+                                    Image(systemName: piHarnessTestSuccess ? "checkmark.circle.fill" : "exclamationmark.triangle.fill")
+                                        .foregroundColor(piHarnessTestSuccess ? VesperTheme.neonGreen : VesperTheme.neonRed)
+                                    Text(testMsg)
+                                        .font(.caption)
+                                        .foregroundColor(piHarnessTestSuccess ? VesperTheme.neonGreen : VesperTheme.neonRed)
+                                }
+                                .padding(8)
+                                .background(Color.black.opacity(0.2))
+                                .cornerRadius(6)
+                            }
+                        }
+                    }
+                }
+                .padding(20)
+                .glassCard()
+                
+                // OpenRouter API Section
+                VStack(alignment: .leading, spacing: 14) {
+                    HStack {
+                        Image(systemName: "key.fill")
+                            .foregroundColor(VesperTheme.accentCyan)
+                        Text("OpenRouter AI Credentials")
+                            .font(.headline)
+                        Spacer()
+                        Link("Get Free API Key ↗", destination: URL(string: "https://openrouter.ai/keys")!)
+                            .font(.caption)
+                            .foregroundColor(VesperTheme.accentCyan)
+                    }
+                    
+                    HStack {
+                        if isApiKeyVisible {
+                            TextField("sk-or-...", text: $apiKeyInput)
+                                .textFieldStyle(.roundedBorder)
+                                .font(.body.monospaced())
+                        } else {
+                            SecureField("sk-or-...", text: $apiKeyInput)
+                                .textFieldStyle(.roundedBorder)
+                                .font(.body.monospaced())
+                        }
+                        
+                        Button(action: { isApiKeyVisible.toggle() }) {
+                            Image(systemName: isApiKeyVisible ? "eye.slash" : "eye")
+                        }
+                        
+                        Button("Save Key") {
+                            settings.openRouterApiKey = apiKeyInput
+                            saveConfirmation = true
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                                saveConfirmation = false
+                            }
+                        }
+                        .buttonStyle(.borderedProminent)
+                    }
+                    
+                    if saveConfirmation {
+                        Text("✓ API Key Saved Successfully")
+                            .font(.caption)
+                            .foregroundColor(VesperTheme.neonGreen)
+                    }
+                }
+                .padding(20)
+                .glassCard()
+                
+                // AI Model Selection
+                VStack(alignment: .leading, spacing: 14) {
+                    HStack {
+                        Image(systemName: "cpu")
+                            .foregroundColor(VesperTheme.cyberPurple)
+                        Text("AI Model Intelligence")
+                            .font(.headline)
+                    }
+                    
+                    ForEach(AppSettings.availableModels, id: \.id) { model in
+                        HStack(alignment: .top) {
+                            RadioButton(isSelected: settings.selectedModel == model.id) {
+                                settings.selectedModel = model.id
+                            }
+                            
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text(model.name)
+                                    .font(.subheadline.bold())
+                                Text(model.desc)
+                                    .font(.caption)
+                                    .foregroundColor(.secondary)
+                            }
+                            
+                            Spacer()
+                            
+                            Text(model.id)
+                                .font(.caption2.monospaced())
+                                .foregroundColor(.secondary)
+                        }
+                        .padding(10)
+                        .background(settings.selectedModel == model.id ? VesperTheme.secondaryCardBackground : Color.clear)
+                        .cornerRadius(8)
+                        .contentShape(Rectangle())
+                        .onTapGesture {
+                            settings.selectedModel = model.id
+                        }
+                    }
+                }
+                .padding(20)
+                .glassCard()
+                
+                // Reasoning Effort
+                VStack(alignment: .leading, spacing: 14) {
+                    HStack {
+                        Image(systemName: "brain.head.profile")
+                            .foregroundColor(VesperTheme.accentCyan)
+                        Text("Reasoning Effort")
+                            .font(.headline)
+                        Spacer()
+                        Text("Active: \(settings.reasoningEffort.uppercased())")
+                            .font(.caption.monospaced())
+                            .foregroundColor(VesperTheme.neonGreen)
+                    }
+                    
+                    HStack(spacing: 12) {
+                        ForEach(["low", "medium", "high"], id: \.self) { effort in
+                            Button(action: { settings.reasoningEffort = effort }) {
+                                HStack {
+                                    Circle()
+                                        .fill(settings.reasoningEffort == effort ? VesperTheme.neonGreen : Color.clear)
+                                        .frame(width: 8, height: 8)
+                                    Text(effort.capitalized)
+                                        .font(.subheadline)
+                                        .fontWeight(settings.reasoningEffort == effort ? .bold : .regular)
+                                }
+                                .padding(.horizontal, 16)
+                                .padding(.vertical, 8)
+                                .background(settings.reasoningEffort == effort ? VesperTheme.accentCyan.opacity(0.15) : VesperTheme.secondaryCardBackground)
+                                .cornerRadius(8)
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 8)
+                                        .stroke(settings.reasoningEffort == effort ? VesperTheme.accentCyan : VesperTheme.subtleBorder, lineWidth: 1)
+                                )
+                            }
+                            .buttonStyle(.plain)
+                        }
+                    }
+                    
+                    Text("Controls the thinking depth for reasoning models like Grok 4.7. 'Low' minimizes latency for fast tactical hardware execution.")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                }
+                .padding(20)
+                .glassCard()
+                
+                // Autonomous Risk Limits
+                VStack(alignment: .leading, spacing: 14) {
+                    HStack {
+                        Image(systemName: "bolt.shield.fill")
+                            .foregroundColor(VesperTheme.neonGreen)
+                        Text("Autonomous Autopilot & Safety Engine")
+                            .font(.headline)
+                        Spacer()
+                        Text(settings.autopilotMode.rawValue)
+                            .font(.caption.monospaced())
+                            .foregroundColor(VesperTheme.neonGreen)
+                    }
+                    
+                    // Autopilot Mode Picker
+                    HStack(spacing: 12) {
+                        ForEach(AutopilotMode.allCases, id: \.self) { mode in
+                            Button(action: { settings.autopilotMode = mode }) {
+                                HStack(spacing: 6) {
+                                    Image(systemName: mode.iconName)
+                                        .font(.caption)
+                                    Text(mode.rawValue)
+                                        .font(.subheadline)
+                                        .fontWeight(settings.autopilotMode == mode ? .bold : .regular)
+                                }
+                                .padding(.horizontal, 14)
+                                .padding(.vertical, 8)
+                                .background(settings.autopilotMode == mode ? VesperTheme.neonGreen.opacity(0.18) : VesperTheme.secondaryCardBackground)
+                                .foregroundColor(settings.autopilotMode == mode ? VesperTheme.neonGreen : .secondary)
+                                .cornerRadius(8)
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 8)
+                                        .stroke(settings.autopilotMode == mode ? VesperTheme.neonGreen.opacity(0.6) : VesperTheme.subtleBorder, lineWidth: 1)
+                                )
+                            }
+                            .buttonStyle(.plain)
+                        }
+                    }
+                    
+                    // Max Autonomous Steps Stepper
+                    HStack {
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text("Max Autonomous Mission Steps")
+                                .font(.subheadline.bold())
+                            Text("Maximum chained actions Vesper can execute unattended before requesting operator review.")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                        }
+                        
+                        Spacer()
+                        
+                        Stepper("\(settings.maxAutonomousIterations) Steps", value: $settings.maxAutonomousIterations, in: 3...30, step: 1)
+                            .font(.subheadline.monospaced())
+                    }
+                    
+                    Divider().background(VesperTheme.subtleBorder)
+                    
+                    Toggle(isOn: $settings.autoApproveLow) {
+                        VStack(alignment: .leading) {
+                            Text("Auto-approve Low Risk Actions")
+                                .font(.subheadline.bold())
+                            Text("Directory listings, file reads, battery/storage queries, and LED indicators execute immediately without prompting.")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                        }
+                    }
+                    .toggleStyle(.switch)
+                    
+                    Divider().background(VesperTheme.subtleBorder)
+                    
+                    Toggle(isOn: $settings.autoApproveMedium) {
+                        VStack(alignment: .leading) {
+                            Text("Auto-approve Medium Risk Actions")
+                                .font(.subheadline.bold())
+                            Text("File writes, directory creation, RF transmissions, and app launching execute without manual confirmation.")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                        }
+                    }
+                    .toggleStyle(.switch)
+                    
+                    Divider().background(VesperTheme.subtleBorder)
+                    
+                    HStack {
+                        Image(systemName: "lock.shield.fill")
+                            .foregroundColor(VesperTheme.neonRed)
+                        VStack(alignment: .leading) {
+                            Text("High Risk Actions Always Protected")
+                                .font(.subheadline.bold())
+                            Text("BadUSB payload executions, file deletions, and destructive operations will ALWAYS require your explicit double-tap confirmation.")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                        }
+                    }
+                    .padding(8)
+                    .background(Color.black.opacity(0.3))
+                    .cornerRadius(6)
+                }
+                .padding(20)
+                .glassCard()
+                
+                // WebMCP Server & AI Bridge
+                VStack(alignment: .leading, spacing: 16) {
+                    HStack {
+                        Image(systemName: "network")
+                            .foregroundColor(VesperTheme.accentCyan)
+                        Text("WebMCP Server & AI Bridge")
+                            .font(.headline)
+                        
+                        Spacer()
+                        
+                        HStack(spacing: 6) {
+                            Circle()
+                                .fill(webMcp.isRunning ? VesperTheme.neonGreen : VesperTheme.neonRed)
+                                .frame(width: 8, height: 8)
+                            Text(webMcp.isRunning ? "RUNNING :\(webMcp.port)" : "STOPPED")
+                                .font(.system(size: 10, weight: .bold, design: .monospaced))
+                                .foregroundColor(webMcp.isRunning ? VesperTheme.neonGreen : VesperTheme.neonRed)
+                        }
+                        .padding(.horizontal, 8)
+                        .padding(.vertical, 3)
+                        .background(webMcp.isRunning ? VesperTheme.neonGreen.opacity(0.15) : VesperTheme.neonRed.opacity(0.15))
+                        .cornerRadius(6)
+                    }
+                    
+                    Text("Expose Flipper Zero hardware controls (Sub-GHz, IR, BadUSB, SD card, GPIO) via standard Model Context Protocol (MCP) JSON-RPC 2.0 endpoints for Claude Desktop, Cursor, and web-based AI agents.")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                    
+                    Toggle(isOn: $settings.enableWebMcpServer) {
+                        VStack(alignment: .leading) {
+                            Text("Enable WebMCP HTTP/SSE Server")
+                                .font(.subheadline.bold())
+                            Text("Listens on localhost (127.0.0.1:\(settings.webMcpPort)) with CORS enabled.")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                        }
+                    }
+                    .toggleStyle(.switch)
+                    
+                    if settings.enableWebMcpServer {
+                        Divider().background(VesperTheme.subtleBorder)
+                        
+                        // Telemetry & Port Grid
+                        HStack(spacing: 16) {
+                            VStack(alignment: .leading, spacing: 4) {
+                                Text("Listening Port")
+                                    .font(.caption.bold())
+                                    .foregroundColor(.secondary)
+                                HStack {
+                                    TextField("8765", value: $settings.webMcpPort, format: .number)
+                                        .textFieldStyle(.roundedBorder)
+                                        .frame(width: 80)
+                                    Button("Restart") {
+                                        webMcp.restart(port: settings.webMcpPort)
+                                    }
+                                    .buttonStyle(.bordered)
+                                }
+                            }
+                            
+                            Spacer()
+                            
+                            VStack(alignment: .trailing, spacing: 4) {
+                                Text("Live Telemetry")
+                                    .font(.caption.bold())
+                                    .foregroundColor(.secondary)
+                                HStack(spacing: 12) {
+                                    VStack(alignment: .center) {
+                                        Text("\(webMcp.requestCount)")
+                                            .font(.headline.monospaced())
+                                            .foregroundColor(VesperTheme.accentCyan)
+                                        Text("Requests")
+                                            .font(.system(size: 9))
+                                            .foregroundColor(.secondary)
+                                    }
+                                    VStack(alignment: .center) {
+                                        Text("\(webMcp.activeSseClients)")
+                                            .font(.headline.monospaced())
+                                            .foregroundColor(VesperTheme.neonGreen)
+                                        Text("SSE Clients")
+                                            .font(.system(size: 9))
+                                            .foregroundColor(.secondary)
+                                    }
+                                }
+                            }
+                        }
+                        
+                        Divider().background(VesperTheme.subtleBorder)
+                        
+                        // Integration snippet buttons
+                        VStack(alignment: .leading, spacing: 8) {
+                            Text("External AI Client Setup")
+                                .font(.caption.bold())
+                                .foregroundColor(VesperTheme.primaryTextColor)
+                            
+                            HStack(spacing: 10) {
+                                Button(action: {
+                                    let cfg = """
+                                    {
+                                      "mcpServers": {
+                                        "flipper-vesper": {
+                                          "url": "http://127.0.0.1:\(settings.webMcpPort)/sse"
+                                        }
+                                      }
+                                    }
+                                    """
+                                    NSPasteboard.general.clearContents()
+                                    NSPasteboard.general.setString(cfg, forType: .string)
+                                    copiedMcpToast = "Copied Claude Desktop Config!"
+                                    DispatchQueue.main.asyncAfter(deadline: .now() + 2) { copiedMcpToast = nil }
+                                }) {
+                                    HStack(spacing: 6) {
+                                        Image(systemName: "doc.on.doc")
+                                        Text("Copy Claude Desktop JSON")
+                                    }
+                                    .font(.caption.bold())
+                                }
+                                .buttonStyle(.borderedProminent)
+                                .tint(VesperTheme.cyberPurple)
+                                
+                                Button(action: {
+                                    let curl = "curl -s http://127.0.0.1:\(settings.webMcpPort)/health | jq ."
+                                    NSPasteboard.general.clearContents()
+                                    NSPasteboard.general.setString(curl, forType: .string)
+                                    copiedMcpToast = "Copied curl health command!"
+                                    DispatchQueue.main.asyncAfter(deadline: .now() + 2) { copiedMcpToast = nil }
+                                }) {
+                                    HStack(spacing: 6) {
+                                        Image(systemName: "terminal")
+                                        Text("Copy Health Check curl")
+                                    }
+                                    .font(.caption.bold())
+                                }
+                                .buttonStyle(.bordered)
+                                
+                                if let toast = copiedMcpToast {
+                                    Text("✓ \(toast)")
+                                        .font(.caption.bold())
+                                        .foregroundColor(VesperTheme.neonGreen)
+                                }
+                            }
+                        }
+                    }
+                }
+                .padding(20)
+                .glassCard()
+            }
+            .padding(20)
+        }
+        .background(VesperTheme.darkBackground)
+        .onAppear {
+            apiKeyInput = settings.openRouterApiKey
+            customPiPathInput = settings.customPiBinaryPath.isEmpty ? piHarness.executablePath : settings.customPiBinaryPath
+            customPiModelInput = settings.piHarnessModel
+            piHarness.refreshStatus()
+        }
+    }
+}
+
+private struct RadioButton: View {
+    let isSelected: Bool
+    let action: () -> Void
+    
+    var body: some View {
+        Button(action: action) {
+            Circle()
+                .stroke(isSelected ? VesperTheme.accentCyan : Color.secondary, lineWidth: 2)
+                .frame(width: 16, height: 16)
+                .overlay(
+                    Circle()
+                        .fill(isSelected ? VesperTheme.accentCyan : Color.clear)
+                        .frame(width: 8, height: 8)
+                )
+        }
+        .buttonStyle(.plain)
+    }
+}

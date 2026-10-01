@@ -57,3 +57,11 @@ secrets/
 
 # Crash logs
 crash-reports/
+
+# Swift / macOS build artifacts
+.build/
+macos/.build/
+macos/build/
+*.xcodeproj/
+*.xcworkspace/
+*.tgz

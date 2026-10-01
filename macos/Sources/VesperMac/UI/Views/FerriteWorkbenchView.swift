@@ -1,0 +1,666 @@
+import SwiftUI
+import AppKit
+
+public struct FerriteWorkbenchView: View {
+    @State private var ferrite = FerriteOSService.shared
+    @State private var selectedTab: Int = 0
+    
+    // Intent tab state
+    @State private var inputPhrase: String = "decode 433mhz signal"
+    @State private var executionFeedback: String = ""
+    
+    // Decoder tab state
+    @State private var signalFilePath: String = "/Users/josaum/projects/FerriteOS/crates/ferrite-rf/testdata/nfc/Ntag216.nfc"
+    @State private var selectedDecoderFlag: String = ""
+    @State private var decoderOutput: String = ""
+    @State private var isDecoding: Bool = false
+    
+    // Firmware tab state
+    @State private var showFlashConfirmModal: Bool = false
+    @State private var flashResult: String = ""
+    
+    private let samplePhrases = [
+        "decode 433mhz signal",
+        "read 125khz rfid card",
+        "what is this /ext/subghz/gate.sub",
+        "scan 433mhz garage remotes",
+        "observe 2.4ghz field",
+        "save it as frontgate",
+        "status"
+    ]
+    
+    private let sampleFiles = [
+        ("NFC NTAG216", "/Users/josaum/projects/FerriteOS/crates/ferrite-rf/testdata/nfc/Ntag216.nfc"),
+        ("Sub-GHz RAW (Marantec)", "/Users/josaum/projects/FerriteOS/crates/ferrite-rf/testdata/marantec_raw.sub"),
+        ("Sub-GHz Holtek", "/Users/josaum/projects/FerriteOS/crates/ferrite-rf/testdata/holtek_ht12x.sub"),
+        ("NFC Vicinity (ISO15693)", "/Users/josaum/projects/FerriteOS/crates/ferrite-rf/testdata/nfc_vicinity/Slix_cap_default.nfc")
+    ]
+    
+    public init() {}
+    
+    public var body: some View {
+        VStack(spacing: 0) {
+            // Header HUD
+            headerHud
+            
+            Divider().background(VesperTheme.subtleBorder)
+            
+            // Tab Selector
+            Picker("Mode", selection: $selectedTab) {
+                Text("Natural Language Intent").tag(0)
+                Text("Offline Signal Decoder").tag(1)
+                Text("Bare-Metal Firmware (0x08000000)").tag(2)
+                Text("Workspace & Crates").tag(3)
+            }
+            .pickerStyle(.segmented)
+            .padding(.horizontal, 20)
+            .padding(.vertical, 12)
+            .background(VesperTheme.cardBackground.opacity(0.6))
+            
+            Divider().background(VesperTheme.subtleBorder)
+            
+            // Tab Contents
+            ScrollView {
+                VStack(alignment: .leading, spacing: 20) {
+                    switch selectedTab {
+                    case 0:
+                        intentTabContent
+                    case 1:
+                        decoderTabContent
+                    case 2:
+                        firmwareTabContent
+                    case 3:
+                        workspaceTabContent
+                    default:
+                        EmptyView()
+                    }
+                }
+                .padding(20)
+            }
+        }
+        .background(VesperTheme.darkBackground)
+        .alert("Confirm FerriteOS Standalone Flash", isPresented: $showFlashConfirmModal) {
+            Button("Cancel", role: .cancel) {}
+            Button("Proceed with DFU Flash (0x08000000)", role: .destructive) {
+                executeFerriteFlash()
+            }
+        } message: {
+            Text("WARNING: Writing FerriteOS to 0x08000000 replaces the stock Flipper bootloader and main OS. Ensure Flipper is connected via USB and battery is charged. You can restore stock firmware anytime using official DFU recovery.")
+        }
+    }
+    
+    // MARK: - Header HUD
+    private var headerHud: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            HStack(spacing: 12) {
+                Image(systemName: "atom")
+                    .font(.system(size: 30))
+                    .foregroundColor(VesperTheme.neonAmber)
+                
+                VStack(alignment: .leading, spacing: 2) {
+                    HStack(spacing: 8) {
+                        Text("FerriteOS Deep Integration")
+                            .font(.title2.bold())
+                            .foregroundColor(VesperTheme.primaryTextColor)
+                        
+                        Text("RUST no_std")
+                            .font(.system(size: 9.5, weight: .bold, design: .monospaced))
+                            .padding(.horizontal, 6)
+                            .padding(.vertical, 2)
+                            .background(VesperTheme.neonAmber.opacity(0.18))
+                            .foregroundColor(VesperTheme.neonAmber)
+                            .cornerRadius(4)
+                    }
+                    
+                    Text("Deterministic microsecond intent parsing, 55+ protocol decoders, and bare-metal STM32WB55 firmware.")
+                        .font(.caption)
+                        .foregroundColor(VesperTheme.secondaryTextColor)
+                }
+                
+                Spacer()
+                
+                // Telemetry Badges
+                HStack(spacing: 8) {
+                    statusPill(title: "NLP Console", active: ferrite.isAvailable)
+                    statusPill(title: "Firmware Bin", active: ferrite.isFirmwareBinPresent)
+                    statusPill(title: "dfu-util", active: ferrite.isDfuUtilPresent)
+                }
+            }
+            
+            HStack(spacing: 16) {
+                Text("Workspace: \(ferrite.workspacePath)")
+                    .font(.caption2.monospaced())
+                    .foregroundColor(.secondary)
+                
+                if let manifest = ferrite.manifestInfo {
+                    Text("•")
+                        .foregroundColor(.secondary)
+                    Text("Image: \(manifest.flashBytes / 1024) KB / \(manifest.flashLimitBytes / 1024) KB (Flash Base 0x\(String(manifest.flashBase, radix: 16).uppercased()))")
+                        .font(.caption2.monospaced())
+                        .foregroundColor(VesperTheme.accentCyan)
+                }
+            }
+        }
+        .padding(20)
+        .background(VesperTheme.cardBackground)
+    }
+    
+    private func statusPill(title: String, active: Bool) -> some View {
+        HStack(spacing: 5) {
+            Circle()
+                .fill(active ? VesperTheme.neonGreen : VesperTheme.neonRed)
+                .frame(width: 6, height: 6)
+            Text(title)
+                .font(.system(size: 10, weight: .bold, design: .monospaced))
+                .foregroundColor(active ? VesperTheme.neonGreen : VesperTheme.neonRed)
+        }
+        .padding(.horizontal, 8)
+        .padding(.vertical, 4)
+        .background(VesperTheme.secondaryCardBackground)
+        .cornerRadius(6)
+        .overlay(RoundedRectangle(cornerRadius: 6).stroke(VesperTheme.subtleBorder, lineWidth: 1))
+    }
+    
+    // MARK: - Tab 0: Intent & Natural Language
+    private var intentTabContent: some View {
+        VStack(alignment: .leading, spacing: 18) {
+            VStack(alignment: .leading, spacing: 14) {
+                HStack {
+                    Image(systemName: "text.bubble.fill")
+                        .foregroundColor(VesperTheme.accentCyan)
+                    Text("Deterministic Natural Language Parser (ferrite-console)")
+                        .font(.headline)
+                    Spacer()
+                }
+                
+                Text("Evaluates commands in microseconds with zero cloud connectivity, translating operator requests into typed hardware action plans.")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+                
+                HStack(spacing: 10) {
+                    TextField("Enter phrase (e.g. 'decode 433mhz signal')...", text: $inputPhrase)
+                        .textFieldStyle(.roundedBorder)
+                        .font(.body.monospaced())
+                    
+                    Button(action: runIntent) {
+                        if ferrite.isExecuting {
+                            ProgressView()
+                                .scaleEffect(0.7)
+                                .frame(width: 24, height: 24)
+                        } else {
+                            Label("Understand", systemImage: "bolt.fill")
+                        }
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .tint(VesperTheme.accentCyan)
+                    .disabled(inputPhrase.isEmpty || ferrite.isExecuting)
+                }
+                
+                // Sample Pills
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack(spacing: 8) {
+                        ForEach(samplePhrases, id: \.self) { sample in
+                            Button(action: {
+                                inputPhrase = sample
+                                runIntent()
+                            }) {
+                                Text(sample)
+                                    .font(.caption2.monospaced())
+                                    .padding(.horizontal, 10)
+                                    .padding(.vertical, 5)
+                                    .background(VesperTheme.secondaryCardBackground)
+                                    .cornerRadius(10)
+                                    .overlay(RoundedRectangle(cornerRadius: 10).stroke(VesperTheme.subtleBorder, lineWidth: 1))
+                            }
+                            .buttonStyle(.plain)
+                        }
+                    }
+                }
+            }
+            .padding(20)
+            .glassCard()
+            
+            // Result Card
+            if let understanding = ferrite.lastUnderstanding {
+                VStack(alignment: .leading, spacing: 14) {
+                    HStack {
+                        Image(systemName: "checkmark.seal.fill")
+                            .foregroundColor(VesperTheme.neonGreen)
+                        Text("FerriteOS Structured Intent Classification")
+                            .font(.headline)
+                        Spacer()
+                        Text(understanding.timestamp, style: .time)
+                            .font(.caption2.monospaced())
+                            .foregroundColor(.secondary)
+                    }
+                    
+                    HStack(spacing: 12) {
+                        metricBox(title: "INTENT", value: understanding.intent, color: VesperTheme.accentCyan)
+                        metricBox(title: "DOMAIN", value: understanding.domain, color: VesperTheme.cyberPurple)
+                        metricBox(title: "CONFIDENCE", value: "\(understanding.confidence) / 5", color: VesperTheme.neonGreen)
+                    }
+                    
+                    VStack(alignment: .leading, spacing: 6) {
+                        HStack {
+                            Text("CONSOLE ENGINE OUTPUT:")
+                                .font(.system(size: 9.5, weight: .bold).monospaced())
+                                .foregroundColor(.secondary)
+                            Spacer()
+                            Button("Copy Output") {
+                                NSPasteboard.general.clearContents()
+                                NSPasteboard.general.setString(understanding.rawOutput, forType: .string)
+                            }
+                            .font(.caption.bold())
+                            .foregroundColor(VesperTheme.accentCyan)
+                            .buttonStyle(.plain)
+                        }
+                        
+                        Text(understanding.rawOutput)
+                            .font(.caption.monospaced())
+                            .foregroundColor(VesperTheme.neonGreen)
+                            .padding(12)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .background(VesperTheme.terminalBackground)
+                            .cornerRadius(8)
+                            .overlay(RoundedRectangle(cornerRadius: 8).stroke(VesperTheme.subtleBorder, lineWidth: 1))
+                    }
+                }
+                .padding(20)
+                .glassCard()
+            }
+        }
+    }
+    
+    private func metricBox(title: String, value: String, color: Color) -> some View {
+        VStack(alignment: .leading, spacing: 2) {
+            Text(title)
+                .font(.system(size: 9, weight: .bold, design: .monospaced))
+                .foregroundColor(.secondary)
+            Text(value)
+                .font(.subheadline.bold())
+                .foregroundColor(color)
+        }
+        .padding(10)
+        .frame(minWidth: 110, alignment: .leading)
+        .background(VesperTheme.secondaryCardBackground)
+        .cornerRadius(8)
+        .overlay(RoundedRectangle(cornerRadius: 8).stroke(VesperTheme.subtleBorder, lineWidth: 1))
+    }
+    
+    // MARK: - Tab 1: Offline Signal Decoder
+    private var decoderTabContent: some View {
+        VStack(alignment: .leading, spacing: 18) {
+            VStack(alignment: .leading, spacing: 14) {
+                HStack {
+                    Image(systemName: "waveform.path.ecg")
+                        .foregroundColor(VesperTheme.flipperOrange)
+                    Text("High-Speed Offline Signal Decoder (ferrite-rf)")
+                        .font(.headline)
+                    Spacer()
+                }
+                
+                Text("Direct execution of FerriteOS compiled Rust decoders on local files. Decodes Sub-GHz (Hormann, Nice, KeeLoq, Princeton, Marantec), NFC (NTAG, Ultralight, SLIX, ISO15693), and RFID.")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+                
+                HStack(spacing: 10) {
+                    TextField("Absolute path to .sub, .nfc, .rfid, .ibtn file...", text: $signalFilePath)
+                        .textFieldStyle(.roundedBorder)
+                        .font(.body.monospaced())
+                    
+                    Button("Browse...") {
+                        selectLocalFile()
+                    }
+                    .buttonStyle(.bordered)
+                    
+                    Button(action: runSignalDecoder) {
+                        if isDecoding {
+                            ProgressView()
+                                .scaleEffect(0.7)
+                                .frame(width: 20, height: 20)
+                        } else {
+                            Label("Decode", systemImage: "sparkles")
+                        }
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .tint(VesperTheme.flipperOrange)
+                    .disabled(signalFilePath.isEmpty || isDecoding)
+                }
+                
+                // Sample Test Files from Repo
+                VStack(alignment: .leading, spacing: 6) {
+                    Text("SAMPLE CAPTURE FIXTURES FROM REPOSITORY:")
+                        .font(.system(size: 9.5, weight: .bold).monospaced())
+                        .foregroundColor(.secondary)
+                    
+                    ScrollView(.horizontal, showsIndicators: false) {
+                        HStack(spacing: 8) {
+                            ForEach(sampleFiles, id: \.1) { name, path in
+                                Button(action: {
+                                    signalFilePath = path
+                                    runSignalDecoder()
+                                }) {
+                                    HStack(spacing: 4) {
+                                        Image(systemName: "doc.text.fill")
+                                            .font(.caption2)
+                                        Text(name)
+                                            .font(.caption2.monospaced())
+                                    }
+                                    .padding(.horizontal, 10)
+                                    .padding(.vertical, 6)
+                                    .background(VesperTheme.secondaryCardBackground)
+                                    .cornerRadius(8)
+                                    .overlay(RoundedRectangle(cornerRadius: 8).stroke(VesperTheme.subtleBorder, lineWidth: 1))
+                                }
+                                .buttonStyle(.plain)
+                            }
+                        }
+                    }
+                }
+            }
+            .padding(20)
+            .glassCard()
+            
+            // Decoder Output
+            if !decoderOutput.isEmpty {
+                VStack(alignment: .leading, spacing: 10) {
+                    HStack {
+                        Image(systemName: "terminal.fill")
+                            .foregroundColor(VesperTheme.accentCyan)
+                        Text("FERRITE-RF DECODER TELEMETRY")
+                            .font(.system(size: 11, weight: .bold).monospaced())
+                        Spacer()
+                        Button("Copy") {
+                            NSPasteboard.general.clearContents()
+                            NSPasteboard.general.setString(decoderOutput, forType: .string)
+                        }
+                        .font(.caption.bold())
+                        .foregroundColor(VesperTheme.accentCyan)
+                        .buttonStyle(.plain)
+                    }
+                    
+                    Text(decoderOutput)
+                        .font(.caption.monospaced())
+                        .foregroundColor(VesperTheme.neonGreen)
+                        .padding(14)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .background(VesperTheme.terminalBackground)
+                        .cornerRadius(8)
+                        .overlay(RoundedRectangle(cornerRadius: 8).stroke(VesperTheme.subtleBorder, lineWidth: 1))
+                }
+                .padding(20)
+                .glassCard()
+            }
+        }
+    }
+    
+    // MARK: - Tab 2: Bare-Metal Firmware (0x08000000)
+    private var firmwareTabContent: some View {
+        VStack(alignment: .leading, spacing: 18) {
+            // Manifest Telemetry Card
+            VStack(alignment: .leading, spacing: 14) {
+                HStack {
+                    Image(systemName: "cpu.fill")
+                        .foregroundColor(VesperTheme.cyberPurple)
+                    Text("Standalone Bare-Metal Firmware Manifest")
+                        .font(.headline)
+                    Spacer()
+                    if let passed = ferrite.preflightPassed {
+                        HStack(spacing: 4) {
+                            Circle()
+                                .fill(passed ? VesperTheme.neonGreen : VesperTheme.neonRed)
+                                .frame(width: 8, height: 8)
+                            Text(passed ? "PREFLIGHT PASS" : "PREFLIGHT FAILED")
+                                .font(.system(size: 9.5, weight: .bold).monospaced())
+                                .foregroundColor(passed ? VesperTheme.neonGreen : VesperTheme.neonRed)
+                        }
+                        .padding(.horizontal, 8)
+                        .padding(.vertical, 4)
+                        .background(VesperTheme.secondaryCardBackground)
+                        .cornerRadius(6)
+                    }
+                }
+                
+                Text("FerriteOS includes an autonomous STM32WB55 bare-metal firmware image with a custom reset runtime, passive PA0 infrared pulse DMA, and TIM2 capture.")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+                
+                if let m = ferrite.manifestInfo {
+                    LazyVGrid(columns: [GridItem(.adaptive(minimum: 150))], spacing: 10) {
+                        SpecPill(title: "FLASH BASE", value: "0x\(String(m.flashBase, radix: 16).uppercased())", icon: "memorychip")
+                        SpecPill(title: "FLASH USED", value: "\(m.flashBytes / 1024) KB (\(String(format: "%.1f", m.flashPercentage))%)", icon: "cube.fill")
+                        SpecPill(title: "FLASH ALLOCATION", value: "\(m.flashLimitBytes / 1024) KB Max", icon: "archivebox.fill")
+                        SpecPill(title: "RAM HEADROOM", value: "\(m.ramHeadroomBytes / 1024) KB Free", icon: "gauge")
+                        SpecPill(title: "BOOTLOADER", value: m.replacesStockBootloader ? "Replaces Stock" : "Co-exists", icon: "exclamationmark.triangle.fill")
+                        SpecPill(title: "TARGET", value: m.target, icon: "cpu")
+                    }
+                    
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("BINARY SHA-256 CHECKSUM:")
+                            .font(.system(size: 9, weight: .bold).monospaced())
+                            .foregroundColor(.secondary)
+                        Text(m.binSha256)
+                            .font(.system(size: 10.5, design: .monospaced))
+                            .foregroundColor(VesperTheme.accentCyan)
+                            .lineLimit(1)
+                    }
+                    .padding(8)
+                    .background(Color.black.opacity(0.3))
+                    .cornerRadius(6)
+                }
+            }
+            .padding(20)
+            .glassCard()
+            
+            // Actions & Toolchain Grid
+            VStack(alignment: .leading, spacing: 14) {
+                Text("Pre-Flight Verification & Hardware Flashing")
+                    .font(.headline)
+                    .foregroundColor(VesperTheme.primaryTextColor)
+                
+                HStack(spacing: 12) {
+                    Button(action: {
+                        Task { _ = await ferrite.runPreflightCheck() }
+                    }) {
+                        HStack(spacing: 6) {
+                            if ferrite.isPreflightRunning {
+                                ProgressView().scaleEffect(0.6)
+                            } else {
+                                Image(systemName: "checkmark.shield.fill")
+                            }
+                            Text("Run Image Pre-flight")
+                        }
+                        .font(.caption.bold())
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .tint(VesperTheme.accentCyan)
+                    
+                    Button(action: {
+                        Task { _ = await ferrite.runUnitTests() }
+                    }) {
+                        HStack(spacing: 6) {
+                            if ferrite.isTestRunning {
+                                ProgressView().scaleEffect(0.6)
+                            } else {
+                                Image(systemName: "testtube.2")
+                            }
+                            Text("Run 33 Unit Tests")
+                        }
+                        .font(.caption.bold())
+                    }
+                    .buttonStyle(.bordered)
+                    
+                    Button(action: {
+                        Task { _ = await ferrite.scanDfuDevices() }
+                    }) {
+                        Label("Probe DFU USB", systemImage: "cable.connector")
+                            .font(.caption.bold())
+                    }
+                    .buttonStyle(.bordered)
+                    
+                    Button(action: {
+                        Task { _ = await ferrite.scanProbeDevices() }
+                    }) {
+                        Label("Probe SWD", systemImage: "bolt.horizontal")
+                            .font(.caption.bold())
+                    }
+                    .buttonStyle(.bordered)
+                    
+                    Spacer()
+                    
+                    Button(action: { showFlashConfirmModal = true }) {
+                        let baseStr = (ferrite.manifestInfo?.flashBase == 0x08008000) ? "0x08008000" : "0x08000000"
+                        Label("Flash via DFU (\(baseStr))", systemImage: "flame.fill")
+                            .font(.caption.bold())
+                            .foregroundColor(.white)
+                            .padding(.horizontal, 12)
+                            .padding(.vertical, 7)
+                            .background(VesperTheme.neonRed)
+                            .cornerRadius(8)
+                    }
+                    .buttonStyle(.plain)
+                }
+                
+                // Preflight or Test Output Console
+                if !ferrite.lastPreflightOutput.isEmpty || !ferrite.lastTestOutput.isEmpty || !ferrite.dfuScanOutput.isEmpty {
+                    VStack(alignment: .leading, spacing: 6) {
+                        Text("DIAGNOSTIC TELEMETRY LOG:")
+                            .font(.system(size: 9.5, weight: .bold).monospaced())
+                            .foregroundColor(.secondary)
+                        
+                        let combined = [
+                            ferrite.lastPreflightOutput.isEmpty ? nil : "[check_image.py]\n\(ferrite.lastPreflightOutput)",
+                            ferrite.lastTestOutput.isEmpty ? nil : "[test_build.py]\n\(ferrite.lastTestOutput)",
+                            ferrite.dfuScanOutput.isEmpty ? nil : "[dfu-util --list]\n\(ferrite.dfuScanOutput)",
+                            ferrite.probeScanOutput.isEmpty ? nil : "[probe-rs list]\n\(ferrite.probeScanOutput)",
+                            flashResult.isEmpty ? nil : "[Flash Result]\n\(flashResult)"
+                        ].compactMap { $0 }.joined(separator: "\n\n")
+                        
+                        Text(combined)
+                            .font(.caption.monospaced())
+                            .foregroundColor(VesperTheme.neonGreen)
+                            .padding(12)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .background(VesperTheme.terminalBackground)
+                            .cornerRadius(8)
+                            .overlay(RoundedRectangle(cornerRadius: 8).stroke(VesperTheme.subtleBorder, lineWidth: 1))
+                    }
+                }
+            }
+            .padding(20)
+            .glassCard()
+        }
+    }
+    
+    // MARK: - Tab 3: Workspace & Crates
+    private var workspaceTabContent: some View {
+        VStack(alignment: .leading, spacing: 18) {
+            Text("FerriteOS Rust Workspace Architecture")
+                .font(.title3.bold())
+                .foregroundColor(VesperTheme.primaryTextColor)
+            
+            Text("FerriteOS is organized as a clean Rust Cargo workspace with separation between host evaluation crates and on-target STM32 firmware.")
+                .font(.subheadline)
+                .foregroundColor(.secondary)
+            
+            let crates = [
+                ("ferrite-agent", "Natural language lexical matching, token routing, and slot-filling."),
+                ("ferrite-rf", "55+ Sub-GHz, NFC, and LF RFID decoders and raw timing stream parsers."),
+                ("ferrite-core", "Core types, error models, and allocation-free hardware dispatch interfaces."),
+                ("ferrite-drivers", "Per-chip hardware drivers for CC1101, ST25R3916 NFC, and displays."),
+                ("ferrite-console", "Interactive CLI host binary for instant signal analysis and memory sessions."),
+                ("firmware", "Standalone bare-metal Cortex-M4 firmware image (225 KB) for STM32WB55.")
+            ]
+            
+            VStack(spacing: 8) {
+                ForEach(crates, id: \.0) { name, desc in
+                    HStack(spacing: 12) {
+                        Text(name)
+                            .font(.system(size: 13, weight: .bold, design: .monospaced))
+                            .foregroundColor(VesperTheme.accentCyan)
+                            .frame(width: 150, alignment: .leading)
+                        
+                        Text(desc)
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                        
+                        Spacer()
+                    }
+                    .padding(10)
+                    .background(VesperTheme.cardBackground)
+                    .cornerRadius(6)
+                    .overlay(RoundedRectangle(cornerRadius: 6).stroke(VesperTheme.subtleBorder, lineWidth: 1))
+                }
+            }
+        }
+    }
+    
+    private func runIntent() {
+        let p = inputPhrase
+        Task {
+            do {
+                _ = try await ferrite.understandPhrase(p)
+            } catch {
+                executionFeedback = "Error: \(error.localizedDescription)"
+            }
+        }
+    }
+    
+    private func runSignalDecoder() {
+        let path = signalFilePath
+        isDecoding = true
+        decoderOutput = "Executing FerriteOS decode routine..."
+        Task {
+            do {
+                let out = try await ferrite.decodeCapture(filePath: path)
+                self.decoderOutput = out
+                self.isDecoding = false
+            } catch {
+                self.decoderOutput = "Decoder error: \(error.localizedDescription)"
+                self.isDecoding = false
+            }
+        }
+    }
+    
+    private func selectLocalFile() {
+        let panel = NSOpenPanel()
+        panel.canChooseFiles = true
+        panel.canChooseDirectories = false
+        panel.allowsMultipleSelection = false
+        panel.allowedContentTypes = []
+        if panel.runModal() == .OK, let url = panel.url {
+            self.signalFilePath = url.path
+            runSignalDecoder()
+        }
+    }
+    
+    private func executeFerriteFlash() {
+        Task {
+            do {
+                flashResult = "Scanning for STM32 DFU USB bootloader..."
+                let scan = await ferrite.scanDfuDevices()
+                if !scan.contains("0483:df11") && !scan.contains("Found DFU") {
+                    flashResult = """
+                    ⚠️ [No DFU Device Detected]
+                    Your Flipper Zero is currently in normal OS runtime mode.
+                    dfu-util requires the STM32WB55 microcontroller to be in DFU Bootloader Mode.
+                    
+                    👉 How to enter STM32 DFU Bootloader Mode (takes 3 seconds):
+                    1. Keep the Flipper connected to your Mac via USB-C.
+                    2. Press and hold LEFT + BACK buttons together until the screen blinks.
+                    3. Release the BACK button, but KEEP HOLDING the LEFT button for ~3 seconds.
+                    4. The Flipper will enter STM32 DFU Bootloader Mode (LED will illuminate blue).
+                    5. Click 'Probe DFU USB' to confirm, then click 'Flash via DFU'.
+                    """
+                    return
+                }
+                
+                flashResult = "DFU Bootloader detected! Initiating FerriteOS flash via dfu-util..."
+                let res = try await ferrite.flashFirmwareDfu()
+                flashResult = "✅ Flash Successful!\n\n\(res)"
+            } catch {
+                flashResult = "Flash error: \(error.localizedDescription)"
+            }
+        }
+    }
+}
