@@ -54,7 +54,7 @@ public struct MainContentView: View {
     @State private var selectedSection: NavigationSection? = .chat
     @State private var connection = FlipperConnectionManager.shared
     @State private var settings = AppSettings.shared
-    @State private var memoryStore = VesperMemoryStore.shared
+    @State private var memoryStore = FerriteSuiteMemoryStore.shared
     @State private var workflowEngine = WorkflowEngine.shared
     @State private var ferrite = FerriteOSService.shared
     @State private var webMcp = WebMcpServer.shared
@@ -70,7 +70,7 @@ public struct MainContentView: View {
                     Circle()
                         .fill(
                             LinearGradient(
-                                colors: [VesperTheme.accentCyan, VesperTheme.cyberPurple],
+                                colors: [FerriteSuiteTheme.accentCyan, FerriteSuiteTheme.cyberPurple],
                                 startPoint: .topLeading,
                                 endPoint: .bottomTrailing
                             )
@@ -85,10 +85,10 @@ public struct MainContentView: View {
                     VStack(alignment: .leading, spacing: 1) {
                         Text(AppInfo.productName)
                             .font(.system(size: 15, weight: .black, design: .monospaced))
-                            .foregroundColor(VesperTheme.primaryTextColor)
+                            .foregroundColor(FerriteSuiteTheme.primaryTextColor)
                         Text("Flipper AI Desktop")
                             .font(.system(size: 9.5, weight: .bold, design: .monospaced))
-                            .foregroundColor(VesperTheme.accentCyan)
+                            .foregroundColor(FerriteSuiteTheme.accentCyan)
                     }
                     
                     Spacer()
@@ -96,17 +96,17 @@ public struct MainContentView: View {
                     if webMcp.isRunning {
                         HStack(spacing: 4) {
                             Circle()
-                                .fill(VesperTheme.neonGreen)
+                                .fill(FerriteSuiteTheme.neonGreen)
                                 .frame(width: 6, height: 6)
                             Text("MCP:\(webMcp.port)")
                                 .font(.system(size: 9, weight: .bold, design: .monospaced))
-                                .foregroundColor(VesperTheme.neonGreen)
+                                .foregroundColor(FerriteSuiteTheme.neonGreen)
                         }
                         .padding(.horizontal, 6)
                         .padding(.vertical, 3)
-                        .background(VesperTheme.neonGreen.opacity(0.12))
+                        .background(FerriteSuiteTheme.neonGreen.opacity(0.12))
                         .cornerRadius(6)
-                        .overlay(RoundedRectangle(cornerRadius: 6).stroke(VesperTheme.neonGreen.opacity(0.3), lineWidth: 1))
+                        .overlay(RoundedRectangle(cornerRadius: 6).stroke(FerriteSuiteTheme.neonGreen.opacity(0.3), lineWidth: 1))
                         .help("WebMCP Server running on port \(webMcp.port) (Claude / Cursor ready)")
                     }
                     
@@ -114,13 +114,13 @@ public struct MainContentView: View {
                     Button(action: { showingQuickstart = true }) {
                         Image(systemName: "questionmark.circle")
                             .font(.system(size: 12, weight: .semibold))
-                            .foregroundColor(VesperTheme.accentCyan)
+                            .foregroundColor(FerriteSuiteTheme.accentCyan)
                             .padding(6)
-                            .background(VesperTheme.secondaryCardBackground)
+                            .background(FerriteSuiteTheme.secondaryCardBackground)
                             .cornerRadius(6)
                             .overlay(
                                 RoundedRectangle(cornerRadius: 6)
-                                    .stroke(VesperTheme.subtleBorder, lineWidth: 1)
+                                    .stroke(FerriteSuiteTheme.subtleBorder, lineWidth: 1)
                             )
                     }
                     .buttonStyle(.plain)
@@ -138,13 +138,13 @@ public struct MainContentView: View {
                     }) {
                         Image(systemName: settings.appTheme.iconName)
                             .font(.system(size: 12, weight: .semibold))
-                            .foregroundColor(VesperTheme.accentCyan)
+                            .foregroundColor(FerriteSuiteTheme.accentCyan)
                             .padding(6)
-                            .background(VesperTheme.secondaryCardBackground)
+                            .background(FerriteSuiteTheme.secondaryCardBackground)
                             .cornerRadius(6)
                             .overlay(
                                 RoundedRectangle(cornerRadius: 6)
-                                    .stroke(VesperTheme.subtleBorder, lineWidth: 1)
+                                    .stroke(FerriteSuiteTheme.subtleBorder, lineWidth: 1)
                             )
                     }
                     .buttonStyle(.plain)
@@ -152,24 +152,24 @@ public struct MainContentView: View {
                 }
                 .padding(.horizontal, 14)
                 .padding(.vertical, 12)
-                .background(VesperTheme.cardBackground)
+                .background(FerriteSuiteTheme.cardBackground)
                 
-                Divider().background(VesperTheme.subtleBorder)
+                Divider().background(FerriteSuiteTheme.subtleBorder)
                 
                 // Grouped Sidebar Sections
                 List(selection: $selectedSection) {
                     Section("INTELLIGENCE & OPS") {
                         sidebarRow(section: .chat)
-                        sidebarRow(section: .workflows, badge: workflowEngine.isExecuting ? "RUNNING" : nil, badgeColor: VesperTheme.neonAmber)
+                        sidebarRow(section: .workflows, badge: workflowEngine.isExecuting ? "RUNNING" : nil, badgeColor: FerriteSuiteTheme.neonAmber)
                         sidebarRow(section: .microDocs)
-                        sidebarRow(section: .ferriteWorkbench, badge: ferrite.isAvailable ? "ACTIVE" : nil, badgeColor: VesperTheme.accentCyan)
-                        sidebarRow(section: .memoryVault, badge: "\(memoryStore.memories.count)", badgeColor: VesperTheme.cyberPurple)
+                        sidebarRow(section: .ferriteWorkbench, badge: ferrite.isAvailable ? "ACTIVE" : nil, badgeColor: FerriteSuiteTheme.accentCyan)
+                        sidebarRow(section: .memoryVault, badge: "\(memoryStore.memories.count)", badgeColor: FerriteSuiteTheme.cyberPurple)
                     }
                     
                     Section("HARDWARE & CONTROLS") {
-                        sidebarRow(section: .device, indicatorDot: connection.status.isConnected ? VesperTheme.neonGreen : nil)
-                        sidebarRow(section: .virtualFlipper, indicatorDot: connection.status.isConnected ? VesperTheme.flipperOrange : nil)
-                        sidebarRow(section: .debugProbe, badge: DebugProbeService.shared.targetTelemetry.isConnected ? "SWD" : (DebugProbeService.shared.selectedProbe != nil ? "PROBE" : nil), badgeColor: VesperTheme.accentCyan)
+                        sidebarRow(section: .device, indicatorDot: connection.status.isConnected ? FerriteSuiteTheme.neonGreen : nil)
+                        sidebarRow(section: .virtualFlipper, indicatorDot: connection.status.isConnected ? FerriteSuiteTheme.flipperOrange : nil)
+                        sidebarRow(section: .debugProbe, badge: DebugProbeService.shared.targetTelemetry.isConnected ? "SWD" : (DebugProbeService.shared.selectedProbe != nil ? "PROBE" : nil), badgeColor: FerriteSuiteTheme.accentCyan)
                         sidebarRow(section: .firmwareHub)
                         sidebarRow(section: .marauder)
                     }
@@ -192,20 +192,20 @@ public struct MainContentView: View {
                 }
                 .listStyle(.sidebar)
                 
-                Divider().background(VesperTheme.subtleBorder)
+                Divider().background(FerriteSuiteTheme.subtleBorder)
                 
                 // Bottom Live Telemetry Footer
                 HStack(spacing: 10) {
                     Circle()
-                        .fill(connection.status.isConnected ? VesperTheme.neonGreen : VesperTheme.neonRed)
+                        .fill(connection.status.isConnected ? FerriteSuiteTheme.neonGreen : FerriteSuiteTheme.neonRed)
                         .frame(width: 8, height: 8)
-                        .shadow(color: connection.status.isConnected ? VesperTheme.neonGreen.opacity(0.6) : Color.clear, radius: 3)
+                        .shadow(color: connection.status.isConnected ? FerriteSuiteTheme.neonGreen.opacity(0.6) : Color.clear, radius: 3)
                     
                     VStack(alignment: .leading, spacing: 2) {
                         HStack(spacing: 4) {
                             Text(connection.deviceInfo.hardwareModel.isEmpty ? "Flipper Zero" : connection.deviceInfo.hardwareModel)
                                 .font(.caption.bold())
-                                .foregroundColor(VesperTheme.primaryTextColor)
+                                .foregroundColor(FerriteSuiteTheme.primaryTextColor)
                                 .lineLimit(1)
                             
                             if connection.status.isConnected {
@@ -219,7 +219,7 @@ public struct MainContentView: View {
                             HStack(spacing: 4) {
                                 Image(systemName: connection.deviceInfo.isCharging ? "bolt.batteryblock.fill" : "battery.75percent")
                                     .font(.system(size: 9))
-                                    .foregroundColor(connection.deviceInfo.batteryLevel < 20 ? VesperTheme.neonRed : VesperTheme.neonGreen)
+                                    .foregroundColor(connection.deviceInfo.batteryLevel < 20 ? FerriteSuiteTheme.neonRed : FerriteSuiteTheme.neonGreen)
                                 Text("\(connection.deviceInfo.batteryLevel)%")
                                     .font(.system(size: 10, weight: .bold).monospaced())
                                     .foregroundColor(.secondary)
@@ -229,13 +229,13 @@ public struct MainContentView: View {
                                 
                                 Text(connection.status.description)
                                     .font(.system(size: 9.5).monospaced())
-                                    .foregroundColor(VesperTheme.accentCyan)
+                                    .foregroundColor(FerriteSuiteTheme.accentCyan)
                                     .lineLimit(1)
                             }
                         } else {
                             Text("Disconnected")
                                 .font(.caption2.monospaced())
-                                .foregroundColor(VesperTheme.neonRed)
+                                .foregroundColor(FerriteSuiteTheme.neonRed)
                         }
                     }
                     
@@ -243,10 +243,10 @@ public struct MainContentView: View {
                 }
                 .padding(.horizontal, 14)
                 .padding(.vertical, 10)
-                .background(VesperTheme.cardBackground)
+                .background(FerriteSuiteTheme.cardBackground)
             }
             .frame(minWidth: 230, idealWidth: 250)
-            .background(VesperTheme.darkBackground)
+            .background(FerriteSuiteTheme.darkBackground)
         } detail: {
             Group {
                 switch selectedSection ?? .chat {
@@ -313,7 +313,7 @@ public struct MainContentView: View {
     }
     
     @ViewBuilder
-    private func sidebarRow(section: NavigationSection, badge: String? = nil, badgeColor: Color = VesperTheme.accentCyan, indicatorDot: Color? = nil) -> some View {
+    private func sidebarRow(section: NavigationSection, badge: String? = nil, badgeColor: Color = FerriteSuiteTheme.accentCyan, indicatorDot: Color? = nil) -> some View {
         NavigationLink(value: section) {
             HStack(spacing: 8) {
                 Label(section.rawValue, systemImage: section.icon)

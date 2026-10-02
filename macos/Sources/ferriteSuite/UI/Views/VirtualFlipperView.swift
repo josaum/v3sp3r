@@ -163,7 +163,7 @@ public struct VirtualFlipperView: View {
                                 Button(action: { pressKey(.up) }) {
                                     Image(systemName: "triangle.fill")
                                         .font(.system(size: 14))
-                                        .foregroundColor(isPressingKey[.up] == true ? VesperTheme.accentCyan : .white)
+                                        .foregroundColor(isPressingKey[.up] == true ? FerriteSuiteTheme.accentCyan : .white)
                                         .frame(width: 44, height: 36)
                                 }
                                 .buttonStyle(.plain)
@@ -175,7 +175,7 @@ public struct VirtualFlipperView: View {
                                     Image(systemName: "triangle.fill")
                                         .rotationEffect(.degrees(180))
                                         .font(.system(size: 14))
-                                        .foregroundColor(isPressingKey[.down] == true ? VesperTheme.accentCyan : .white)
+                                        .foregroundColor(isPressingKey[.down] == true ? FerriteSuiteTheme.accentCyan : .white)
                                         .frame(width: 44, height: 36)
                                 }
                                 .buttonStyle(.plain)
@@ -187,7 +187,7 @@ public struct VirtualFlipperView: View {
                                     Image(systemName: "triangle.fill")
                                         .rotationEffect(.degrees(-90))
                                         .font(.system(size: 14))
-                                        .foregroundColor(isPressingKey[.left] == true ? VesperTheme.accentCyan : .white)
+                                        .foregroundColor(isPressingKey[.left] == true ? FerriteSuiteTheme.accentCyan : .white)
                                         .frame(width: 36, height: 44)
                                 }
                                 .buttonStyle(.plain)
@@ -199,7 +199,7 @@ public struct VirtualFlipperView: View {
                                     Image(systemName: "triangle.fill")
                                         .rotationEffect(.degrees(90))
                                         .font(.system(size: 14))
-                                        .foregroundColor(isPressingKey[.right] == true ? VesperTheme.accentCyan : .white)
+                                        .foregroundColor(isPressingKey[.right] == true ? FerriteSuiteTheme.accentCyan : .white)
                                         .frame(width: 36, height: 44)
                                 }
                                 .buttonStyle(.plain)
@@ -209,14 +209,14 @@ public struct VirtualFlipperView: View {
                                 // CENTER OK BUTTON (Signature Flipper Orange)
                                 Button(action: { pressKey(.ok) }) {
                                     Circle()
-                                        .fill(VesperTheme.flipperOrange)
+                                        .fill(FerriteSuiteTheme.flipperOrange)
                                         .frame(width: 44, height: 44)
                                         .overlay(
                                              Text("OK")
                                                  .font(.system(size: 11, weight: .black))
                                                  .foregroundColor(.black)
                                         )
-                                        .shadow(color: VesperTheme.flipperOrange.opacity(0.4), radius: 4)
+                                        .shadow(color: FerriteSuiteTheme.flipperOrange.opacity(0.4), radius: 4)
                                 }
                                 .buttonStyle(.plain)
                                 .help("OK / Confirm (Return Key)")
@@ -253,7 +253,7 @@ public struct VirtualFlipperView: View {
                         .fill(caseEdition == .white ? Color(red: 0.94, green: 0.95, blue: 0.97) : Color(red: 0.12, green: 0.14, blue: 0.17))
                         .overlay(
                             RoundedRectangle(cornerRadius: 24)
-                                .stroke(caseEdition == .white ? Color.gray.opacity(0.3) : VesperTheme.subtleBorder, lineWidth: 1.5)
+                                .stroke(caseEdition == .white ? Color.gray.opacity(0.3) : FerriteSuiteTheme.subtleBorder, lineWidth: 1.5)
                         )
                 )
                 .shadow(color: Color.black.opacity(caseEdition == .white ? 0.15 : 0.6), radius: 16, x: 0, y: 8)
@@ -281,7 +281,7 @@ public struct VirtualFlipperView: View {
             }
             .padding(20)
         }
-        .background(VesperTheme.darkBackground)
+        .background(FerriteSuiteTheme.darkBackground)
     }
     
     private func pressKey(_ key: FlipperKey) {

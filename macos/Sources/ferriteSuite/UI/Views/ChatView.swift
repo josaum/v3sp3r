@@ -1,7 +1,7 @@
 import SwiftUI
 
 public struct ChatView: View {
-    @State private var agent = VesperAgent.shared
+    @State private var agent = FerriteSuiteAgent.shared
     @State private var connection = FlipperConnectionManager.shared
     @State private var voice = AudioVoiceService.shared
     @State private var workflowEngine = WorkflowEngine.shared
@@ -30,7 +30,7 @@ public struct ChatView: View {
                 // Connection Status & Battery
                 HStack(spacing: 8) {
                     Circle()
-                        .fill(connection.status.isConnected ? VesperTheme.neonGreen : VesperTheme.neonRed)
+                        .fill(connection.status.isConnected ? FerriteSuiteTheme.neonGreen : FerriteSuiteTheme.neonRed)
                         .frame(width: 8, height: 8)
                     Text(connection.status.description)
                         .font(.caption.monospaced())
@@ -39,13 +39,13 @@ public struct ChatView: View {
                     if connection.status.isConnected {
                         HStack(spacing: 4) {
                             Image(systemName: connection.deviceInfo.isCharging ? "bolt.fill" : "battery.75percent")
-                                .foregroundColor(connection.deviceInfo.batteryLevel < 20 ? VesperTheme.neonRed : VesperTheme.neonGreen)
+                                .foregroundColor(connection.deviceInfo.batteryLevel < 20 ? FerriteSuiteTheme.neonRed : FerriteSuiteTheme.neonGreen)
                             Text("\(connection.deviceInfo.batteryLevel)%")
                                 .font(.caption2.bold().monospaced())
                         }
                         .padding(.horizontal, 6)
                         .padding(.vertical, 2)
-                        .background(VesperTheme.secondaryCardBackground)
+                        .background(FerriteSuiteTheme.secondaryCardBackground)
                         .cornerRadius(4)
                     }
                 }
@@ -61,18 +61,18 @@ public struct ChatView: View {
                     HStack(spacing: 5) {
                         Image(systemName: settings.autopilotMode == .autonomous ? "bolt.shield.fill" : "shield.lefthalf.filled")
                             .font(.caption2)
-                            .foregroundColor(settings.autopilotMode == .autonomous ? VesperTheme.neonGreen : .secondary)
+                            .foregroundColor(settings.autopilotMode == .autonomous ? FerriteSuiteTheme.neonGreen : .secondary)
                         Text(settings.autopilotMode == .autonomous ? "AUTOPILOT: ON" : "SUPERVISED")
                             .font(.system(size: 9.5, weight: .bold).monospaced())
-                            .foregroundColor(settings.autopilotMode == .autonomous ? VesperTheme.neonGreen : .secondary)
+                            .foregroundColor(settings.autopilotMode == .autonomous ? FerriteSuiteTheme.neonGreen : .secondary)
                     }
                     .padding(.horizontal, 8)
                     .padding(.vertical, 3)
-                    .background(settings.autopilotMode == .autonomous ? VesperTheme.neonGreen.opacity(0.15) : VesperTheme.secondaryCardBackground)
+                    .background(settings.autopilotMode == .autonomous ? FerriteSuiteTheme.neonGreen.opacity(0.15) : FerriteSuiteTheme.secondaryCardBackground)
                     .cornerRadius(6)
                     .overlay(
                         RoundedRectangle(cornerRadius: 6)
-                            .stroke(settings.autopilotMode == .autonomous ? VesperTheme.neonGreen.opacity(0.5) : VesperTheme.subtleBorder, lineWidth: 1)
+                            .stroke(settings.autopilotMode == .autonomous ? FerriteSuiteTheme.neonGreen.opacity(0.5) : FerriteSuiteTheme.subtleBorder, lineWidth: 1)
                     )
                 }
                 .buttonStyle(.plain)
@@ -95,8 +95,8 @@ public struct ChatView: View {
                         }
                         .padding(.horizontal, 6)
                         .padding(.vertical, 2)
-                        .background(VesperTheme.neonAmber.opacity(0.2))
-                        .foregroundColor(VesperTheme.neonAmber)
+                        .background(FerriteSuiteTheme.neonAmber.opacity(0.2))
+                        .foregroundColor(FerriteSuiteTheme.neonAmber)
                         .cornerRadius(4)
                     }
                     .buttonStyle(.plain)
@@ -105,15 +105,15 @@ public struct ChatView: View {
                 // Real-time Flipper Activity Pill
                 HStack(spacing: 5) {
                     Circle()
-                        .fill(connection.currentActivity.contains("Active") || connection.currentActivity.contains("Exec") ? VesperTheme.neonAmber : VesperTheme.accentCyan)
+                        .fill(connection.currentActivity.contains("Active") || connection.currentActivity.contains("Exec") ? FerriteSuiteTheme.neonAmber : FerriteSuiteTheme.accentCyan)
                         .frame(width: 6, height: 6)
                     Text(connection.currentActivity)
                         .font(.caption2.bold().monospaced())
-                        .foregroundColor(VesperTheme.accentCyan)
+                        .foregroundColor(FerriteSuiteTheme.accentCyan)
                 }
                 .padding(.horizontal, 8)
                 .padding(.vertical, 3)
-                .background(VesperTheme.accentCyan.opacity(0.12))
+                .background(FerriteSuiteTheme.accentCyan.opacity(0.12))
                 .cornerRadius(6)
                 
                 // Live Serial Telemetry Console Toggle
@@ -126,8 +126,8 @@ public struct ChatView: View {
                     }
                     .padding(.horizontal, 8)
                     .padding(.vertical, 3)
-                    .background(showConsoleDrawer ? VesperTheme.accentCyan.opacity(0.25) : VesperTheme.secondaryCardBackground)
-                    .foregroundColor(showConsoleDrawer ? VesperTheme.accentCyan : .secondary)
+                    .background(showConsoleDrawer ? FerriteSuiteTheme.accentCyan.opacity(0.25) : FerriteSuiteTheme.secondaryCardBackground)
+                    .foregroundColor(showConsoleDrawer ? FerriteSuiteTheme.accentCyan : .secondary)
                     .cornerRadius(6)
                 }
                 .buttonStyle(.plain)
@@ -135,14 +135,14 @@ public struct ChatView: View {
                 
                 Text(agent.statusText)
                     .font(.caption.monospaced())
-                    .foregroundColor(VesperTheme.accentCyan)
+                    .foregroundColor(FerriteSuiteTheme.accentCyan)
                     .padding(.horizontal, 8)
                     .padding(.vertical, 3)
-                    .background(VesperTheme.accentCyan.opacity(0.1))
+                    .background(FerriteSuiteTheme.accentCyan.opacity(0.1))
                     .cornerRadius(6)
                 
                 Button(action: {
-                    agent.messages = [ChatMessage(role: .assistant, content: "Conversation cleared. Vesper is ready.")]
+                    agent.messages = [ChatMessage(role: .assistant, content: "Conversation cleared. ferriteSuite is ready.")]
                 }) {
                     Image(systemName: "trash")
                         .font(.caption)
@@ -153,7 +153,7 @@ public struct ChatView: View {
             }
             .padding(.horizontal, 16)
             .padding(.vertical, 10)
-            .background(VesperTheme.cardBackground)
+            .background(FerriteSuiteTheme.cardBackground)
             
             // Expandable Live Serial Stream Console Drawer
             if showConsoleDrawer {
@@ -167,7 +167,7 @@ public struct ChatView: View {
                         
                         Text("TX: \(connection.txBytesTotal) B  |  RX: \(connection.rxBytesTotal) B")
                             .font(.system(size: 10).monospaced())
-                            .foregroundColor(VesperTheme.accentCyan)
+                            .foregroundColor(FerriteSuiteTheme.accentCyan)
                         
                         Button(action: {
                             let text = connection.recentLogLines.joined(separator: "\n")
@@ -211,8 +211,8 @@ public struct ChatView: View {
                     }
                 }
                 .padding(10)
-                .background(VesperTheme.terminalBackground)
-                .border(VesperTheme.subtleBorder, width: 1)
+                .background(FerriteSuiteTheme.terminalBackground)
+                .border(FerriteSuiteTheme.subtleBorder, width: 1)
             }
             
             // Real-Time Active Workflow Banner with Live Pause Controls
@@ -254,12 +254,12 @@ public struct ChatView: View {
                                     .font(.caption2.bold())
                                     .padding(.horizontal, 10)
                                     .padding(.vertical, 5)
-                                    .background(VesperTheme.neonGreen.opacity(0.2))
-                                    .foregroundColor(VesperTheme.neonGreen)
+                                    .background(FerriteSuiteTheme.neonGreen.opacity(0.2))
+                                    .foregroundColor(FerriteSuiteTheme.neonGreen)
                                     .cornerRadius(6)
                                     .overlay(
                                         RoundedRectangle(cornerRadius: 6)
-                                            .stroke(VesperTheme.neonGreen, lineWidth: 1)
+                                            .stroke(FerriteSuiteTheme.neonGreen, lineWidth: 1)
                                     )
                             }
                             .buttonStyle(.plain)
@@ -269,12 +269,12 @@ public struct ChatView: View {
                                     .font(.caption2.bold())
                                     .padding(.horizontal, 10)
                                     .padding(.vertical, 5)
-                                    .background(VesperTheme.neonAmber.opacity(0.25))
-                                    .foregroundColor(VesperTheme.neonAmber)
+                                    .background(FerriteSuiteTheme.neonAmber.opacity(0.25))
+                                    .foregroundColor(FerriteSuiteTheme.neonAmber)
                                     .cornerRadius(6)
                                     .overlay(
                                         RoundedRectangle(cornerRadius: 6)
-                                            .stroke(VesperTheme.neonAmber, lineWidth: 1)
+                                            .stroke(FerriteSuiteTheme.neonAmber, lineWidth: 1)
                                     )
                             }
                             .buttonStyle(.plain)
@@ -284,7 +284,7 @@ public struct ChatView: View {
                             Image(systemName: "forward.frame.fill")
                                 .font(.caption2)
                                 .padding(6)
-                                .background(VesperTheme.secondaryCardBackground)
+                                .background(FerriteSuiteTheme.secondaryCardBackground)
                                 .foregroundColor(.secondary)
                                 .cornerRadius(6)
                         }
@@ -296,8 +296,8 @@ public struct ChatView: View {
                             Image(systemName: "stop.fill")
                                 .font(.caption2)
                                 .padding(6)
-                                .background(VesperTheme.secondaryCardBackground)
-                                .foregroundColor(VesperTheme.neonRed)
+                                .background(FerriteSuiteTheme.secondaryCardBackground)
+                                .foregroundColor(FerriteSuiteTheme.neonRed)
                                 .cornerRadius(6)
                         }
                         .buttonStyle(.plain)
@@ -305,12 +305,12 @@ public struct ChatView: View {
                 }
                 .padding(.horizontal, 16)
                 .padding(.vertical, 8)
-                .background(VesperTheme.cardBackground.opacity(0.95))
+                .background(FerriteSuiteTheme.cardBackground.opacity(0.95))
                 .border(activeWf.executionState.color.opacity(0.4), width: 1)
             }
             
             Divider()
-                .background(VesperTheme.subtleBorder)
+                .background(FerriteSuiteTheme.subtleBorder)
             
             // Messages Scroll Area
             ScrollViewReader { proxy in
@@ -340,7 +340,7 @@ public struct ChatView: View {
             }
             
             Divider()
-                .background(VesperTheme.subtleBorder)
+                .background(FerriteSuiteTheme.subtleBorder)
             
             // Quick Prompts Row
             ScrollView(.horizontal, showsIndicators: false) {
@@ -355,11 +355,11 @@ public struct ChatView: View {
                                 .foregroundColor(.primary)
                                 .padding(.horizontal, 10)
                                 .padding(.vertical, 5)
-                                .background(VesperTheme.secondaryCardBackground)
+                                .background(FerriteSuiteTheme.secondaryCardBackground)
                                 .cornerRadius(12)
                                 .overlay(
                                     RoundedRectangle(cornerRadius: 12)
-                                        .stroke(VesperTheme.subtleBorder, lineWidth: 1)
+                                        .stroke(FerriteSuiteTheme.subtleBorder, lineWidth: 1)
                                 )
                         }
                         .buttonStyle(.plain)
@@ -368,7 +368,7 @@ public struct ChatView: View {
                 .padding(.horizontal, 16)
                 .padding(.vertical, 8)
             }
-            .background(VesperTheme.cardBackground.opacity(0.5))
+            .background(FerriteSuiteTheme.cardBackground.opacity(0.5))
             
             // Interactive Slash Command Autocomplete Bar
             if inputText.hasPrefix("/") {
@@ -410,7 +410,7 @@ public struct ChatView: View {
                     .padding(.horizontal, 16)
                     .padding(.vertical, 6)
                 }
-                .background(VesperTheme.cardBackground)
+                .background(FerriteSuiteTheme.cardBackground)
                 .transition(.opacity)
             }
             
@@ -432,18 +432,18 @@ public struct ChatView: View {
                     }
                     .padding(.horizontal, 8)
                     .padding(.vertical, 8)
-                    .background(inputText.hasPrefix("/goal ") ? VesperTheme.neonAmber.opacity(0.25) : VesperTheme.secondaryCardBackground)
-                    .foregroundColor(inputText.hasPrefix("/goal ") ? VesperTheme.neonAmber : .secondary)
+                    .background(inputText.hasPrefix("/goal ") ? FerriteSuiteTheme.neonAmber.opacity(0.25) : FerriteSuiteTheme.secondaryCardBackground)
+                    .foregroundColor(inputText.hasPrefix("/goal ") ? FerriteSuiteTheme.neonAmber : .secondary)
                     .cornerRadius(6)
                     .overlay(
                         RoundedRectangle(cornerRadius: 6)
-                            .stroke(inputText.hasPrefix("/goal ") ? VesperTheme.neonAmber : VesperTheme.subtleBorder, lineWidth: 1)
+                            .stroke(inputText.hasPrefix("/goal ") ? FerriteSuiteTheme.neonAmber : FerriteSuiteTheme.subtleBorder, lineWidth: 1)
                     )
                 }
                 .buttonStyle(.plain)
                 .help("Toggle autonomous multi-step mission goal prefix (/goal)")
                 
-                TextField("Prompt Vesper or set goal (e.g. '/goal audit 433MHz signals')...", text: $inputText)
+                TextField("Prompt ferriteSuite or set goal (e.g. '/goal audit 433MHz signals')...", text: $inputText)
                     .textFieldStyle(.plain)
                     .font(.body)
                     .focused($isInputFocused)
@@ -451,17 +451,17 @@ public struct ChatView: View {
                         submitMessage()
                     }
                     .padding(10)
-                    .background(VesperTheme.secondaryCardBackground)
+                    .background(FerriteSuiteTheme.secondaryCardBackground)
                     .cornerRadius(8)
                     .overlay(
                         RoundedRectangle(cornerRadius: 8)
-                            .stroke(isInputFocused ? VesperTheme.accentCyan.opacity(0.8) : VesperTheme.subtleBorder, lineWidth: 1)
+                            .stroke(isInputFocused ? FerriteSuiteTheme.accentCyan.opacity(0.8) : FerriteSuiteTheme.subtleBorder, lineWidth: 1)
                     )
                 
                 Button(action: toggleVoiceDictation) {
                     Image(systemName: voice.isListening ? "waveform.circle.fill" : "mic.circle.fill")
                         .font(.title2)
-                        .foregroundColor(voice.isListening ? VesperTheme.neonRed : VesperTheme.accentCyan)
+                        .foregroundColor(voice.isListening ? FerriteSuiteTheme.neonRed : FerriteSuiteTheme.accentCyan)
                 }
                 .buttonStyle(.plain)
                 .help(voice.isListening ? "Stop Voice Dictation" : "Dictate Prompt with Voice")
@@ -474,7 +474,7 @@ public struct ChatView: View {
                     } else {
                         Image(systemName: "arrow.up.circle.fill")
                             .font(.title2)
-                            .foregroundColor(inputText.isEmpty ? .secondary : VesperTheme.accentCyan)
+                            .foregroundColor(inputText.isEmpty ? .secondary : FerriteSuiteTheme.accentCyan)
                     }
                 }
                 .buttonStyle(.plain)
@@ -482,9 +482,9 @@ public struct ChatView: View {
                 .keyboardShortcut(.return, modifiers: [])
             }
             .padding(16)
-            .background(VesperTheme.cardBackground)
+            .background(FerriteSuiteTheme.cardBackground)
         }
-        .background(VesperTheme.darkBackground)
+        .background(FerriteSuiteTheme.darkBackground)
     }
     
     private func toggleVoiceDictation() {
@@ -515,7 +515,7 @@ public struct ChatView: View {
         
         // Native Slash Commands
         if text == "/clear" {
-            agent.messages = [ChatMessage(role: .assistant, content: "Conversation cleared. Vesper is ready.")]
+            agent.messages = [ChatMessage(role: .assistant, content: "Conversation cleared. ferriteSuite is ready.")]
             return
         } else if text == "/theme" {
             switch settings.appTheme {
@@ -631,21 +631,21 @@ private struct SlashCommandChip: View {
             HStack(spacing: 5) {
                 Image(systemName: icon)
                     .font(.system(size: 10))
-                    .foregroundColor(VesperTheme.accentCyan)
+                    .foregroundColor(FerriteSuiteTheme.accentCyan)
                 Text(cmd)
                     .font(.system(size: 10.5, weight: .bold, design: .monospaced))
-                    .foregroundColor(VesperTheme.primaryTextColor)
+                    .foregroundColor(FerriteSuiteTheme.primaryTextColor)
                 Text("(\(desc))")
                     .font(.system(size: 9.5))
                     .foregroundColor(.secondary)
             }
             .padding(.horizontal, 8)
             .padding(.vertical, 4)
-            .background(VesperTheme.secondaryCardBackground)
+            .background(FerriteSuiteTheme.secondaryCardBackground)
             .cornerRadius(6)
             .overlay(
                 RoundedRectangle(cornerRadius: 6)
-                    .stroke(VesperTheme.subtleBorder, lineWidth: 1)
+                    .stroke(FerriteSuiteTheme.subtleBorder, lineWidth: 1)
             )
         }
         .buttonStyle(.plain)
@@ -663,7 +663,7 @@ private struct MessageRow: View {
                 Spacer(minLength: 40)
             } else {
                 Circle()
-                    .fill(VesperTheme.cyberPurple.gradient)
+                    .fill(FerriteSuiteTheme.cyberPurple.gradient)
                     .frame(width: 28, height: 28)
                     .overlay(
                         Image(systemName: "cpu")
@@ -689,8 +689,8 @@ private struct MessageRow: View {
                                 }
                                 .padding(.horizontal, 6)
                                 .padding(.vertical, 2)
-                                .background(prov == .hardwareVerified ? VesperTheme.neonGreen.opacity(0.18) : (prov == .toolProven ? VesperTheme.accentCyan.opacity(0.18) : Color.purple.opacity(0.18)))
-                                .foregroundColor(prov == .hardwareVerified ? VesperTheme.neonGreen : (prov == .toolProven ? VesperTheme.accentCyan : Color.purple))
+                                .background(prov == .hardwareVerified ? FerriteSuiteTheme.neonGreen.opacity(0.18) : (prov == .toolProven ? FerriteSuiteTheme.accentCyan.opacity(0.18) : Color.purple.opacity(0.18)))
+                                .foregroundColor(prov == .hardwareVerified ? FerriteSuiteTheme.neonGreen : (prov == .toolProven ? FerriteSuiteTheme.accentCyan : Color.purple))
                                 .cornerRadius(4)
                                 .padding(.bottom, 2)
                             }
@@ -711,7 +711,7 @@ private struct MessageRow: View {
                                         Text(hasCopied ? "Copied" : "Copy")
                                     }
                                     .font(.caption2)
-                                    .foregroundColor(hasCopied ? VesperTheme.neonGreen : VesperTheme.secondaryTextColor)
+                                    .foregroundColor(hasCopied ? FerriteSuiteTheme.neonGreen : FerriteSuiteTheme.secondaryTextColor)
                                 }
                                 .buttonStyle(.plain)
                                 .help("Copy response text to clipboard")
@@ -719,7 +719,7 @@ private struct MessageRow: View {
                                 Button(action: { AudioVoiceService.shared.speak(text: message.content) }) {
                                     Label("Speak", systemImage: "speaker.wave.2")
                                         .font(.caption2)
-                                        .foregroundColor(VesperTheme.accentCyan.opacity(0.8))
+                                        .foregroundColor(FerriteSuiteTheme.accentCyan.opacity(0.8))
                                 }
                                 .buttonStyle(.plain)
                                 .help("Read Aloud")
@@ -728,11 +728,11 @@ private struct MessageRow: View {
                         }
                     }
                     .padding(12)
-                    .background(message.role == .user ? VesperTheme.cyberPurple.opacity(0.18) : VesperTheme.cardBackground)
+                    .background(message.role == .user ? FerriteSuiteTheme.cyberPurple.opacity(0.18) : FerriteSuiteTheme.cardBackground)
                     .cornerRadius(12)
                     .overlay(
                         RoundedRectangle(cornerRadius: 12)
-                            .stroke(message.role == .user ? VesperTheme.cyberPurple.opacity(0.4) : VesperTheme.subtleBorder, lineWidth: 1)
+                            .stroke(message.role == .user ? FerriteSuiteTheme.cyberPurple.opacity(0.4) : FerriteSuiteTheme.subtleBorder, lineWidth: 1)
                     )
                     .shadow(color: Color.black.opacity(0.03), radius: 4, x: 0, y: 1)
                 }
@@ -753,7 +753,7 @@ private struct MessageRow: View {
                         HStack(spacing: 5) {
                             Image(systemName: "sparkles")
                                 .font(.system(size: 10, weight: .bold))
-                                .foregroundColor(VesperTheme.accentCyan)
+                                .foregroundColor(FerriteSuiteTheme.accentCyan)
                             Text("PROACTIVE RECOMMENDATIONS")
                                 .font(.system(size: 9.5, weight: .bold).monospaced())
                                 .foregroundColor(.secondary)
@@ -766,26 +766,26 @@ private struct MessageRow: View {
                                         HStack(spacing: 6) {
                                             Image(systemName: action.icon)
                                                 .font(.caption2)
-                                                .foregroundColor(VesperTheme.accentCyan)
+                                                .foregroundColor(FerriteSuiteTheme.accentCyan)
                                             VStack(alignment: .leading, spacing: 1) {
                                                 Text(action.title)
                                                     .font(.caption.bold())
-                                                    .foregroundColor(VesperTheme.primaryTextColor)
+                                                    .foregroundColor(FerriteSuiteTheme.primaryTextColor)
                                                 Text(action.category.uppercased())
                                                     .font(.system(size: 8, weight: .bold).monospaced())
                                                     .foregroundColor(.secondary)
                                             }
                                             Image(systemName: "arrow.up.right")
                                                 .font(.system(size: 9))
-                                                .foregroundColor(VesperTheme.accentCyan)
+                                                .foregroundColor(FerriteSuiteTheme.accentCyan)
                                         }
                                         .padding(.horizontal, 10)
                                         .padding(.vertical, 6)
-                                        .background(VesperTheme.secondaryCardBackground)
+                                        .background(FerriteSuiteTheme.secondaryCardBackground)
                                         .cornerRadius(8)
                                         .overlay(
                                             RoundedRectangle(cornerRadius: 8)
-                                                .stroke(VesperTheme.accentCyan.opacity(0.3), lineWidth: 1)
+                                                .stroke(FerriteSuiteTheme.accentCyan.opacity(0.3), lineWidth: 1)
                                         )
                                     }
                                     .buttonStyle(.plain)
@@ -801,7 +801,7 @@ private struct MessageRow: View {
                 Spacer(minLength: 40)
             } else {
                 Circle()
-                    .fill(VesperTheme.accentCyan.gradient)
+                    .fill(FerriteSuiteTheme.accentCyan.gradient)
                     .frame(width: 28, height: 28)
                     .overlay(
                         Image(systemName: "person.fill")
@@ -821,7 +821,7 @@ private struct ToolResultRow: View {
         VStack(alignment: .leading, spacing: 6) {
             HStack {
                 Image(systemName: result.isError ? "exclamationmark.triangle.fill" : "terminal.fill")
-                    .foregroundColor(result.isError ? VesperTheme.neonRed : VesperTheme.neonGreen)
+                    .foregroundColor(result.isError ? FerriteSuiteTheme.neonRed : FerriteSuiteTheme.neonGreen)
                     .font(.caption)
                 Text(result.isError ? "Hardware Error" : "Flipper Hardware Output")
                     .font(.system(size: 10, weight: .bold, design: .monospaced))
@@ -840,7 +840,7 @@ private struct ToolResultRow: View {
                         Text(hasCopied ? "Copied" : "Copy")
                     }
                     .font(.system(size: 9.5).monospaced())
-                    .foregroundColor(hasCopied ? VesperTheme.neonGreen : .secondary)
+                    .foregroundColor(hasCopied ? FerriteSuiteTheme.neonGreen : .secondary)
                 }
                 .buttonStyle(.plain)
             }
@@ -848,14 +848,14 @@ private struct ToolResultRow: View {
             Text(result.output)
                 .font(.system(size: 10.5, design: .monospaced))
                 .textSelection(.enabled)
-                .foregroundColor(result.isError ? VesperTheme.neonRed : Color(red: 0.2, green: 0.9, blue: 0.4))
+                .foregroundColor(result.isError ? FerriteSuiteTheme.neonRed : Color(red: 0.2, green: 0.9, blue: 0.4))
                 .padding(8)
                 .frame(maxWidth: .infinity, alignment: .leading)
-                .background(VesperTheme.terminalBackground)
+                .background(FerriteSuiteTheme.terminalBackground)
                 .cornerRadius(6)
                 .overlay(
                     RoundedRectangle(cornerRadius: 6)
-                        .stroke(VesperTheme.subtleBorder, lineWidth: 1)
+                        .stroke(FerriteSuiteTheme.subtleBorder, lineWidth: 1)
                 )
         }
         .padding(10)
@@ -878,11 +878,11 @@ private struct ToolCallBadge: View {
             }) {
                 HStack(spacing: 8) {
                     Image(systemName: "hammer.fill")
-                        .foregroundColor(VesperTheme.neonAmber)
+                        .foregroundColor(FerriteSuiteTheme.neonAmber)
                     
                     Text("Tool: \(tool.action)")
                         .font(.caption.monospaced().bold())
-                        .foregroundColor(VesperTheme.primaryTextColor)
+                        .foregroundColor(FerriteSuiteTheme.primaryTextColor)
                     
                     Spacer()
                     
@@ -909,47 +909,47 @@ private struct ToolCallBadge: View {
                         HStack(alignment: .top, spacing: 4) {
                             Text("\(key):")
                                 .font(.system(size: 9.5, weight: .bold, design: .monospaced))
-                                .foregroundColor(VesperTheme.accentCyan)
+                                .foregroundColor(FerriteSuiteTheme.accentCyan)
                             Text(tool.parameters[key] ?? "")
                                 .font(.system(size: 9.5, design: .monospaced))
-                                .foregroundColor(VesperTheme.primaryTextColor)
+                                .foregroundColor(FerriteSuiteTheme.primaryTextColor)
                         }
                     }
                 }
                 .padding(8)
                 .frame(maxWidth: .infinity, alignment: .leading)
-                .background(VesperTheme.terminalBackground)
+                .background(FerriteSuiteTheme.terminalBackground)
                 .cornerRadius(6)
             }
         }
         .padding(8)
-        .background(VesperTheme.secondaryCardBackground)
+        .background(FerriteSuiteTheme.secondaryCardBackground)
         .cornerRadius(8)
         .overlay(
             RoundedRectangle(cornerRadius: 8)
-                .stroke(VesperTheme.subtleBorder, lineWidth: 1)
+                .stroke(FerriteSuiteTheme.subtleBorder, lineWidth: 1)
         )
     }
     
     private var riskColor: Color {
         switch tool.riskLevel {
-        case .low: return VesperTheme.neonGreen
-        case .medium: return VesperTheme.neonAmber
-        case .high: return VesperTheme.neonRed
-        case .blocked: return VesperTheme.cyberPurple
+        case .low: return FerriteSuiteTheme.neonGreen
+        case .medium: return FerriteSuiteTheme.neonAmber
+        case .high: return FerriteSuiteTheme.neonRed
+        case .blocked: return FerriteSuiteTheme.cyberPurple
         }
     }
 }
 
 private struct PendingConfirmationCard: View {
     let toolCall: ToolCall
-    @State private var agent = VesperAgent.shared
+    @State private var agent = FerriteSuiteAgent.shared
     
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
             HStack {
                 Image(systemName: "shield.lefthalf.filled")
-                    .foregroundColor(VesperTheme.neonAmber)
+                    .foregroundColor(FerriteSuiteTheme.neonAmber)
                 Text("Confirm Flipper Hardware Action")
                     .font(.headline)
                 Spacer()
@@ -957,8 +957,8 @@ private struct PendingConfirmationCard: View {
                     .font(.caption.bold())
                     .padding(.horizontal, 8)
                     .padding(.vertical, 3)
-                    .background(VesperTheme.neonAmber.opacity(0.2))
-                    .foregroundColor(VesperTheme.neonAmber)
+                    .background(FerriteSuiteTheme.neonAmber.opacity(0.2))
+                    .foregroundColor(FerriteSuiteTheme.neonAmber)
                     .cornerRadius(6)
             }
             
@@ -974,7 +974,7 @@ private struct PendingConfirmationCard: View {
                     }
                 }
                 .padding(8)
-                .background(VesperTheme.terminalBackground)
+                .background(FerriteSuiteTheme.terminalBackground)
                 .cornerRadius(6)
             }
             
@@ -987,7 +987,7 @@ private struct PendingConfirmationCard: View {
                         .foregroundColor(.black)
                         .padding(.horizontal, 14)
                         .padding(.vertical, 6)
-                        .background(VesperTheme.accentCyan)
+                        .background(FerriteSuiteTheme.accentCyan)
                         .cornerRadius(8)
                 }
                 .buttonStyle(.plain)
@@ -1008,7 +1008,7 @@ private struct PendingConfirmationCard: View {
         .glassCard()
         .overlay(
             RoundedRectangle(cornerRadius: 12)
-                .stroke(VesperTheme.neonAmber.opacity(0.8), lineWidth: 1.5)
+                .stroke(FerriteSuiteTheme.neonAmber.opacity(0.8), lineWidth: 1.5)
         )
     }
 }

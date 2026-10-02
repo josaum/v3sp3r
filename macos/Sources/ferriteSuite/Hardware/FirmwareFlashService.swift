@@ -375,7 +375,7 @@ public final class FirmwareFlashService {
         flashLogs.append("✅ Flashing initiated successfully! Look at your Flipper screen as it flashes the new firmware.")
         
         // Record event in memory vault
-        VesperMemoryStore.shared.addMemory(
+        FerriteSuiteMemoryStore.shared.addMemory(
             category: .hardware,
             title: "Firmware Flash: \(release.title)",
             content: "Installed \(release.title) via /ext/update/\(release.tagName). Device rebooting."
@@ -487,7 +487,7 @@ public final class FirmwareFlashService {
         flashLogs.append("✅ Wireless Diagnostic / Devboard firmware written successfully to \(targetPort)!")
         
         // Save to memory
-        VesperMemoryStore.shared.addMemory(
+        FerriteSuiteMemoryStore.shared.addMemory(
             category: .hardware,
             title: "GPIO Devboard Flashed: \(release.title)",
             content: "Flashed \(release.assetName) to \(chip) over \(targetPort) at \(baudRate) baud."
@@ -757,7 +757,7 @@ public final class FirmwareFlashService {
                 distro: .ferriteOs,
                 publishedAt: Date(),
                 changelog: "Coexisting application image at 0x08008000 (safe alongside stock bootloader). Sovereign Rust reset runtime, Sub-GHz CC1101 engine, ST7565 LCD display stack, LP5562 RGB LED driver, and verified Ed25519/SHA-256 boot.",
-                downloadUrl: "file:///Users/josaum/projects/FerriteOS/firmware/ferrite-app.bin",
+                downloadUrl: "file://\(FerriteOSPaths.firmwareAppBin)",
                 assetName: "ferrite-app.bin",
                 fileSize: 236372,
                 targetType: .flipper,
@@ -770,7 +770,7 @@ public final class FirmwareFlashService {
                 distro: .ferriteOs,
                 publishedAt: Date(),
                 changelog: "Standalone sovereign bare-metal image at flash base 0x08000000. Direct hardware ownership of CPU1, high-speed DMA pulse capture, and zero-cortex-m-rt footprint.",
-                downloadUrl: "file:///Users/josaum/projects/FerriteOS/firmware/ferrite-fw.bin",
+                downloadUrl: "file://\(FerriteOSPaths.firmwareBin)",
                 assetName: "ferrite-fw.bin",
                 fileSize: 234644,
                 targetType: .flipper,

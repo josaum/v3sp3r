@@ -1,7 +1,7 @@
 import SwiftUI
 import AppKit
 
-public struct VesperTheme {
+public struct FerriteSuiteTheme {
     // Dynamic Accent Colors (Adapting smoothly to Light and Dark modes)
     public static var accentCyan: Color {
         Color(nsColor: NSColor(name: nil, dynamicProvider: { appearance in
@@ -126,12 +126,12 @@ public struct GlassCardModifier: ViewModifier {
     
     public func body(content: Content) -> some View {
         content
-            .background(VesperTheme.cardBackground)
+            .background(FerriteSuiteTheme.cardBackground)
             .cornerRadius(cornerRadius)
             .shadow(color: Color.black.opacity(0.04), radius: 6, x: 0, y: 2)
             .overlay(
                 RoundedRectangle(cornerRadius: cornerRadius)
-                    .stroke(VesperTheme.subtleBorder, lineWidth: 1)
+                    .stroke(FerriteSuiteTheme.subtleBorder, lineWidth: 1)
             )
     }
 }

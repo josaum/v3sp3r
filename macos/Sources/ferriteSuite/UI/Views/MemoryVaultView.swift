@@ -1,7 +1,7 @@
 import SwiftUI
 
 public struct MemoryVaultView: View {
-    @State private var memoryStore = VesperMemoryStore.shared
+    @State private var memoryStore = FerriteSuiteMemoryStore.shared
     @State private var searchQuery: String = ""
     @State private var selectedCategory: MemoryCategory? = nil
     
@@ -13,7 +13,7 @@ public struct MemoryVaultView: View {
     
     public init() {}
     
-    private var filteredMemories: [VesperMemory] {
+    private var filteredMemories: [FerriteSuiteMemory] {
         var list = memoryStore.search(query: searchQuery)
         if let cat = selectedCategory {
             list = list.filter { $0.category == cat }
@@ -29,13 +29,13 @@ public struct MemoryVaultView: View {
                     HStack(spacing: 8) {
                         Image(systemName: "brain.head.profile")
                             .font(.title2)
-                            .foregroundColor(VesperTheme.accentCyan)
+                            .foregroundColor(FerriteSuiteTheme.accentCyan)
                         Text("ferriteSuite Memory Vault")
                             .font(.title2.bold())
                     }
                     Text("Persistent long-term epistemic memory injected into Grok 4.7 context.")
                         .font(.caption)
-                        .foregroundColor(VesperTheme.secondaryTextColor)
+                        .foregroundColor(FerriteSuiteTheme.secondaryTextColor)
                 }
                 
                 Spacer()
@@ -51,7 +51,7 @@ public struct MemoryVaultView: View {
                         .font(.caption.bold())
                         .padding(.horizontal, 10)
                         .padding(.vertical, 6)
-                        .background(VesperTheme.secondaryCardBackground)
+                        .background(FerriteSuiteTheme.secondaryCardBackground)
                         .foregroundColor(.secondary)
                         .cornerRadius(8)
                 }
@@ -62,17 +62,17 @@ public struct MemoryVaultView: View {
                     Label("Add Memory", systemImage: "plus.circle.fill")
                         .padding(.horizontal, 12)
                         .padding(.vertical, 6)
-                        .background(VesperTheme.accentCyan.opacity(0.15))
-                        .foregroundColor(VesperTheme.accentCyan)
+                        .background(FerriteSuiteTheme.accentCyan.opacity(0.15))
+                        .foregroundColor(FerriteSuiteTheme.accentCyan)
                         .cornerRadius(8)
                 }
                 .buttonStyle(.plain)
             }
             .padding(.horizontal, 20)
             .padding(.vertical, 14)
-            .background(VesperTheme.cardBackground)
+            .background(FerriteSuiteTheme.cardBackground)
             
-            Divider().background(VesperTheme.subtleBorder)
+            Divider().background(FerriteSuiteTheme.subtleBorder)
             
             // Search and Category Filters
             VStack(spacing: 10) {
@@ -90,7 +90,7 @@ public struct MemoryVaultView: View {
                     }
                 }
                 .padding(8)
-                .background(VesperTheme.secondaryCardBackground)
+                .background(FerriteSuiteTheme.secondaryCardBackground)
                 .cornerRadius(8)
                 
                 // Category Filter Pills
@@ -111,9 +111,9 @@ public struct MemoryVaultView: View {
             }
             .padding(.horizontal, 20)
             .padding(.vertical, 12)
-            .background(VesperTheme.cardBackground)
+            .background(FerriteSuiteTheme.cardBackground)
             
-            Divider().background(VesperTheme.subtleBorder)
+            Divider().background(FerriteSuiteTheme.subtleBorder)
             
             // Memories List
             ScrollView {
@@ -142,7 +142,7 @@ public struct MemoryVaultView: View {
                 .padding(20)
             }
         }
-        .background(VesperTheme.darkBackground)
+        .background(FerriteSuiteTheme.darkBackground)
         .sheet(isPresented: $showAddSheet) {
             AddMemorySheet(isPresented: $showAddSheet)
         }
@@ -152,8 +152,8 @@ public struct MemoryVaultView: View {
 // MARK: - Memory Card Component
 
 private struct MemoryCard: View {
-    let memory: VesperMemory
-    @State private var store = VesperMemoryStore.shared
+    let memory: FerriteSuiteMemory
+    @State private var store = FerriteSuiteMemoryStore.shared
     
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
@@ -173,7 +173,7 @@ private struct MemoryCard: View {
                 
                 Text(memory.title)
                     .font(.subheadline.bold())
-                    .foregroundColor(VesperTheme.primaryTextColor)
+                    .foregroundColor(FerriteSuiteTheme.primaryTextColor)
                 
                 Spacer()
                 
@@ -193,7 +193,7 @@ private struct MemoryCard: View {
                 Button(action: { store.togglePin(id: memory.id) }) {
                     Image(systemName: memory.isPinned ? "pin.fill" : "pin")
                         .font(.caption)
-                        .foregroundColor(memory.isPinned ? VesperTheme.neonAmber : .secondary)
+                        .foregroundColor(memory.isPinned ? FerriteSuiteTheme.neonAmber : .secondary)
                 }
                 .buttonStyle(.plain)
                 .help(memory.isPinned ? "Unpin memory" : "Pin memory to top")
@@ -210,7 +210,7 @@ private struct MemoryCard: View {
             
             Text(memory.content)
                 .font(.callout)
-                .foregroundColor(VesperTheme.secondaryTextColor)
+                .foregroundColor(FerriteSuiteTheme.secondaryTextColor)
                 .lineLimit(6)
                 .frame(maxWidth: .infinity, alignment: .leading)
             
@@ -241,12 +241,12 @@ private struct FilterPill: View {
                 .font(.caption2.bold())
                 .padding(.horizontal, 10)
                 .padding(.vertical, 5)
-                .background(isSelected ? VesperTheme.accentCyan.opacity(0.2) : VesperTheme.secondaryCardBackground)
-                .foregroundColor(isSelected ? VesperTheme.accentCyan : VesperTheme.secondaryTextColor)
+                .background(isSelected ? FerriteSuiteTheme.accentCyan.opacity(0.2) : FerriteSuiteTheme.secondaryCardBackground)
+                .foregroundColor(isSelected ? FerriteSuiteTheme.accentCyan : FerriteSuiteTheme.secondaryTextColor)
                 .cornerRadius(12)
                 .overlay(
                     RoundedRectangle(cornerRadius: 12)
-                        .stroke(isSelected ? VesperTheme.accentCyan : Color.clear, lineWidth: 1)
+                        .stroke(isSelected ? FerriteSuiteTheme.accentCyan : Color.clear, lineWidth: 1)
                 )
         }
         .buttonStyle(.plain)
@@ -283,7 +283,7 @@ private struct AddMemorySheet: View {
             
             TextEditor(text: $content)
                 .frame(minHeight: 120)
-                .border(VesperTheme.subtleBorder, width: 1)
+                .border(FerriteSuiteTheme.subtleBorder, width: 1)
                 .cornerRadius(6)
             
             Toggle("Pin Memory (Always prioritize in Grok 4.7 context)", isOn: $isPinned)
@@ -292,7 +292,7 @@ private struct AddMemorySheet: View {
                 Spacer()
                 Button("Save Memory") {
                     guard !title.isEmpty else { return }
-                    VesperMemoryStore.shared.addMemory(
+                    FerriteSuiteMemoryStore.shared.addMemory(
                         category: category,
                         title: title,
                         content: content,
@@ -305,6 +305,6 @@ private struct AddMemorySheet: View {
         }
         .padding(20)
         .frame(minWidth: 440, minHeight: 360)
-        .background(VesperTheme.cardBackground)
+        .background(FerriteSuiteTheme.cardBackground)
     }
 }

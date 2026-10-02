@@ -20,16 +20,16 @@ public enum MemoryCategory: String, Codable, CaseIterable {
     
     public var color: Color {
         switch self {
-        case .hardware: return VesperTheme.accentCyan
-        case .signal: return VesperTheme.neonAmber
-        case .securityFinding: return VesperTheme.neonRed
-        case .operatorNote: return VesperTheme.neonGreen
-        case .ferritePlan: return VesperTheme.cyberPurple
+        case .hardware: return FerriteSuiteTheme.accentCyan
+        case .signal: return FerriteSuiteTheme.neonAmber
+        case .securityFinding: return FerriteSuiteTheme.neonRed
+        case .operatorNote: return FerriteSuiteTheme.neonGreen
+        case .ferritePlan: return FerriteSuiteTheme.cyberPurple
         }
     }
 }
 
-public struct VesperMemory: Identifiable, Codable, Equatable {
+public struct FerriteSuiteMemory: Identifiable, Codable, Equatable {
     public let id: String
     public var category: MemoryCategory
     public var title: String
@@ -56,10 +56,10 @@ public struct VesperMemory: Identifiable, Codable, Equatable {
 
 @MainActor
 @Observable
-public final class VesperMemoryStore {
-    public static let shared = VesperMemoryStore()
+public final class FerriteSuiteMemoryStore {
+    public static let shared = FerriteSuiteMemoryStore()
     
-    public var memories: [VesperMemory] = []
+    public var memories: [FerriteSuiteMemory] = []
     private let storageUrl: URL
     
     public init() {
@@ -75,7 +75,7 @@ public final class VesperMemoryStore {
     }
     
     public func addMemory(category: MemoryCategory, title: String, content: String, isPinned: Bool = false) {
-        let memory = VesperMemory(category: category, title: title, content: content, isPinned: isPinned)
+        let memory = FerriteSuiteMemory(category: category, title: title, content: content, isPinned: isPinned)
         self.memories.insert(memory, at: 0)
         save()
     }
@@ -97,7 +97,7 @@ public final class VesperMemoryStore {
         save()
     }
     
-    public func search(query: String) -> [VesperMemory] {
+    public func search(query: String) -> [FerriteSuiteMemory] {
         guard !query.trimmingCharacters(in: .whitespaces).isEmpty else { return memories }
         let q = query.lowercased()
         return memories.filter {
@@ -144,7 +144,7 @@ public final class VesperMemoryStore {
     
     private func load() {
         guard let data = try? Data(contentsOf: storageUrl) else { return }
-        if let decoded = try? JSONDecoder().decode([VesperMemory].self, from: data) {
+        if let decoded = try? JSONDecoder().decode([FerriteSuiteMemory].self, from: data) {
             self.memories = decoded
         }
     }

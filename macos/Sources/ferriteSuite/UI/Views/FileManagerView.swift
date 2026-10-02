@@ -28,7 +28,7 @@ public struct FileManagerView: View {
                         .foregroundColor(.primary)
                         .padding(.horizontal, 8)
                         .padding(.vertical, 4)
-                        .background(VesperTheme.secondaryCardBackground)
+                        .background(FerriteSuiteTheme.secondaryCardBackground)
                         .cornerRadius(6)
                     
                     Spacer()
@@ -40,7 +40,7 @@ public struct FileManagerView: View {
                     .buttonStyle(.plain)
                     .padding(.horizontal, 8)
                     .padding(.vertical, 4)
-                    .background(VesperTheme.secondaryCardBackground)
+                    .background(FerriteSuiteTheme.secondaryCardBackground)
                     .cornerRadius(6)
                     
                     Button(action: { Task { await loadDirectory(path: currentPath) } }) {
@@ -48,10 +48,10 @@ public struct FileManagerView: View {
                     }
                 }
                 .padding(12)
-                .background(VesperTheme.cardBackground)
+                .background(FerriteSuiteTheme.cardBackground)
                 
                 Divider()
-                    .background(VesperTheme.subtleBorder)
+                    .background(FerriteSuiteTheme.subtleBorder)
                 
                 if isLoading {
                     Spacer()
@@ -66,7 +66,7 @@ public struct FileManagerView: View {
                     List(files) { file in
                         HStack {
                             Image(systemName: fileIcon(file))
-                                .foregroundColor(file.isDirectory ? VesperTheme.neonAmber : VesperTheme.accentCyan)
+                                .foregroundColor(file.isDirectory ? FerriteSuiteTheme.neonAmber : FerriteSuiteTheme.accentCyan)
                                 .frame(width: 20)
                             
                             Text(file.name)
@@ -100,7 +100,7 @@ public struct FileManagerView: View {
                 if let file = selectedFile {
                     HStack {
                         Image(systemName: fileIcon(file))
-                            .foregroundColor(VesperTheme.accentCyan)
+                            .foregroundColor(FerriteSuiteTheme.accentCyan)
                         Text(file.name)
                             .font(.headline.monospaced())
                         Spacer()
@@ -123,7 +123,7 @@ public struct FileManagerView: View {
                             }
                         }) {
                             Image(systemName: "arrow.down.doc")
-                                .foregroundColor(VesperTheme.accentCyan)
+                                .foregroundColor(FerriteSuiteTheme.accentCyan)
                         }
                         .buttonStyle(.plain)
                         .help("Export/Save file to Mac")
@@ -136,7 +136,7 @@ public struct FileManagerView: View {
                             }
                         }) {
                             Image(systemName: "trash")
-                                .foregroundColor(VesperTheme.neonRed)
+                                .foregroundColor(FerriteSuiteTheme.neonRed)
                         }
                         .buttonStyle(.plain)
                         .help("Delete File")
@@ -147,7 +147,7 @@ public struct FileManagerView: View {
                         .foregroundColor(.secondary)
                     
                     Divider()
-                        .background(VesperTheme.subtleBorder)
+                        .background(FerriteSuiteTheme.subtleBorder)
                     
                     if isReadingFile {
                         ProgressView("Loading file...")
@@ -161,11 +161,11 @@ public struct FileManagerView: View {
                                 .frame(maxWidth: .infinity, alignment: .leading)
                                 .padding(10)
                         }
-                        .background(VesperTheme.terminalBackground)
+                        .background(FerriteSuiteTheme.terminalBackground)
                         .cornerRadius(6)
                         .overlay(
                             RoundedRectangle(cornerRadius: 6)
-                                .stroke(VesperTheme.subtleBorder, lineWidth: 1)
+                                .stroke(FerriteSuiteTheme.subtleBorder, lineWidth: 1)
                         )
                     }
                     
@@ -208,10 +208,10 @@ public struct FileManagerView: View {
                 }
             }
             .padding(16)
-            .background(VesperTheme.cardBackground)
+            .background(FerriteSuiteTheme.cardBackground)
             .frame(minWidth: 280)
         }
-        .background(VesperTheme.darkBackground)
+        .background(FerriteSuiteTheme.darkBackground)
         .onAppear {
             Task { await loadDirectory(path: currentPath) }
         }

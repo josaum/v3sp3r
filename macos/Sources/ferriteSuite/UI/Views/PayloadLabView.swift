@@ -74,7 +74,7 @@ ENTER
                 .listStyle(.inset)
             }
             .frame(minWidth: 260)
-            .background(VesperTheme.cardBackground)
+            .background(FerriteSuiteTheme.cardBackground)
             
             // Editor & Deployment
             VStack(alignment: .leading, spacing: 14) {
@@ -98,7 +98,7 @@ ENTER
                             .font(.caption)
                             .foregroundColor(.secondary)
                             .padding(7)
-                            .background(VesperTheme.secondaryCardBackground)
+                            .background(FerriteSuiteTheme.secondaryCardBackground)
                             .cornerRadius(8)
                     }
                     .buttonStyle(.plain)
@@ -111,8 +111,8 @@ ENTER
                             Label("Push to SD Card", systemImage: "arrow.up.doc.fill")
                                 .padding(.horizontal, 10)
                                 .padding(.vertical, 6)
-                                .background(VesperTheme.secondaryCardBackground)
-                                .foregroundColor(VesperTheme.accentCyan)
+                                .background(FerriteSuiteTheme.secondaryCardBackground)
+                                .foregroundColor(FerriteSuiteTheme.accentCyan)
                                 .cornerRadius(8)
                         }
                     }
@@ -123,7 +123,7 @@ ENTER
                         Label("Execute Now", systemImage: "play.fill")
                             .padding(.horizontal, 12)
                             .padding(.vertical, 6)
-                            .background(VesperTheme.neonAmber)
+                            .background(FerriteSuiteTheme.neonAmber)
                             .foregroundColor(.black)
                             .cornerRadius(8)
                     }
@@ -134,33 +134,33 @@ ENTER
                 TextEditor(text: $payloadScript)
                     .font(.system(size: 12, design: .monospaced))
                     .scrollContentBackground(.hidden)
-                    .foregroundColor(VesperTheme.primaryTextColor)
+                    .foregroundColor(FerriteSuiteTheme.primaryTextColor)
                     .padding(8)
-                    .background(VesperTheme.codeBlockBackground)
+                    .background(FerriteSuiteTheme.codeBlockBackground)
                     .cornerRadius(8)
                     .overlay(
                         RoundedRectangle(cornerRadius: 8)
-                            .stroke(VesperTheme.subtleBorder, lineWidth: 1)
+                            .stroke(FerriteSuiteTheme.subtleBorder, lineWidth: 1)
                     )
                 
                 if !statusMessage.isEmpty {
                     Text(statusMessage)
                         .font(.system(size: 11, design: .monospaced))
-                        .foregroundColor(VesperTheme.accentCyan)
+                        .foregroundColor(FerriteSuiteTheme.accentCyan)
                         .padding(10)
                         .frame(maxWidth: .infinity, alignment: .leading)
-                        .background(VesperTheme.terminalBackground)
+                        .background(FerriteSuiteTheme.terminalBackground)
                         .cornerRadius(6)
                         .overlay(
                             RoundedRectangle(cornerRadius: 6)
-                                .stroke(VesperTheme.subtleBorder, lineWidth: 1)
+                                .stroke(FerriteSuiteTheme.subtleBorder, lineWidth: 1)
                         )
                 }
             }
             .padding(16)
             .frame(minWidth: 400)
         }
-        .background(VesperTheme.darkBackground)
+        .background(FerriteSuiteTheme.darkBackground)
     }
     
     private func deployPayload() {

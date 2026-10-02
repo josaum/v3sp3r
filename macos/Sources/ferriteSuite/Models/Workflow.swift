@@ -77,12 +77,12 @@ public enum WorkflowTaskStatus: Equatable, Codable {
     public var color: Color {
         switch self {
         case .pending: return .secondary
-        case .running: return VesperTheme.accentCyan
-        case .completed: return VesperTheme.neonGreen
-        case .failed: return VesperTheme.neonRed
-        case .paused: return VesperTheme.neonAmber
+        case .running: return FerriteSuiteTheme.accentCyan
+        case .completed: return FerriteSuiteTheme.neonGreen
+        case .failed: return FerriteSuiteTheme.neonRed
+        case .paused: return FerriteSuiteTheme.neonAmber
         case .skipped: return .secondary.opacity(0.6)
-        case .waitingForInput: return VesperTheme.neonAmber
+        case .waitingForInput: return FerriteSuiteTheme.neonAmber
         }
     }
     
@@ -199,11 +199,11 @@ public enum WorkflowExecutionState: String, Codable {
     public var color: Color {
         switch self {
         case .idle: return .secondary
-        case .running: return VesperTheme.accentCyan
-        case .paused: return VesperTheme.neonAmber
-        case .completed: return VesperTheme.neonGreen
+        case .running: return FerriteSuiteTheme.accentCyan
+        case .paused: return FerriteSuiteTheme.neonAmber
+        case .completed: return FerriteSuiteTheme.neonGreen
         case .stopped: return .secondary
-        case .failed: return VesperTheme.neonRed
+        case .failed: return FerriteSuiteTheme.neonRed
         }
     }
 }

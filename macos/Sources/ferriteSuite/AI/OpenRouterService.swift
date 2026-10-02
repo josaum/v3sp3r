@@ -40,7 +40,7 @@ public final class OpenRouterService {
         var payload: [String: Any] = [
             "model": model,
             "messages": messages,
-            "tools": [VesperPrompts.toolDefinition()],
+            "tools": [FerriteSuitePrompts.toolDefinition()],
             "tool_choice": "auto",
             "stream": true,
             "max_tokens": 4096,

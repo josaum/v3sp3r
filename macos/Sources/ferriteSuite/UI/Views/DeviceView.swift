@@ -25,23 +25,23 @@ public struct DeviceView: View {
                     HStack(spacing: 20) {
                         Image(systemName: "gamecontroller.fill")
                             .font(.system(size: 40))
-                            .foregroundColor(VesperTheme.flipperOrange)
+                            .foregroundColor(FerriteSuiteTheme.flipperOrange)
                             .frame(width: 68, height: 68)
-                            .background(VesperTheme.flipperOrange.opacity(0.15))
+                            .background(FerriteSuiteTheme.flipperOrange.opacity(0.15))
                             .cornerRadius(16)
                             .overlay(
                                 RoundedRectangle(cornerRadius: 16)
-                                    .stroke(VesperTheme.flipperOrange.opacity(0.3), lineWidth: 1)
+                                    .stroke(FerriteSuiteTheme.flipperOrange.opacity(0.3), lineWidth: 1)
                             )
                         
                         VStack(alignment: .leading, spacing: 4) {
                             Text(connection.deviceInfo.hardwareModel.isEmpty ? "Flipper Zero" : connection.deviceInfo.hardwareModel)
                                 .font(.title2.bold())
-                                .foregroundColor(VesperTheme.primaryTextColor)
+                                .foregroundColor(FerriteSuiteTheme.primaryTextColor)
                             
                             HStack(spacing: 8) {
                                 Circle()
-                                    .fill(connection.status.isConnected ? VesperTheme.neonGreen : VesperTheme.neonRed)
+                                    .fill(connection.status.isConnected ? FerriteSuiteTheme.neonGreen : FerriteSuiteTheme.neonRed)
                                     .frame(width: 8, height: 8)
                                 Text(connection.status.description)
                                     .font(.subheadline.monospaced())
@@ -59,7 +59,7 @@ public struct DeviceView: View {
                         VStack(alignment: .trailing, spacing: 4) {
                             HStack(spacing: 6) {
                                 Image(systemName: connection.deviceInfo.isCharging ? "bolt.batteryblock.fill" : "battery.75percent")
-                                    .foregroundColor(connection.deviceInfo.batteryLevel < 20 ? VesperTheme.neonRed : VesperTheme.neonGreen)
+                                    .foregroundColor(connection.deviceInfo.batteryLevel < 20 ? FerriteSuiteTheme.neonRed : FerriteSuiteTheme.neonGreen)
                                 Text("\(connection.deviceInfo.batteryLevel)%")
                                     .font(.title3.bold().monospaced())
                             }
@@ -74,7 +74,7 @@ public struct DeviceView: View {
                                     .font(.caption2.bold())
                             }
                             .buttonStyle(.plain)
-                            .foregroundColor(VesperTheme.accentCyan)
+                            .foregroundColor(FerriteSuiteTheme.accentCyan)
                             .padding(.top, 4)
                         }
                     }
@@ -115,7 +115,7 @@ public struct DeviceView: View {
                             Label("Connect USB", systemImage: "cable.connector")
                                 .padding(.horizontal, 12)
                                 .padding(.vertical, 6)
-                                .background(VesperTheme.flipperOrange)
+                                .background(FerriteSuiteTheme.flipperOrange)
                                 .foregroundColor(.black)
                                 .cornerRadius(8)
                         }
@@ -127,7 +127,7 @@ public struct DeviceView: View {
                             Label("Connect BLE", systemImage: "antenna.radiowaves.left.and.right")
                                 .padding(.horizontal, 12)
                                 .padding(.vertical, 6)
-                                .background(VesperTheme.cyberPurple)
+                                .background(FerriteSuiteTheme.cyberPurple)
                                 .foregroundColor(.white)
                                 .cornerRadius(8)
                         }
@@ -138,7 +138,7 @@ public struct DeviceView: View {
                                 Task { await connection.disconnect() }
                             }) {
                                 Text("Disconnect")
-                                    .foregroundColor(VesperTheme.neonRed)
+                                    .foregroundColor(FerriteSuiteTheme.neonRed)
                                     .padding(.horizontal, 12)
                                     .padding(.vertical, 6)
                             }
@@ -153,7 +153,7 @@ public struct DeviceView: View {
                 VStack(alignment: .leading, spacing: 14) {
                     Text("Hardware Architecture & Telemetry")
                         .font(.headline)
-                        .foregroundColor(VesperTheme.primaryTextColor)
+                        .foregroundColor(FerriteSuiteTheme.primaryTextColor)
                     
                     LazyVGrid(columns: [GridItem(.adaptive(minimum: 160))], spacing: 12) {
                         SpecPill(title: "MODEL", value: connection.deviceInfo.hardwareModel.isEmpty ? "Flipper Zero" : connection.deviceInfo.hardwareModel, icon: "cpu")
@@ -172,7 +172,7 @@ public struct DeviceView: View {
                     HStack {
                         Text("Actuators & Power Management")
                             .font(.headline)
-                            .foregroundColor(VesperTheme.primaryTextColor)
+                            .foregroundColor(FerriteSuiteTheme.primaryTextColor)
                         Spacer()
                     }
                     
@@ -191,7 +191,7 @@ public struct DeviceView: View {
                                     .font(.caption.bold())
                                     .padding(.horizontal, 10)
                                     .padding(.vertical, 6)
-                                    .background(VesperTheme.secondaryCardBackground)
+                                    .background(FerriteSuiteTheme.secondaryCardBackground)
                                     .cornerRadius(8)
                             }
                             .buttonStyle(.plain)
@@ -202,7 +202,7 @@ public struct DeviceView: View {
                                     .foregroundColor(Color.cyan)
                                     .padding(.horizontal, 8)
                                     .padding(.vertical, 6)
-                                    .background(VesperTheme.secondaryCardBackground)
+                                    .background(FerriteSuiteTheme.secondaryCardBackground)
                                     .cornerRadius(8)
                             }
                             .buttonStyle(.plain)
@@ -210,10 +210,10 @@ public struct DeviceView: View {
                             Button(action: { runCommand("led r 255"); runCommand("led g 80"); runCommand("led b 0") }) {
                                 Label("Orange", systemImage: "circle.fill")
                                     .font(.caption.bold())
-                                    .foregroundColor(VesperTheme.flipperOrange)
+                                    .foregroundColor(FerriteSuiteTheme.flipperOrange)
                                     .padding(.horizontal, 8)
                                     .padding(.vertical, 6)
-                                    .background(VesperTheme.secondaryCardBackground)
+                                    .background(FerriteSuiteTheme.secondaryCardBackground)
                                     .cornerRadius(8)
                             }
                             .buttonStyle(.plain)
@@ -221,10 +221,10 @@ public struct DeviceView: View {
                             Button(action: { runCommand("led r 0"); runCommand("led g 255"); runCommand("led b 0") }) {
                                 Label("Green", systemImage: "circle.fill")
                                     .font(.caption.bold())
-                                    .foregroundColor(VesperTheme.neonGreen)
+                                    .foregroundColor(FerriteSuiteTheme.neonGreen)
                                     .padding(.horizontal, 8)
                                     .padding(.vertical, 6)
-                                    .background(VesperTheme.secondaryCardBackground)
+                                    .background(FerriteSuiteTheme.secondaryCardBackground)
                                     .cornerRadius(8)
                             }
                             .buttonStyle(.plain)
@@ -232,10 +232,10 @@ public struct DeviceView: View {
                             Button(action: { runCommand("led r 180"); runCommand("led g 0"); runCommand("led b 255") }) {
                                 Label("Purple", systemImage: "circle.fill")
                                     .font(.caption.bold())
-                                    .foregroundColor(VesperTheme.cyberPurple)
+                                    .foregroundColor(FerriteSuiteTheme.cyberPurple)
                                     .padding(.horizontal, 8)
                                     .padding(.vertical, 6)
-                                    .background(VesperTheme.secondaryCardBackground)
+                                    .background(FerriteSuiteTheme.secondaryCardBackground)
                                     .cornerRadius(8)
                             }
                             .buttonStyle(.plain)
@@ -246,14 +246,14 @@ public struct DeviceView: View {
                                     .foregroundColor(.secondary)
                                     .padding(.horizontal, 8)
                                     .padding(.vertical, 6)
-                                    .background(VesperTheme.secondaryCardBackground)
+                                    .background(FerriteSuiteTheme.secondaryCardBackground)
                                     .cornerRadius(8)
                             }
                             .buttonStyle(.plain)
                         }
                     }
                     
-                    Divider().background(VesperTheme.subtleBorder)
+                    Divider().background(FerriteSuiteTheme.subtleBorder)
                     
                     // Power Management
                     VStack(alignment: .leading, spacing: 8) {
@@ -267,8 +267,8 @@ public struct DeviceView: View {
                                     .font(.caption.bold())
                                     .padding(.horizontal, 10)
                                     .padding(.vertical, 6)
-                                    .background(VesperTheme.secondaryCardBackground)
-                                    .foregroundColor(VesperTheme.neonAmber)
+                                    .background(FerriteSuiteTheme.secondaryCardBackground)
+                                    .foregroundColor(FerriteSuiteTheme.neonAmber)
                                     .cornerRadius(8)
                             }
                             .buttonStyle(.plain)
@@ -279,8 +279,8 @@ public struct DeviceView: View {
                                     .font(.caption.bold())
                                     .padding(.horizontal, 10)
                                     .padding(.vertical, 6)
-                                    .background(VesperTheme.secondaryCardBackground)
-                                    .foregroundColor(VesperTheme.cyberPurple)
+                                    .background(FerriteSuiteTheme.secondaryCardBackground)
+                                    .foregroundColor(FerriteSuiteTheme.cyberPurple)
                                     .cornerRadius(8)
                             }
                             .buttonStyle(.plain)
@@ -291,8 +291,8 @@ public struct DeviceView: View {
                                     .font(.caption.bold())
                                     .padding(.horizontal, 10)
                                     .padding(.vertical, 6)
-                                    .background(VesperTheme.secondaryCardBackground)
-                                    .foregroundColor(VesperTheme.neonRed)
+                                    .background(FerriteSuiteTheme.secondaryCardBackground)
+                                    .foregroundColor(FerriteSuiteTheme.neonRed)
                                     .cornerRadius(8)
                             }
                             .buttonStyle(.plain)
@@ -307,7 +307,7 @@ public struct DeviceView: View {
                 VStack(alignment: .leading, spacing: 14) {
                     Text("Launch Flipper Application")
                         .font(.headline)
-                        .foregroundColor(VesperTheme.primaryTextColor)
+                        .foregroundColor(FerriteSuiteTheme.primaryTextColor)
                     
                     LazyVGrid(columns: [GridItem(.adaptive(minimum: 140))], spacing: 12) {
                         ForEach(flipperApps, id: \.0) { app in
@@ -317,18 +317,18 @@ public struct DeviceView: View {
                                 VStack(spacing: 8) {
                                     Image(systemName: app.2)
                                         .font(.title2)
-                                        .foregroundColor(VesperTheme.accentCyan)
+                                        .foregroundColor(FerriteSuiteTheme.accentCyan)
                                     Text(app.0)
                                         .font(.caption.bold())
-                                        .foregroundColor(VesperTheme.primaryTextColor)
+                                        .foregroundColor(FerriteSuiteTheme.primaryTextColor)
                                 }
                                 .frame(maxWidth: .infinity)
                                 .padding(14)
-                                .background(VesperTheme.secondaryCardBackground)
+                                .background(FerriteSuiteTheme.secondaryCardBackground)
                                 .cornerRadius(10)
                                 .overlay(
                                     RoundedRectangle(cornerRadius: 10)
-                                        .stroke(VesperTheme.subtleBorder, lineWidth: 1)
+                                        .stroke(FerriteSuiteTheme.subtleBorder, lineWidth: 1)
                                 )
                             }
                             .buttonStyle(.plain)
@@ -342,7 +342,7 @@ public struct DeviceView: View {
                     VStack(alignment: .leading, spacing: 6) {
                         HStack {
                             Image(systemName: "terminal.fill")
-                                .foregroundColor(VesperTheme.neonGreen)
+                                .foregroundColor(FerriteSuiteTheme.neonGreen)
                                 .font(.caption)
                             Text("CLI Execution Response:")
                                 .font(.system(size: 9.5, weight: .bold).monospaced())
@@ -354,7 +354,7 @@ public struct DeviceView: View {
                             }) {
                                 Label("Copy", systemImage: "doc.on.doc")
                                     .font(.system(size: 9.5).monospaced())
-                                    .foregroundColor(VesperTheme.accentCyan)
+                                    .foregroundColor(FerriteSuiteTheme.accentCyan)
                             }
                             .buttonStyle(.plain)
                         }
@@ -364,11 +364,11 @@ public struct DeviceView: View {
                             .foregroundColor(Color(red: 0.2, green: 0.9, blue: 0.4))
                             .padding(10)
                             .frame(maxWidth: .infinity, alignment: .leading)
-                            .background(VesperTheme.terminalBackground)
+                            .background(FerriteSuiteTheme.terminalBackground)
                             .cornerRadius(6)
                             .overlay(
                                 RoundedRectangle(cornerRadius: 6)
-                                    .stroke(VesperTheme.subtleBorder, lineWidth: 1)
+                                    .stroke(FerriteSuiteTheme.subtleBorder, lineWidth: 1)
                             )
                     }
                     .padding(14)
@@ -377,7 +377,7 @@ public struct DeviceView: View {
             }
             .padding(20)
         }
-        .background(VesperTheme.darkBackground)
+        .background(FerriteSuiteTheme.darkBackground)
         .onAppear {
             if let first = connection.availableUsbPorts.first {
                 selectedPort = first
@@ -410,7 +410,7 @@ struct SpecPill: View {
         HStack(spacing: 10) {
             Image(systemName: icon)
                 .font(.system(size: 14))
-                .foregroundColor(VesperTheme.accentCyan)
+                .foregroundColor(FerriteSuiteTheme.accentCyan)
                 .frame(width: 24)
             
             VStack(alignment: .leading, spacing: 2) {
@@ -419,17 +419,17 @@ struct SpecPill: View {
                     .foregroundColor(.secondary)
                 Text(value)
                     .font(.system(size: 11, weight: .semibold, design: .monospaced))
-                    .foregroundColor(VesperTheme.primaryTextColor)
+                    .foregroundColor(FerriteSuiteTheme.primaryTextColor)
                     .lineLimit(1)
             }
             Spacer()
         }
         .padding(10)
-        .background(VesperTheme.secondaryCardBackground)
+        .background(FerriteSuiteTheme.secondaryCardBackground)
         .cornerRadius(8)
         .overlay(
             RoundedRectangle(cornerRadius: 8)
-                .stroke(VesperTheme.subtleBorder, lineWidth: 1)
+                .stroke(FerriteSuiteTheme.subtleBorder, lineWidth: 1)
         )
     }
 }

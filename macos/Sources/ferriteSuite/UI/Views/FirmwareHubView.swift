@@ -25,13 +25,13 @@ public struct FirmwareHubView: View {
                     HStack(spacing: 8) {
                         Image(systemName: "arrow.triangle.2.circlepath.circle.fill")
                             .font(.title2)
-                            .foregroundColor(VesperTheme.accentCyan)
+                            .foregroundColor(FerriteSuiteTheme.accentCyan)
                         Text("Firmware & Flashing Hub")
                             .font(.title2.bold())
                     }
                     Text("1-click firmware flashing for Flipper Zero and GPIO devboards, synchronized live with GitHub.")
                         .font(.caption)
-                        .foregroundColor(VesperTheme.secondaryTextColor)
+                        .foregroundColor(FerriteSuiteTheme.secondaryTextColor)
                 }
                 
                 Spacer()
@@ -39,7 +39,7 @@ public struct FirmwareHubView: View {
                 // Installed Version Pill
                 HStack(spacing: 6) {
                     Circle()
-                        .fill(connection.status.isConnected ? VesperTheme.neonGreen : VesperTheme.neonAmber)
+                        .fill(connection.status.isConnected ? FerriteSuiteTheme.neonGreen : FerriteSuiteTheme.neonAmber)
                         .frame(width: 8, height: 8)
                     Text("Installed: \(connection.deviceInfo.firmwareVersion)")
                         .font(.caption.monospaced())
@@ -47,7 +47,7 @@ public struct FirmwareHubView: View {
                 }
                 .padding(.horizontal, 10)
                 .padding(.vertical, 5)
-                .background(VesperTheme.secondaryCardBackground)
+                .background(FerriteSuiteTheme.secondaryCardBackground)
                 .cornerRadius(8)
                 
                 // GitHub Sync Button
@@ -67,12 +67,12 @@ public struct FirmwareHubView: View {
                     }
                     .padding(.horizontal, 12)
                     .padding(.vertical, 6)
-                    .background(VesperTheme.accentCyan.opacity(0.15))
-                    .foregroundColor(VesperTheme.accentCyan)
+                    .background(FerriteSuiteTheme.accentCyan.opacity(0.15))
+                    .foregroundColor(FerriteSuiteTheme.accentCyan)
                     .cornerRadius(8)
                     .overlay(
                         RoundedRectangle(cornerRadius: 8)
-                            .stroke(VesperTheme.accentCyan.opacity(0.4), lineWidth: 1)
+                            .stroke(FerriteSuiteTheme.accentCyan.opacity(0.4), lineWidth: 1)
                     )
                 }
                 .buttonStyle(.plain)
@@ -80,9 +80,9 @@ public struct FirmwareHubView: View {
             }
             .padding(.horizontal, 20)
             .padding(.vertical, 14)
-            .background(VesperTheme.cardBackground)
+            .background(FerriteSuiteTheme.cardBackground)
             
-            Divider().background(VesperTheme.subtleBorder)
+            Divider().background(FerriteSuiteTheme.subtleBorder)
             
             // Tab Segment Control
             Picker("Mode", selection: $selectedTab) {
@@ -95,7 +95,7 @@ public struct FirmwareHubView: View {
             .pickerStyle(.segmented)
             .padding(.horizontal, 20)
             .padding(.vertical, 12)
-            .background(VesperTheme.cardBackground.opacity(0.6))
+            .background(FerriteSuiteTheme.cardBackground.opacity(0.6))
             
             // Tab Contents
             Group {
@@ -120,25 +120,25 @@ public struct FirmwareHubView: View {
                 VStack(spacing: 6) {
                     HStack {
                         Image(systemName: "bolt.fill")
-                            .foregroundColor(VesperTheme.neonAmber)
+                            .foregroundColor(FerriteSuiteTheme.neonAmber)
                         Text(flashService.flashStatus)
                             .font(.caption.monospaced().bold())
                         Spacer()
                         Text("\(Int(flashService.flashProgress * 100))%")
                             .font(.caption.monospaced())
-                            .foregroundColor(VesperTheme.accentCyan)
+                            .foregroundColor(FerriteSuiteTheme.accentCyan)
                     }
                     
                     ProgressView(value: flashService.flashProgress)
                         .progressViewStyle(.linear)
-                        .tint(VesperTheme.accentCyan)
+                        .tint(FerriteSuiteTheme.accentCyan)
                 }
                 .padding(14)
-                .background(VesperTheme.cardBackground)
-                .border(VesperTheme.accentCyan.opacity(0.5), width: 1)
+                .background(FerriteSuiteTheme.cardBackground)
+                .border(FerriteSuiteTheme.accentCyan.opacity(0.5), width: 1)
             }
         }
-        .background(VesperTheme.darkBackground)
+        .background(FerriteSuiteTheme.darkBackground)
     }
     
     // MARK: - Tab 1: Flipper Firmware
@@ -153,8 +153,8 @@ public struct FirmwareHubView: View {
                             .font(.caption.bold())
                             .padding(.horizontal, 10)
                             .padding(.vertical, 5)
-                            .background(selectedDistroFilter == nil ? VesperTheme.accentCyan.opacity(0.2) : VesperTheme.secondaryCardBackground)
-                            .foregroundColor(selectedDistroFilter == nil ? VesperTheme.accentCyan : .secondary)
+                            .background(selectedDistroFilter == nil ? FerriteSuiteTheme.accentCyan.opacity(0.2) : FerriteSuiteTheme.secondaryCardBackground)
+                            .foregroundColor(selectedDistroFilter == nil ? FerriteSuiteTheme.accentCyan : .secondary)
                             .cornerRadius(8)
                     }
                     .buttonStyle(.plain)
@@ -168,7 +168,7 @@ public struct FirmwareHubView: View {
                             .font(.caption)
                             .padding(.horizontal, 10)
                             .padding(.vertical, 5)
-                            .background(selectedDistroFilter == distro ? distro.accentColor.opacity(0.2) : VesperTheme.secondaryCardBackground)
+                            .background(selectedDistroFilter == distro ? distro.accentColor.opacity(0.2) : FerriteSuiteTheme.secondaryCardBackground)
                             .foregroundColor(selectedDistroFilter == distro ? distro.accentColor : .secondary)
                             .cornerRadius(8)
                         }
@@ -204,7 +204,7 @@ public struct FirmwareHubView: View {
                 VStack(alignment: .leading, spacing: 14) {
                     HStack {
                         Image(systemName: "cpu.fill")
-                            .foregroundColor(VesperTheme.accentCyan)
+                            .foregroundColor(FerriteSuiteTheme.accentCyan)
                         Text("Target GPIO Devboard & Programmer")
                             .font(.headline)
                         Spacer()
@@ -281,13 +281,13 @@ public struct FirmwareHubView: View {
                     } else {
                         HStack(spacing: 8) {
                             Image(systemName: "info.circle.fill")
-                                .foregroundColor(VesperTheme.accentCyan)
+                                .foregroundColor(FerriteSuiteTheme.accentCyan)
                             Text("Flipper Header Mode: Binary is uploaded directly to Flipper SD card (/ext/apps_data/esp_flasher/). Flipper's native ESP32 Flasher handles the flash over USART pins 13/14.")
                                 .font(.caption)
-                                .foregroundColor(VesperTheme.secondaryTextColor)
+                                .foregroundColor(FerriteSuiteTheme.secondaryTextColor)
                         }
                         .padding(10)
-                        .background(VesperTheme.secondaryCardBackground)
+                        .background(FerriteSuiteTheme.secondaryCardBackground)
                         .cornerRadius(8)
                     }
                 }
@@ -298,7 +298,7 @@ public struct FirmwareHubView: View {
                 VStack(alignment: .leading, spacing: 14) {
                     HStack {
                         Image(systemName: "sparkles")
-                            .foregroundColor(VesperTheme.neonAmber)
+                            .foregroundColor(FerriteSuiteTheme.neonAmber)
                         Text("Available Devboard Firmware (GitHub Releases)")
                             .font(.headline)
                     }
@@ -353,7 +353,7 @@ public struct FirmwareHubView: View {
                 }
                 .padding(12)
                 .background(Color.black.opacity(0.75))
-                .border(VesperTheme.subtleBorder, width: 1)
+                .border(FerriteSuiteTheme.subtleBorder, width: 1)
             }
             .padding(20)
         }
@@ -370,7 +370,7 @@ public struct FirmwareHubView: View {
                         .font(.headline)
                     Text("Pinout reference for connecting Official WiFi Devboards, NRF24, CC1101, and custom ESP32 breakout boards.")
                         .font(.caption)
-                        .foregroundColor(VesperTheme.secondaryTextColor)
+                        .foregroundColor(FerriteSuiteTheme.secondaryTextColor)
                 }
                 .padding(16)
                 .glassCard()
@@ -401,7 +401,7 @@ public struct FirmwareHubView: View {
                             Text("Pin \(p.pin)")
                                 .font(.caption.monospaced().bold())
                                 .frame(width: 55, alignment: .leading)
-                                .foregroundColor(VesperTheme.accentCyan)
+                                .foregroundColor(FerriteSuiteTheme.accentCyan)
                             
                             Text(p.name)
                                 .font(.caption.bold())
@@ -409,7 +409,7 @@ public struct FirmwareHubView: View {
                             
                             Text(p.funcName)
                                 .font(.caption2.monospaced())
-                                .foregroundColor(VesperTheme.neonAmber)
+                                .foregroundColor(FerriteSuiteTheme.neonAmber)
                                 .frame(width: 140, alignment: .leading)
                             
                             Text(p.desc)
@@ -419,7 +419,7 @@ public struct FirmwareHubView: View {
                             Spacer()
                         }
                         .padding(.vertical, 4)
-                        Divider().background(VesperTheme.subtleBorder.opacity(0.5))
+                        Divider().background(FerriteSuiteTheme.subtleBorder.opacity(0.5))
                     }
                 }
                 .padding(20)
@@ -437,7 +437,7 @@ public struct FirmwareHubView: View {
                 VStack(alignment: .leading, spacing: 12) {
                     HStack {
                         Image(systemName: "cross.case.fill")
-                            .foregroundColor(VesperTheme.neonAmber)
+                            .foregroundColor(FerriteSuiteTheme.neonAmber)
                         Text("System, Bootloader & Hardware Diagnostics")
                             .font(.headline)
                         
@@ -459,7 +459,7 @@ public struct FirmwareHubView: View {
                             .font(.caption.bold())
                         }
                         .buttonStyle(.borderedProminent)
-                        .tint(VesperTheme.accentCyan)
+                        .tint(FerriteSuiteTheme.accentCyan)
                         .disabled(flashService.isRunningDiagnostics)
                     }
                     
@@ -481,13 +481,13 @@ public struct FirmwareHubView: View {
                             HStack(alignment: .top, spacing: 12) {
                                 Image(systemName: res.passed ? "checkmark.circle.fill" : "exclamationmark.triangle.fill")
                                     .font(.title3)
-                                    .foregroundColor(res.passed ? VesperTheme.neonGreen : VesperTheme.neonAmber)
+                                    .foregroundColor(res.passed ? FerriteSuiteTheme.neonGreen : FerriteSuiteTheme.neonAmber)
                                 
                                 VStack(alignment: .leading, spacing: 3) {
                                     HStack {
                                         Text(res.title)
                                             .font(.subheadline.bold())
-                                            .foregroundColor(VesperTheme.primaryTextColor)
+                                            .foregroundColor(FerriteSuiteTheme.primaryTextColor)
                                         
                                         Spacer()
                                         
@@ -495,8 +495,8 @@ public struct FirmwareHubView: View {
                                             .font(.system(size: 9, weight: .bold, design: .monospaced))
                                             .padding(.horizontal, 6)
                                             .padding(.vertical, 2)
-                                            .background(res.passed ? VesperTheme.neonGreen.opacity(0.15) : VesperTheme.neonAmber.opacity(0.15))
-                                            .foregroundColor(res.passed ? VesperTheme.neonGreen : VesperTheme.neonAmber)
+                                            .background(res.passed ? FerriteSuiteTheme.neonGreen.opacity(0.15) : FerriteSuiteTheme.neonAmber.opacity(0.15))
+                                            .foregroundColor(res.passed ? FerriteSuiteTheme.neonGreen : FerriteSuiteTheme.neonAmber)
                                             .cornerRadius(4)
                                     }
                                     
@@ -506,11 +506,11 @@ public struct FirmwareHubView: View {
                                 }
                             }
                             .padding(14)
-                            .background(VesperTheme.cardBackground)
+                            .background(FerriteSuiteTheme.cardBackground)
                             .cornerRadius(8)
                             .overlay(
                                 RoundedRectangle(cornerRadius: 8)
-                                    .stroke(res.passed ? VesperTheme.neonGreen.opacity(0.3) : VesperTheme.neonAmber.opacity(0.5), lineWidth: 1)
+                                    .stroke(res.passed ? FerriteSuiteTheme.neonGreen.opacity(0.3) : FerriteSuiteTheme.neonAmber.opacity(0.5), lineWidth: 1)
                             )
                         }
                     }
@@ -568,7 +568,7 @@ private struct FlipperReleaseCard: View {
                             .font(.caption2.monospaced())
                             .padding(.horizontal, 6)
                             .padding(.vertical, 2)
-                            .background(VesperTheme.secondaryCardBackground)
+                            .background(FerriteSuiteTheme.secondaryCardBackground)
                             .cornerRadius(4)
                     }
                     
@@ -582,14 +582,14 @@ private struct FlipperReleaseCard: View {
                 if release.isInstalled {
                     HStack(spacing: 6) {
                         Image(systemName: "checkmark.circle.fill")
-                            .foregroundColor(VesperTheme.neonGreen)
+                            .foregroundColor(FerriteSuiteTheme.neonGreen)
                         Text("Active on Flipper")
                             .font(.caption.bold())
-                            .foregroundColor(VesperTheme.neonGreen)
+                            .foregroundColor(FerriteSuiteTheme.neonGreen)
                     }
                     .padding(.horizontal, 10)
                     .padding(.vertical, 5)
-                    .background(VesperTheme.neonGreen.opacity(0.12))
+                    .background(FerriteSuiteTheme.neonGreen.opacity(0.12))
                     .cornerRadius(8)
                 }
                 
@@ -601,7 +601,7 @@ private struct FlipperReleaseCard: View {
                     }
                     .padding(.horizontal, 14)
                     .padding(.vertical, 7)
-                    .background(release.isInstalled ? VesperTheme.secondaryCardBackground : VesperTheme.accentCyan)
+                    .background(release.isInstalled ? FerriteSuiteTheme.secondaryCardBackground : FerriteSuiteTheme.accentCyan)
                     .foregroundColor(release.isInstalled ? .primary : .black)
                     .cornerRadius(8)
                 }
@@ -611,7 +611,7 @@ private struct FlipperReleaseCard: View {
             if let distro = release.distro {
                 Text(distro.description)
                     .font(.caption)
-                    .foregroundColor(VesperTheme.secondaryTextColor)
+                    .foregroundColor(FerriteSuiteTheme.secondaryTextColor)
             }
             
             if !release.changelog.isEmpty {
@@ -625,7 +625,7 @@ private struct FlipperReleaseCard: View {
                         .lineLimit(3)
                 }
                 .padding(10)
-                .background(VesperTheme.secondaryCardBackground)
+                .background(FerriteSuiteTheme.secondaryCardBackground)
                 .cornerRadius(6)
             }
         }
@@ -643,7 +643,7 @@ private struct GpioReleaseCard: View {
         HStack(spacing: 14) {
             Image(systemName: "wifi.circle.fill")
                 .font(.title)
-                .foregroundColor(VesperTheme.neonAmber)
+                .foregroundColor(FerriteSuiteTheme.neonAmber)
             
             VStack(alignment: .leading, spacing: 3) {
                 HStack(spacing: 8) {
@@ -653,7 +653,7 @@ private struct GpioReleaseCard: View {
                         .font(.caption2.monospaced())
                         .padding(.horizontal, 6)
                         .padding(.vertical, 1)
-                        .background(VesperTheme.secondaryCardBackground)
+                        .background(FerriteSuiteTheme.secondaryCardBackground)
                         .cornerRadius(4)
                 }
                 
@@ -673,7 +673,7 @@ private struct GpioReleaseCard: View {
                 }
                 .padding(.horizontal, 14)
                 .padding(.vertical, 8)
-                .background(VesperTheme.neonGreen)
+                .background(FerriteSuiteTheme.neonGreen)
                 .foregroundColor(.black)
                 .cornerRadius(8)
             }

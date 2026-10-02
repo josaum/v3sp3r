@@ -50,7 +50,9 @@ Every AI-initiated action is classified before execution:
 
 ### Data Protection
 
-- API keys are stored in `UserDefaults` (plaintext, unencrypted on disk)
+- The LLM provider API key is stored in the macOS Keychain (and migrated off
+  any legacy plaintext `UserDefaults` copy on first launch)
+- Other settings are stored in `UserDefaults` (plaintext, non-secret)
 - Chat history and memory vaults are written as plaintext JSON under
   `~/Library/Application Support/<bundle-id>/`
 - No telemetry or analytics are collected

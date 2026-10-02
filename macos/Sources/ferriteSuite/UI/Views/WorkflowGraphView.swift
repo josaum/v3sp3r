@@ -17,7 +17,7 @@ public struct WorkflowGraphView: View {
                         .font(.headline)
                     Text(engine.activeWorkflow?.title ?? "No Active Workflow")
                         .font(.subheadline)
-                        .foregroundColor(VesperTheme.accentCyan)
+                        .foregroundColor(FerriteSuiteTheme.accentCyan)
                 }
                 
                 Spacer()
@@ -41,8 +41,8 @@ public struct WorkflowGraphView: View {
                             Label("Run", systemImage: "play.fill")
                                 .padding(.horizontal, 10)
                                 .padding(.vertical, 6)
-                                .background(VesperTheme.neonGreen.opacity(0.2))
-                                .foregroundColor(VesperTheme.neonGreen)
+                                .background(FerriteSuiteTheme.neonGreen.opacity(0.2))
+                                .foregroundColor(FerriteSuiteTheme.neonGreen)
                                 .cornerRadius(8)
                         }
                         .buttonStyle(.plain)
@@ -51,8 +51,8 @@ public struct WorkflowGraphView: View {
                             Label("Resume", systemImage: "play.fill")
                                 .padding(.horizontal, 10)
                                 .padding(.vertical, 6)
-                                .background(VesperTheme.neonGreen.opacity(0.2))
-                                .foregroundColor(VesperTheme.neonGreen)
+                                .background(FerriteSuiteTheme.neonGreen.opacity(0.2))
+                                .foregroundColor(FerriteSuiteTheme.neonGreen)
                                 .cornerRadius(8)
                         }
                         .buttonStyle(.plain)
@@ -61,12 +61,12 @@ public struct WorkflowGraphView: View {
                             Label("Pause", systemImage: "pause.fill")
                                 .padding(.horizontal, 10)
                                 .padding(.vertical, 6)
-                                .background(VesperTheme.neonAmber.opacity(0.25))
-                                .foregroundColor(VesperTheme.neonAmber)
+                                .background(FerriteSuiteTheme.neonAmber.opacity(0.25))
+                                .foregroundColor(FerriteSuiteTheme.neonAmber)
                                 .cornerRadius(8)
                                 .overlay(
                                     RoundedRectangle(cornerRadius: 8)
-                                        .stroke(VesperTheme.neonAmber, lineWidth: 1)
+                                        .stroke(FerriteSuiteTheme.neonAmber, lineWidth: 1)
                                 )
                         }
                         .buttonStyle(.plain)
@@ -76,7 +76,7 @@ public struct WorkflowGraphView: View {
                         Label("Step", systemImage: "forward.frame.fill")
                             .padding(.horizontal, 8)
                             .padding(.vertical, 6)
-                            .background(VesperTheme.secondaryCardBackground)
+                            .background(FerriteSuiteTheme.secondaryCardBackground)
                             .cornerRadius(8)
                     }
                     .buttonStyle(.plain)
@@ -86,8 +86,8 @@ public struct WorkflowGraphView: View {
                     Button(action: { engine.stop() }) {
                         Image(systemName: "stop.fill")
                             .padding(8)
-                            .background(VesperTheme.secondaryCardBackground)
-                            .foregroundColor(engine.isExecuting ? VesperTheme.neonRed : .secondary)
+                            .background(FerriteSuiteTheme.secondaryCardBackground)
+                            .foregroundColor(engine.isExecuting ? FerriteSuiteTheme.neonRed : .secondary)
                             .cornerRadius(8)
                     }
                     .buttonStyle(.plain)
@@ -97,7 +97,7 @@ public struct WorkflowGraphView: View {
                     Button(action: { engine.reset() }) {
                         Image(systemName: "arrow.counterclockwise")
                             .padding(8)
-                            .background(VesperTheme.secondaryCardBackground)
+                            .background(FerriteSuiteTheme.secondaryCardBackground)
                             .cornerRadius(8)
                     }
                     .buttonStyle(.plain)
@@ -106,7 +106,7 @@ public struct WorkflowGraphView: View {
             }
             .padding(.horizontal, 20)
             .padding(.vertical, 12)
-            .background(VesperTheme.cardBackground)
+            .background(FerriteSuiteTheme.cardBackground)
             
             // Progress Ticker
             if let wf = engine.activeWorkflow {
@@ -129,10 +129,10 @@ public struct WorkflowGraphView: View {
                 }
                 .padding(.horizontal, 20)
                 .padding(.vertical, 8)
-                .background(VesperTheme.darkBackground)
+                .background(FerriteSuiteTheme.darkBackground)
             }
             
-            Divider().background(VesperTheme.subtleBorder)
+            Divider().background(FerriteSuiteTheme.subtleBorder)
             
             // Subgraph Canvas
             ScrollView {
@@ -146,7 +146,7 @@ public struct WorkflowGraphView: View {
                             if sgIndex < workflow.subgraphs.count - 1 {
                                 Image(systemName: "arrow.down")
                                     .font(.caption.bold())
-                                    .foregroundColor(VesperTheme.accentCyan.opacity(0.6))
+                                    .foregroundColor(FerriteSuiteTheme.accentCyan.opacity(0.6))
                                     .padding(.vertical, -6)
                             }
                         }
@@ -161,7 +161,7 @@ public struct WorkflowGraphView: View {
                     HStack {
                         Image(systemName: "terminal")
                             .font(.caption)
-                            .foregroundColor(VesperTheme.accentCyan)
+                            .foregroundColor(FerriteSuiteTheme.accentCyan)
                         Text("Workflow Execution Telemetry")
                             .font(.caption.bold())
                         Spacer()
@@ -178,7 +178,7 @@ public struct WorkflowGraphView: View {
                                 ForEach(engine.executionLogs.indices, id: \.self) { idx in
                                     Text(engine.executionLogs[idx])
                                         .font(.caption2.monospaced())
-                                        .foregroundColor(engine.executionLogs[idx].contains("❌") ? VesperTheme.neonRed : (engine.executionLogs[idx].contains("✓") ? VesperTheme.neonGreen : .secondary))
+                                        .foregroundColor(engine.executionLogs[idx].contains("❌") ? FerriteSuiteTheme.neonRed : (engine.executionLogs[idx].contains("✓") ? FerriteSuiteTheme.neonGreen : .secondary))
                                         .id(idx)
                                 }
                             }
@@ -192,11 +192,11 @@ public struct WorkflowGraphView: View {
                     }
                 }
                 .padding(12)
-                .background(VesperTheme.cardBackground)
-                .border(VesperTheme.subtleBorder, width: 1)
+                .background(FerriteSuiteTheme.cardBackground)
+                .border(FerriteSuiteTheme.subtleBorder, width: 1)
             }
         }
-        .background(VesperTheme.darkBackground)
+        .background(FerriteSuiteTheme.darkBackground)
     }
 }
 
@@ -213,7 +213,7 @@ private struct SubgraphCard: View {
             HStack {
                 HStack(spacing: 8) {
                     Circle()
-                        .fill(subgraph.isCompleted ? VesperTheme.neonGreen : (subgraph.isRunning ? VesperTheme.accentCyan : (subgraph.isPaused ? VesperTheme.neonAmber : .secondary)))
+                        .fill(subgraph.isCompleted ? FerriteSuiteTheme.neonGreen : (subgraph.isRunning ? FerriteSuiteTheme.accentCyan : (subgraph.isPaused ? FerriteSuiteTheme.neonAmber : .secondary)))
                         .frame(width: 10, height: 10)
                     
                     Text(subgraph.title)
@@ -228,7 +228,7 @@ private struct SubgraphCard: View {
                     .foregroundColor(.secondary)
             }
             
-            Divider().background(VesperTheme.subtleBorder)
+            Divider().background(FerriteSuiteTheme.subtleBorder)
             
             // Tasks in Subgraph
             VStack(spacing: 8) {
@@ -241,7 +241,7 @@ private struct SubgraphCard: View {
         .glassCard()
         .overlay(
             RoundedRectangle(cornerRadius: 12)
-                .stroke(isCurrent ? VesperTheme.accentCyan.opacity(0.8) : Color.clear, lineWidth: 1.5)
+                .stroke(isCurrent ? FerriteSuiteTheme.accentCyan.opacity(0.8) : Color.clear, lineWidth: 1.5)
         )
     }
 }
@@ -306,7 +306,7 @@ private struct TaskRow: View {
                 }
             }
             .padding(10)
-            .background(VesperTheme.secondaryCardBackground)
+            .background(FerriteSuiteTheme.secondaryCardBackground)
             .cornerRadius(8)
             
             // Telemetry Badges Flow
@@ -320,15 +320,15 @@ private struct TaskRow: View {
                                     .foregroundColor(.secondary)
                                 Text(val)
                                     .font(.system(size: 10, weight: .semibold, design: .monospaced))
-                                    .foregroundColor(key.contains("Vulnerab") || key.contains("Risk") || key.contains("Fixed") ? VesperTheme.neonRed : VesperTheme.accentCyan)
+                                    .foregroundColor(key.contains("Vulnerab") || key.contains("Risk") || key.contains("Fixed") ? FerriteSuiteTheme.neonRed : FerriteSuiteTheme.accentCyan)
                             }
                             .padding(.horizontal, 6)
                             .padding(.vertical, 3)
-                            .background(VesperTheme.cardBackground)
+                            .background(FerriteSuiteTheme.cardBackground)
                             .cornerRadius(5)
                             .overlay(
                                 RoundedRectangle(cornerRadius: 5)
-                                    .stroke(VesperTheme.subtleBorder, lineWidth: 0.5)
+                                    .stroke(FerriteSuiteTheme.subtleBorder, lineWidth: 0.5)
                             )
                         }
                     }
@@ -343,10 +343,10 @@ private struct TaskRow: View {
                         HStack(spacing: 6) {
                             Image(systemName: "hand.raised.fill")
                                 .font(.caption)
-                                .foregroundColor(VesperTheme.neonAmber)
+                                .foregroundColor(FerriteSuiteTheme.neonAmber)
                             Text(prompt)
                                 .font(.caption.bold())
-                                .foregroundColor(VesperTheme.neonAmber)
+                                .foregroundColor(FerriteSuiteTheme.neonAmber)
                         }
                     }
                     
@@ -358,11 +358,11 @@ private struct TaskRow: View {
                                 HStack {
                                     Text(opt)
                                         .font(.caption.bold())
-                                        .foregroundColor(task.selectedOption == opt ? VesperTheme.neonGreen : .primary)
+                                        .foregroundColor(task.selectedOption == opt ? FerriteSuiteTheme.neonGreen : .primary)
                                     Spacer()
                                     if task.selectedOption == opt {
                                         Image(systemName: "checkmark.circle.fill")
-                                            .foregroundColor(VesperTheme.neonGreen)
+                                            .foregroundColor(FerriteSuiteTheme.neonGreen)
                                     } else {
                                         Image(systemName: "chevron.right")
                                             .font(.caption2)
@@ -371,11 +371,11 @@ private struct TaskRow: View {
                                 }
                                 .padding(.horizontal, 10)
                                 .padding(.vertical, 7)
-                                .background(task.selectedOption == opt ? VesperTheme.neonGreen.opacity(0.15) : VesperTheme.cardBackground)
+                                .background(task.selectedOption == opt ? FerriteSuiteTheme.neonGreen.opacity(0.15) : FerriteSuiteTheme.cardBackground)
                                 .cornerRadius(6)
                                 .overlay(
                                     RoundedRectangle(cornerRadius: 6)
-                                        .stroke(task.selectedOption == opt ? VesperTheme.neonGreen : VesperTheme.subtleBorder, lineWidth: 1)
+                                        .stroke(task.selectedOption == opt ? FerriteSuiteTheme.neonGreen : FerriteSuiteTheme.subtleBorder, lineWidth: 1)
                                 )
                             }
                             .buttonStyle(.plain)
@@ -384,11 +384,11 @@ private struct TaskRow: View {
                     }
                 }
                 .padding(10)
-                .background(VesperTheme.neonAmber.opacity(0.08))
+                .background(FerriteSuiteTheme.neonAmber.opacity(0.08))
                 .cornerRadius(8)
                 .overlay(
                     RoundedRectangle(cornerRadius: 8)
-                        .stroke(VesperTheme.neonAmber.opacity(0.4), lineWidth: 1)
+                        .stroke(FerriteSuiteTheme.neonAmber.opacity(0.4), lineWidth: 1)
                 )
                 .padding(.horizontal, 10)
             }
@@ -399,10 +399,10 @@ private struct TaskRow: View {
                     HStack {
                         Image(systemName: "globe.badge.chevron.backward")
                             .font(.caption)
-                            .foregroundColor(VesperTheme.accentCyan)
+                            .foregroundColor(FerriteSuiteTheme.accentCyan)
                         Text("Web & Protocol Intelligence")
                             .font(.caption2.bold())
-                            .foregroundColor(VesperTheme.accentCyan)
+                            .foregroundColor(FerriteSuiteTheme.accentCyan)
                     }
                     
                     ForEach(task.webInsights) { insight in
@@ -416,7 +416,7 @@ private struct TaskRow: View {
                                     Link(destination: url) {
                                         Image(systemName: "arrow.up.right.square")
                                             .font(.caption2)
-                                            .foregroundColor(VesperTheme.accentCyan)
+                                            .foregroundColor(FerriteSuiteTheme.accentCyan)
                                     }
                                 }
                             }
@@ -432,7 +432,7 @@ private struct TaskRow: View {
                                             .font(.system(size: 8, weight: .bold))
                                             .padding(.horizontal, 4)
                                             .padding(.vertical, 1)
-                                            .background(VesperTheme.cardBackground)
+                                            .background(FerriteSuiteTheme.cardBackground)
                                             .cornerRadius(3)
                                             .foregroundColor(.secondary)
                                     }
@@ -440,12 +440,12 @@ private struct TaskRow: View {
                             }
                         }
                         .padding(8)
-                        .background(VesperTheme.cardBackground.opacity(0.7))
+                        .background(FerriteSuiteTheme.cardBackground.opacity(0.7))
                         .cornerRadius(6)
                     }
                 }
                 .padding(10)
-                .background(VesperTheme.secondaryCardBackground)
+                .background(FerriteSuiteTheme.secondaryCardBackground)
                 .cornerRadius(8)
                 .padding(.horizontal, 10)
             }
@@ -462,11 +462,11 @@ private struct TaskRow: View {
                         .foregroundColor(Color(red: 0.2, green: 0.9, blue: 0.4))
                         .padding(8)
                         .frame(maxWidth: .infinity, alignment: .leading)
-                        .background(VesperTheme.terminalBackground)
+                        .background(FerriteSuiteTheme.terminalBackground)
                         .cornerRadius(6)
                         .overlay(
                             RoundedRectangle(cornerRadius: 6)
-                                .stroke(VesperTheme.subtleBorder, lineWidth: 1)
+                                .stroke(FerriteSuiteTheme.subtleBorder, lineWidth: 1)
                         )
                 }
                 .padding(.horizontal, 10)

@@ -15,7 +15,7 @@ public struct OpsCenterView: View {
             HStack(spacing: 20) {
                 HStack(spacing: 6) {
                     Circle()
-                        .fill(connection.status.isConnected ? VesperTheme.neonGreen : VesperTheme.neonRed)
+                        .fill(connection.status.isConnected ? FerriteSuiteTheme.neonGreen : FerriteSuiteTheme.neonRed)
                         .frame(width: 8, height: 8)
                     Text("Transport: \(connection.status.description)")
                         .font(.caption.monospaced())
@@ -33,17 +33,17 @@ public struct OpsCenterView: View {
                 .foregroundColor(.secondary)
             }
             .padding(12)
-            .background(VesperTheme.cardBackground)
+            .background(FerriteSuiteTheme.cardBackground)
             
             Divider()
-                .background(VesperTheme.subtleBorder)
+                .background(FerriteSuiteTheme.subtleBorder)
             
             // Console Terminal Output
             ScrollViewReader { proxy in
                 ScrollView {
                     Text(consoleOutput)
                         .font(.system(.caption, design: .monospaced))
-                        .foregroundColor(VesperTheme.accentCyan)
+                        .foregroundColor(FerriteSuiteTheme.accentCyan)
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .padding(12)
                         .textSelection(.enabled)
@@ -58,13 +58,13 @@ public struct OpsCenterView: View {
             }
             
             Divider()
-                .background(VesperTheme.subtleBorder)
+                .background(FerriteSuiteTheme.subtleBorder)
             
             // CLI Input Box
             HStack(spacing: 8) {
                 Text(">:")
                     .font(.body.monospaced().bold())
-                    .foregroundColor(VesperTheme.flipperOrange)
+                    .foregroundColor(FerriteSuiteTheme.flipperOrange)
                 
                 TextField("Enter Flipper CLI command (e.g. 'help', 'info device', 'storage info /ext')...", text: $commandInput)
                     .textFieldStyle(.plain)
@@ -79,16 +79,16 @@ public struct OpsCenterView: View {
                     } else {
                         Image(systemName: "return")
                             .font(.body)
-                            .foregroundColor(VesperTheme.accentCyan)
+                            .foregroundColor(FerriteSuiteTheme.accentCyan)
                     }
                 }
                 .buttonStyle(.plain)
                 .disabled(commandInput.isEmpty || isExecuting)
             }
             .padding(12)
-            .background(VesperTheme.cardBackground)
+            .background(FerriteSuiteTheme.cardBackground)
         }
-        .background(VesperTheme.darkBackground)
+        .background(FerriteSuiteTheme.darkBackground)
     }
     
     private func submitCliCommand() {

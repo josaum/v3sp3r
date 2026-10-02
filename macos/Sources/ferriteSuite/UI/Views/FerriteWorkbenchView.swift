@@ -10,7 +10,7 @@ public struct FerriteWorkbenchView: View {
     @State private var executionFeedback: String = ""
     
     // Decoder tab state
-    @State private var signalFilePath: String = "/Users/josaum/projects/FerriteOS/crates/ferrite-rf/testdata/nfc/Ntag216.nfc"
+    @State private var signalFilePath: String = "\(FerriteOSPaths.rfTestDataDir)/nfc/Ntag216.nfc"
     @State private var selectedDecoderFlag: String = ""
     @State private var decoderOutput: String = ""
     @State private var isDecoding: Bool = false
@@ -36,13 +36,13 @@ public struct FerriteWorkbenchView: View {
         "status"
     ]
     
-    private let sampleFiles = [
-        ("NFC NTAG216", "/Users/josaum/projects/FerriteOS/crates/ferrite-rf/testdata/nfc/Ntag216.nfc"),
-        ("Sub-GHz Holtek 40b", "/Users/josaum/projects/FerriteOS/crates/ferrite-rf/testdata/static_holtek_raw.sub"),
-        ("Sub-GHz CAME Atomo", "/Users/josaum/projects/FerriteOS/crates/ferrite-rf/testdata/static_came_atomo_raw.sub"),
-        ("Sub-GHz Doitrand", "/Users/josaum/projects/FerriteOS/crates/ferrite-rf/testdata/static_gates_doitrand_raw.sub"),
-        ("Sub-GHz RAW (Marantec)", "/Users/josaum/projects/FerriteOS/crates/ferrite-rf/testdata/marantec_raw.sub"),
-        ("NFC Vicinity (ISO15693)", "/Users/josaum/projects/FerriteOS/crates/ferrite-rf/testdata/nfc_vicinity/Slix_cap_default.nfc")
+    private let sampleFiles: [(String, String)] = [
+        ("NFC NTAG216", "\(FerriteOSPaths.rfTestDataDir)/nfc/Ntag216.nfc"),
+        ("Sub-GHz Holtek 40b", "\(FerriteOSPaths.rfTestDataDir)/static_holtek_raw.sub"),
+        ("Sub-GHz CAME Atomo", "\(FerriteOSPaths.rfTestDataDir)/static_came_atomo_raw.sub"),
+        ("Sub-GHz Doitrand", "\(FerriteOSPaths.rfTestDataDir)/static_gates_doitrand_raw.sub"),
+        ("Sub-GHz RAW (Marantec)", "\(FerriteOSPaths.rfTestDataDir)/marantec_raw.sub"),
+        ("NFC Vicinity (ISO15693)", "\(FerriteOSPaths.rfTestDataDir)/nfc_vicinity/Slix_cap_default.nfc")
     ]
     
     public init() {}
@@ -52,7 +52,7 @@ public struct FerriteWorkbenchView: View {
             // Header HUD
             headerHud
             
-            Divider().background(VesperTheme.subtleBorder)
+            Divider().background(FerriteSuiteTheme.subtleBorder)
             
             // Tab Selector
             Picker("Mode", selection: $selectedTab) {
@@ -65,9 +65,9 @@ public struct FerriteWorkbenchView: View {
             .pickerStyle(.segmented)
             .padding(.horizontal, 20)
             .padding(.vertical, 12)
-            .background(VesperTheme.cardBackground.opacity(0.6))
+            .background(FerriteSuiteTheme.cardBackground.opacity(0.6))
             
-            Divider().background(VesperTheme.subtleBorder)
+            Divider().background(FerriteSuiteTheme.subtleBorder)
             
             // Tab Contents
             ScrollView {
@@ -90,7 +90,7 @@ public struct FerriteWorkbenchView: View {
                 .padding(20)
             }
         }
-        .background(VesperTheme.darkBackground)
+        .background(FerriteSuiteTheme.darkBackground)
         .alert("Confirm FerriteOS Standalone Flash", isPresented: $showFlashConfirmModal) {
             Button("Cancel", role: .cancel) {}
             Button("Proceed with DFU Flash (0x08000000)", role: .destructive) {
@@ -107,26 +107,26 @@ public struct FerriteWorkbenchView: View {
             HStack(spacing: 12) {
                 Image(systemName: "atom")
                     .font(.system(size: 30))
-                    .foregroundColor(VesperTheme.neonAmber)
+                    .foregroundColor(FerriteSuiteTheme.neonAmber)
                 
                 VStack(alignment: .leading, spacing: 2) {
                     HStack(spacing: 8) {
                         Text("FerriteOS Deep Integration")
                             .font(.title2.bold())
-                            .foregroundColor(VesperTheme.primaryTextColor)
+                            .foregroundColor(FerriteSuiteTheme.primaryTextColor)
                         
                         Text("RUST no_std")
                             .font(.system(size: 9.5, weight: .bold, design: .monospaced))
                             .padding(.horizontal, 6)
                             .padding(.vertical, 2)
-                            .background(VesperTheme.neonAmber.opacity(0.18))
-                            .foregroundColor(VesperTheme.neonAmber)
+                            .background(FerriteSuiteTheme.neonAmber.opacity(0.18))
+                            .foregroundColor(FerriteSuiteTheme.neonAmber)
                             .cornerRadius(4)
                     }
                     
                     Text("Deterministic microsecond intent parsing, 55+ protocol decoders, and bare-metal STM32WB55 firmware.")
                         .font(.caption)
-                        .foregroundColor(VesperTheme.secondaryTextColor)
+                        .foregroundColor(FerriteSuiteTheme.secondaryTextColor)
                 }
                 
                 Spacer()
@@ -149,28 +149,28 @@ public struct FerriteWorkbenchView: View {
                         .foregroundColor(.secondary)
                     Text("Image: \(manifest.flashBytes / 1024) KB / \(manifest.flashLimitBytes / 1024) KB (Flash Base 0x\(String(manifest.flashBase, radix: 16).uppercased()))")
                         .font(.caption2.monospaced())
-                        .foregroundColor(VesperTheme.accentCyan)
+                        .foregroundColor(FerriteSuiteTheme.accentCyan)
                 }
             }
         }
         .padding(20)
-        .background(VesperTheme.cardBackground)
+        .background(FerriteSuiteTheme.cardBackground)
     }
     
     private func statusPill(title: String, active: Bool) -> some View {
         HStack(spacing: 5) {
             Circle()
-                .fill(active ? VesperTheme.neonGreen : VesperTheme.neonRed)
+                .fill(active ? FerriteSuiteTheme.neonGreen : FerriteSuiteTheme.neonRed)
                 .frame(width: 6, height: 6)
             Text(title)
                 .font(.system(size: 10, weight: .bold, design: .monospaced))
-                .foregroundColor(active ? VesperTheme.neonGreen : VesperTheme.neonRed)
+                .foregroundColor(active ? FerriteSuiteTheme.neonGreen : FerriteSuiteTheme.neonRed)
         }
         .padding(.horizontal, 8)
         .padding(.vertical, 4)
-        .background(VesperTheme.secondaryCardBackground)
+        .background(FerriteSuiteTheme.secondaryCardBackground)
         .cornerRadius(6)
-        .overlay(RoundedRectangle(cornerRadius: 6).stroke(VesperTheme.subtleBorder, lineWidth: 1))
+        .overlay(RoundedRectangle(cornerRadius: 6).stroke(FerriteSuiteTheme.subtleBorder, lineWidth: 1))
     }
     
     // MARK: - Tab 0: Intent & Natural Language
@@ -179,7 +179,7 @@ public struct FerriteWorkbenchView: View {
             VStack(alignment: .leading, spacing: 14) {
                 HStack {
                     Image(systemName: "text.bubble.fill")
-                        .foregroundColor(VesperTheme.accentCyan)
+                        .foregroundColor(FerriteSuiteTheme.accentCyan)
                     Text("Deterministic Natural Language Parser (ferrite-console)")
                         .font(.headline)
                     Spacer()
@@ -204,7 +204,7 @@ public struct FerriteWorkbenchView: View {
                         }
                     }
                     .buttonStyle(.borderedProminent)
-                    .tint(VesperTheme.accentCyan)
+                    .tint(FerriteSuiteTheme.accentCyan)
                     .disabled(inputPhrase.isEmpty || ferrite.isExecuting)
                 }
                 
@@ -220,9 +220,9 @@ public struct FerriteWorkbenchView: View {
                                     .font(.caption2.monospaced())
                                     .padding(.horizontal, 10)
                                     .padding(.vertical, 5)
-                                    .background(VesperTheme.secondaryCardBackground)
+                                    .background(FerriteSuiteTheme.secondaryCardBackground)
                                     .cornerRadius(10)
-                                    .overlay(RoundedRectangle(cornerRadius: 10).stroke(VesperTheme.subtleBorder, lineWidth: 1))
+                                    .overlay(RoundedRectangle(cornerRadius: 10).stroke(FerriteSuiteTheme.subtleBorder, lineWidth: 1))
                             }
                             .buttonStyle(.plain)
                         }
@@ -237,7 +237,7 @@ public struct FerriteWorkbenchView: View {
                 VStack(alignment: .leading, spacing: 14) {
                     HStack {
                         Image(systemName: "checkmark.seal.fill")
-                            .foregroundColor(VesperTheme.neonGreen)
+                            .foregroundColor(FerriteSuiteTheme.neonGreen)
                         Text("FerriteOS Structured Intent Classification")
                             .font(.headline)
                         Spacer()
@@ -247,9 +247,9 @@ public struct FerriteWorkbenchView: View {
                     }
                     
                     HStack(spacing: 12) {
-                        metricBox(title: "INTENT", value: understanding.intent, color: VesperTheme.accentCyan)
-                        metricBox(title: "DOMAIN", value: understanding.domain, color: VesperTheme.cyberPurple)
-                        metricBox(title: "CONFIDENCE", value: "\(understanding.confidence) / 5", color: VesperTheme.neonGreen)
+                        metricBox(title: "INTENT", value: understanding.intent, color: FerriteSuiteTheme.accentCyan)
+                        metricBox(title: "DOMAIN", value: understanding.domain, color: FerriteSuiteTheme.cyberPurple)
+                        metricBox(title: "CONFIDENCE", value: "\(understanding.confidence) / 5", color: FerriteSuiteTheme.neonGreen)
                     }
                     
                     VStack(alignment: .leading, spacing: 6) {
@@ -263,18 +263,18 @@ public struct FerriteWorkbenchView: View {
                                 NSPasteboard.general.setString(understanding.rawOutput, forType: .string)
                             }
                             .font(.caption.bold())
-                            .foregroundColor(VesperTheme.accentCyan)
+                            .foregroundColor(FerriteSuiteTheme.accentCyan)
                             .buttonStyle(.plain)
                         }
                         
                         Text(understanding.rawOutput)
                             .font(.caption.monospaced())
-                            .foregroundColor(VesperTheme.neonGreen)
+                            .foregroundColor(FerriteSuiteTheme.neonGreen)
                             .padding(12)
                             .frame(maxWidth: .infinity, alignment: .leading)
-                            .background(VesperTheme.terminalBackground)
+                            .background(FerriteSuiteTheme.terminalBackground)
                             .cornerRadius(8)
-                            .overlay(RoundedRectangle(cornerRadius: 8).stroke(VesperTheme.subtleBorder, lineWidth: 1))
+                            .overlay(RoundedRectangle(cornerRadius: 8).stroke(FerriteSuiteTheme.subtleBorder, lineWidth: 1))
                     }
                     
                     // Interactive Planned Actions Execution Panel
@@ -282,10 +282,10 @@ public struct FerriteWorkbenchView: View {
                         VStack(alignment: .leading, spacing: 10) {
                             HStack {
                                 Image(systemName: "bolt.badge.automatic.fill")
-                                    .foregroundColor(VesperTheme.neonAmber)
+                                    .foregroundColor(FerriteSuiteTheme.neonAmber)
                                 Text("PLANNED HARDWARE ACTIONS (SPEC-001)")
                                     .font(.system(size: 10.5, weight: .bold).monospaced())
-                                    .foregroundColor(VesperTheme.primaryTextColor)
+                                    .foregroundColor(FerriteSuiteTheme.primaryTextColor)
                                 Spacer()
                                 Text("\(understanding.plannedActions.count) actions")
                                     .font(.caption2.monospaced())
@@ -300,18 +300,18 @@ public struct FerriteWorkbenchView: View {
                                                 .font(.system(size: 9.5, weight: .black, design: .monospaced))
                                                 .padding(.horizontal, 6)
                                                 .padding(.vertical, 2)
-                                                .background(action.isEmitting ? VesperTheme.neonRed.opacity(0.2) : VesperTheme.accentCyan.opacity(0.18))
-                                                .foregroundColor(action.isEmitting ? VesperTheme.neonRed : VesperTheme.accentCyan)
+                                                .background(action.isEmitting ? FerriteSuiteTheme.neonRed.opacity(0.2) : FerriteSuiteTheme.accentCyan.opacity(0.18))
+                                                .foregroundColor(action.isEmitting ? FerriteSuiteTheme.neonRed : FerriteSuiteTheme.accentCyan)
                                                 .cornerRadius(4)
                                             
                                             Text(action.targetDomain)
                                                 .font(.caption.bold())
-                                                .foregroundColor(VesperTheme.primaryTextColor)
+                                                .foregroundColor(FerriteSuiteTheme.primaryTextColor)
                                             
                                             if action.requiresHardware {
                                                 Text("RADIO REQUIRED")
                                                     .font(.system(size: 8.5, weight: .bold, design: .monospaced))
-                                                    .foregroundColor(VesperTheme.neonAmber)
+                                                    .foregroundColor(FerriteSuiteTheme.neonAmber)
                                             }
                                         }
                                         
@@ -336,37 +336,37 @@ public struct FerriteWorkbenchView: View {
                                         }
                                         .padding(.horizontal, 10)
                                         .padding(.vertical, 6)
-                                        .background(VesperTheme.accentCyan.opacity(0.15))
-                                        .foregroundColor(VesperTheme.accentCyan)
+                                        .background(FerriteSuiteTheme.accentCyan.opacity(0.15))
+                                        .foregroundColor(FerriteSuiteTheme.accentCyan)
                                         .cornerRadius(6)
                                         .overlay(
                                             RoundedRectangle(cornerRadius: 6)
-                                                .stroke(VesperTheme.accentCyan.opacity(0.5), lineWidth: 1)
+                                                .stroke(FerriteSuiteTheme.accentCyan.opacity(0.5), lineWidth: 1)
                                         )
                                     }
                                     .buttonStyle(.plain)
                                 }
                                 .padding(10)
-                                .background(VesperTheme.cardBackground.opacity(0.7))
+                                .background(FerriteSuiteTheme.cardBackground.opacity(0.7))
                                 .cornerRadius(8)
                                 .overlay(
                                     RoundedRectangle(cornerRadius: 8)
-                                        .stroke(VesperTheme.subtleBorder, lineWidth: 1)
+                                        .stroke(FerriteSuiteTheme.subtleBorder, lineWidth: 1)
                                 )
                             }
                             
                             if !executionFeedback.isEmpty {
                                 HStack(alignment: .top, spacing: 8) {
                                     Image(systemName: "terminal.fill")
-                                        .foregroundColor(VesperTheme.neonGreen)
+                                        .foregroundColor(FerriteSuiteTheme.neonGreen)
                                         .font(.caption)
                                     Text(executionFeedback)
                                         .font(.caption.monospaced())
-                                        .foregroundColor(VesperTheme.neonGreen)
+                                        .foregroundColor(FerriteSuiteTheme.neonGreen)
                                 }
                                 .padding(10)
                                 .frame(maxWidth: .infinity, alignment: .leading)
-                                .background(VesperTheme.terminalBackground)
+                                .background(FerriteSuiteTheme.terminalBackground)
                                 .cornerRadius(6)
                             }
                         }
@@ -392,9 +392,9 @@ public struct FerriteWorkbenchView: View {
         }
         .padding(10)
         .frame(minWidth: 110, alignment: .leading)
-        .background(VesperTheme.secondaryCardBackground)
+        .background(FerriteSuiteTheme.secondaryCardBackground)
         .cornerRadius(8)
-        .overlay(RoundedRectangle(cornerRadius: 8).stroke(VesperTheme.subtleBorder, lineWidth: 1))
+        .overlay(RoundedRectangle(cornerRadius: 8).stroke(FerriteSuiteTheme.subtleBorder, lineWidth: 1))
     }
     
     // MARK: - Tab 1: Offline Signal Decoder
@@ -404,22 +404,22 @@ public struct FerriteWorkbenchView: View {
             VStack(alignment: .leading, spacing: 14) {
                 HStack {
                     Image(systemName: "waveform.path.ecg")
-                        .foregroundColor(VesperTheme.flipperOrange)
+                        .foregroundColor(FerriteSuiteTheme.flipperOrange)
                     Text("High-Speed Offline Signal Decoder (ferrite-rf)")
                         .font(.headline)
                     Spacer()
                     if let capture = ferrite.lastDecodedCapture {
                         HStack(spacing: 5) {
                             Circle()
-                                .fill(capture.finding != nil ? VesperTheme.neonGreen : VesperTheme.neonAmber)
+                                .fill(capture.finding != nil ? FerriteSuiteTheme.neonGreen : FerriteSuiteTheme.neonAmber)
                                 .frame(width: 7, height: 7)
                             Text(capture.finding != nil ? "DECODED" : "ANALYZED")
                                 .font(.system(size: 9.5, weight: .bold, design: .monospaced))
-                                .foregroundColor(capture.finding != nil ? VesperTheme.neonGreen : VesperTheme.neonAmber)
+                                .foregroundColor(capture.finding != nil ? FerriteSuiteTheme.neonGreen : FerriteSuiteTheme.neonAmber)
                         }
                         .padding(.horizontal, 8)
                         .padding(.vertical, 4)
-                        .background(VesperTheme.secondaryCardBackground)
+                        .background(FerriteSuiteTheme.secondaryCardBackground)
                         .cornerRadius(6)
                     }
                 }
@@ -448,7 +448,7 @@ public struct FerriteWorkbenchView: View {
                         }
                     }
                     .buttonStyle(.borderedProminent)
-                    .tint(VesperTheme.flipperOrange)
+                    .tint(FerriteSuiteTheme.flipperOrange)
                     .disabled(signalFilePath.isEmpty || isDecoding)
                 }
                 
@@ -473,9 +473,9 @@ public struct FerriteWorkbenchView: View {
                                     }
                                     .padding(.horizontal, 10)
                                     .padding(.vertical, 6)
-                                    .background(VesperTheme.secondaryCardBackground)
+                                    .background(FerriteSuiteTheme.secondaryCardBackground)
                                     .cornerRadius(8)
-                                    .overlay(RoundedRectangle(cornerRadius: 8).stroke(VesperTheme.subtleBorder, lineWidth: 1))
+                                    .overlay(RoundedRectangle(cornerRadius: 8).stroke(FerriteSuiteTheme.subtleBorder, lineWidth: 1))
                                 }
                                 .buttonStyle(.plain)
                             }
@@ -491,10 +491,10 @@ public struct FerriteWorkbenchView: View {
                 VStack(alignment: .leading, spacing: 14) {
                     HStack {
                         Image(systemName: "checkmark.seal.fill")
-                            .foregroundColor(VesperTheme.accentCyan)
+                            .foregroundColor(FerriteSuiteTheme.accentCyan)
                         Text("PROTOCOL DECODE TELEMETRY")
                             .font(.system(size: 11, weight: .bold).monospaced())
-                            .foregroundColor(VesperTheme.primaryTextColor)
+                            .foregroundColor(FerriteSuiteTheme.primaryTextColor)
                         Spacer()
                         Text(capture.timestamp, style: .time)
                             .font(.caption2.monospaced())
@@ -533,21 +533,21 @@ public struct FerriteWorkbenchView: View {
                     if let summary = capture.finding?.summary {
                         HStack(alignment: .top, spacing: 10) {
                             Image(systemName: "bolt.fill")
-                                .foregroundColor(VesperTheme.neonAmber)
+                                .foregroundColor(FerriteSuiteTheme.neonAmber)
                             VStack(alignment: .leading, spacing: 3) {
                                 Text("DECODED PAYLOAD SUMMARY")
                                     .font(.system(size: 9, weight: .bold).monospaced())
                                     .foregroundColor(.secondary)
                                 Text(summary)
                                     .font(.system(size: 12.5, weight: .semibold, design: .monospaced))
-                                    .foregroundColor(VesperTheme.neonGreen)
+                                    .foregroundColor(FerriteSuiteTheme.neonGreen)
                             }
                         }
                         .padding(12)
                         .frame(maxWidth: .infinity, alignment: .leading)
-                        .background(VesperTheme.terminalBackground)
+                        .background(FerriteSuiteTheme.terminalBackground)
                         .cornerRadius(8)
-                        .overlay(RoundedRectangle(cornerRadius: 8).stroke(VesperTheme.subtleBorder, lineWidth: 1))
+                        .overlay(RoundedRectangle(cornerRadius: 8).stroke(FerriteSuiteTheme.subtleBorder, lineWidth: 1))
                     }
                     
                     // Detailed Payload / Message Breakdown
@@ -558,7 +558,7 @@ public struct FerriteWorkbenchView: View {
                                 .foregroundColor(.secondary)
                             Text(details)
                                 .font(.caption.monospaced())
-                                .foregroundColor(VesperTheme.accentCyan)
+                                .foregroundColor(FerriteSuiteTheme.accentCyan)
                                 .padding(10)
                                 .frame(maxWidth: .infinity, alignment: .leading)
                                 .background(Color.black.opacity(0.35))
@@ -574,10 +574,10 @@ public struct FerriteWorkbenchView: View {
                     VStack(alignment: .leading, spacing: 14) {
                         HStack {
                             Image(systemName: "waveform.path")
-                                .foregroundColor(VesperTheme.accentCyan)
+                                .foregroundColor(FerriteSuiteTheme.accentCyan)
                             Text("DIGITAL PULSE STREAM WAVEFORM (First \(capture.pulses.count) transitions)")
                                 .font(.system(size: 10.5, weight: .bold).monospaced())
-                                .foregroundColor(VesperTheme.primaryTextColor)
+                                .foregroundColor(FerriteSuiteTheme.primaryTextColor)
                             Spacer()
                             
                             // Zoom controls
@@ -594,7 +594,7 @@ public struct FerriteWorkbenchView: View {
                                 
                                 Text("\(String(format: "%.1fx", waveformZoom))")
                                     .font(.system(size: 9.5, weight: .bold, design: .monospaced))
-                                    .foregroundColor(VesperTheme.accentCyan)
+                                    .foregroundColor(FerriteSuiteTheme.accentCyan)
                                     .frame(minWidth: 32)
                                 
                                 Button(action: { waveformZoom = min(3.0, waveformZoom + 0.25) }) {
@@ -619,32 +619,32 @@ public struct FerriteWorkbenchView: View {
                                         VStack(spacing: 4) {
                                             Text("\(pulse.durationMicros)µs")
                                                 .font(.system(size: 8, weight: isSelected ? .bold : .regular, design: .monospaced))
-                                                .foregroundColor(isSelected ? VesperTheme.neonAmber : .secondary)
+                                                .foregroundColor(isSelected ? FerriteSuiteTheme.neonAmber : .secondary)
                                                 .lineLimit(1)
                                             
                                             // Logic level indicator bar with neon glow
                                             ZStack(alignment: .bottom) {
                                                 RoundedRectangle(cornerRadius: 3)
-                                                    .fill(pulse.isHigh ? VesperTheme.neonGreen : VesperTheme.accentCyan.opacity(0.35))
+                                                    .fill(pulse.isHigh ? FerriteSuiteTheme.neonGreen : FerriteSuiteTheme.accentCyan.opacity(0.35))
                                                     .frame(
                                                         width: baseWidth,
                                                         height: pulse.isHigh ? 48 : 12
                                                     )
                                                     .overlay(
                                                         RoundedRectangle(cornerRadius: 3)
-                                                            .stroke(isSelected ? Color.white : (pulse.isHigh ? VesperTheme.neonGreen.opacity(0.8) : Color.clear), lineWidth: isSelected ? 2 : 1)
+                                                            .stroke(isSelected ? Color.white : (pulse.isHigh ? FerriteSuiteTheme.neonGreen.opacity(0.8) : Color.clear), lineWidth: isSelected ? 2 : 1)
                                                     )
-                                                    .shadow(color: pulse.isHigh ? VesperTheme.neonGreen.opacity(0.4) : Color.clear, radius: 4)
+                                                    .shadow(color: pulse.isHigh ? FerriteSuiteTheme.neonGreen.opacity(0.4) : Color.clear, radius: 4)
                                             }
                                             .frame(height: 52, alignment: .bottom)
                                             
                                             Text(pulse.isHigh ? "HIGH" : "LOW")
                                                 .font(.system(size: 7.5, weight: .black, design: .monospaced))
-                                                .foregroundColor(pulse.isHigh ? VesperTheme.neonGreen : .secondary)
+                                                .foregroundColor(pulse.isHigh ? FerriteSuiteTheme.neonGreen : .secondary)
                                         }
                                         .padding(.vertical, 4)
                                         .padding(.horizontal, 2)
-                                        .background(isSelected ? VesperTheme.cardBackground : Color.clear)
+                                        .background(isSelected ? FerriteSuiteTheme.cardBackground : Color.clear)
                                         .cornerRadius(4)
                                     }
                                     .buttonStyle(.plain)
@@ -654,29 +654,29 @@ public struct FerriteWorkbenchView: View {
                             .padding(.horizontal, 8)
                         }
                         .padding(10)
-                        .background(VesperTheme.terminalBackground)
+                        .background(FerriteSuiteTheme.terminalBackground)
                         .cornerRadius(8)
-                        .overlay(RoundedRectangle(cornerRadius: 8).stroke(VesperTheme.subtleBorder, lineWidth: 1))
+                        .overlay(RoundedRectangle(cornerRadius: 8).stroke(FerriteSuiteTheme.subtleBorder, lineWidth: 1))
                         
                         // Selected pulse telemetry callout
                         if let idx = selectedPulseIndex, idx < capture.pulses.count {
                             let p = capture.pulses[idx]
                             HStack(spacing: 12) {
                                 Image(systemName: "scope")
-                                    .foregroundColor(VesperTheme.neonAmber)
+                                    .foregroundColor(FerriteSuiteTheme.neonAmber)
                                 Text("TRANSITION #\(idx + 1)")
                                     .font(.system(size: 9.5, weight: .bold).monospaced())
-                                    .foregroundColor(VesperTheme.neonAmber)
+                                    .foregroundColor(FerriteSuiteTheme.neonAmber)
                                 Text("•")
                                     .foregroundColor(.secondary)
                                 Text("State: \(p.isHigh ? "MARK (Active High)" : "SPACE (Low Gap)")")
                                     .font(.caption2.monospaced())
-                                    .foregroundColor(VesperTheme.primaryTextColor)
+                                    .foregroundColor(FerriteSuiteTheme.primaryTextColor)
                                 Text("•")
                                     .foregroundColor(.secondary)
                                 Text("Duration: \(p.durationMicros) µs (\(String(format: "%.2f", Double(p.durationMicros) / 1000.0)) ms)")
                                     .font(.caption2.monospaced())
-                                    .foregroundColor(VesperTheme.accentCyan)
+                                    .foregroundColor(FerriteSuiteTheme.accentCyan)
                                 Spacer()
                                 Button("Deselect") {
                                     selectedPulseIndex = nil
@@ -686,9 +686,9 @@ public struct FerriteWorkbenchView: View {
                                 .foregroundColor(.secondary)
                             }
                             .padding(8)
-                            .background(VesperTheme.secondaryCardBackground)
+                            .background(FerriteSuiteTheme.secondaryCardBackground)
                             .cornerRadius(6)
-                            .overlay(RoundedRectangle(cornerRadius: 6).stroke(VesperTheme.neonAmber.opacity(0.3), lineWidth: 1))
+                            .overlay(RoundedRectangle(cornerRadius: 6).stroke(FerriteSuiteTheme.neonAmber.opacity(0.3), lineWidth: 1))
                         }
                     }
                     .padding(20)
@@ -701,7 +701,7 @@ public struct FerriteWorkbenchView: View {
                 VStack(alignment: .leading, spacing: 10) {
                     HStack {
                         Image(systemName: "terminal.fill")
-                            .foregroundColor(VesperTheme.accentCyan)
+                            .foregroundColor(FerriteSuiteTheme.accentCyan)
                         Text("HOST REPL & MACHINE JSON TELEMETRY")
                             .font(.system(size: 10.5, weight: .bold).monospaced())
                         Spacer()
@@ -710,18 +710,18 @@ public struct FerriteWorkbenchView: View {
                             NSPasteboard.general.setString(decoderOutput, forType: .string)
                         }
                         .font(.caption.bold())
-                        .foregroundColor(VesperTheme.accentCyan)
+                        .foregroundColor(FerriteSuiteTheme.accentCyan)
                         .buttonStyle(.plain)
                     }
                     
                     Text(decoderOutput)
                         .font(.caption.monospaced())
-                        .foregroundColor(VesperTheme.neonGreen)
+                        .foregroundColor(FerriteSuiteTheme.neonGreen)
                         .padding(14)
                         .frame(maxWidth: .infinity, alignment: .leading)
-                        .background(VesperTheme.terminalBackground)
+                        .background(FerriteSuiteTheme.terminalBackground)
                         .cornerRadius(8)
-                        .overlay(RoundedRectangle(cornerRadius: 8).stroke(VesperTheme.subtleBorder, lineWidth: 1))
+                        .overlay(RoundedRectangle(cornerRadius: 8).stroke(FerriteSuiteTheme.subtleBorder, lineWidth: 1))
                 }
                 .padding(20)
                 .glassCard()
@@ -736,22 +736,22 @@ public struct FerriteWorkbenchView: View {
             VStack(alignment: .leading, spacing: 14) {
                 HStack {
                     Image(systemName: "cpu.fill")
-                        .foregroundColor(VesperTheme.cyberPurple)
+                        .foregroundColor(FerriteSuiteTheme.cyberPurple)
                     Text("Standalone Bare-Metal Firmware Manifest")
                         .font(.headline)
                     Spacer()
                     if let passed = ferrite.preflightPassed {
                         HStack(spacing: 4) {
                             Circle()
-                                .fill(passed ? VesperTheme.neonGreen : VesperTheme.neonRed)
+                                .fill(passed ? FerriteSuiteTheme.neonGreen : FerriteSuiteTheme.neonRed)
                                 .frame(width: 8, height: 8)
                             Text(passed ? "PREFLIGHT PASS" : "PREFLIGHT FAILED")
                                 .font(.system(size: 9.5, weight: .bold).monospaced())
-                                .foregroundColor(passed ? VesperTheme.neonGreen : VesperTheme.neonRed)
+                                .foregroundColor(passed ? FerriteSuiteTheme.neonGreen : FerriteSuiteTheme.neonRed)
                         }
                         .padding(.horizontal, 8)
                         .padding(.vertical, 4)
-                        .background(VesperTheme.secondaryCardBackground)
+                        .background(FerriteSuiteTheme.secondaryCardBackground)
                         .cornerRadius(6)
                     }
                 }
@@ -776,7 +776,7 @@ public struct FerriteWorkbenchView: View {
                             .foregroundColor(.secondary)
                         Text(m.binSha256)
                             .font(.system(size: 10.5, design: .monospaced))
-                            .foregroundColor(VesperTheme.accentCyan)
+                            .foregroundColor(FerriteSuiteTheme.accentCyan)
                             .lineLimit(1)
                     }
                     .padding(8)
@@ -791,7 +791,7 @@ public struct FerriteWorkbenchView: View {
             VStack(alignment: .leading, spacing: 14) {
                 Text("Pre-Flight Verification & Hardware Flashing")
                     .font(.headline)
-                    .foregroundColor(VesperTheme.primaryTextColor)
+                    .foregroundColor(FerriteSuiteTheme.primaryTextColor)
                 
                 HStack(spacing: 12) {
                     Button(action: {
@@ -808,7 +808,7 @@ public struct FerriteWorkbenchView: View {
                         .font(.caption.bold())
                     }
                     .buttonStyle(.borderedProminent)
-                    .tint(VesperTheme.accentCyan)
+                    .tint(FerriteSuiteTheme.accentCyan)
                     
                     Button(action: {
                         Task { _ = await ferrite.runUnitTests() }
@@ -861,7 +861,7 @@ public struct FerriteWorkbenchView: View {
                             .foregroundColor(.black)
                             .padding(.horizontal, 12)
                             .padding(.vertical, 7)
-                            .background(VesperTheme.neonGreen)
+                            .background(FerriteSuiteTheme.neonGreen)
                             .cornerRadius(8)
                     }
                     .buttonStyle(.plain)
@@ -873,7 +873,7 @@ public struct FerriteWorkbenchView: View {
                             .foregroundColor(.white)
                             .padding(.horizontal, 12)
                             .padding(.vertical, 7)
-                            .background(VesperTheme.neonRed)
+                            .background(FerriteSuiteTheme.neonRed)
                             .cornerRadius(8)
                     }
                     .buttonStyle(.plain)
@@ -896,12 +896,12 @@ public struct FerriteWorkbenchView: View {
                         
                         Text(combined)
                             .font(.caption.monospaced())
-                            .foregroundColor(VesperTheme.neonGreen)
+                            .foregroundColor(FerriteSuiteTheme.neonGreen)
                             .padding(12)
                             .frame(maxWidth: .infinity, alignment: .leading)
-                            .background(VesperTheme.terminalBackground)
+                            .background(FerriteSuiteTheme.terminalBackground)
                             .cornerRadius(8)
-                            .overlay(RoundedRectangle(cornerRadius: 8).stroke(VesperTheme.subtleBorder, lineWidth: 1))
+                            .overlay(RoundedRectangle(cornerRadius: 8).stroke(FerriteSuiteTheme.subtleBorder, lineWidth: 1))
                     }
                 }
             }
@@ -916,17 +916,17 @@ public struct FerriteWorkbenchView: View {
             VStack(alignment: .leading, spacing: 12) {
                 HStack {
                     Image(systemName: "shippingbox.fill")
-                        .foregroundColor(VesperTheme.neonAmber)
+                        .foregroundColor(FerriteSuiteTheme.neonAmber)
                     Text("FerriteOS Architecture & Verified Subsystems")
                         .font(.headline)
-                        .foregroundColor(VesperTheme.primaryTextColor)
+                        .foregroundColor(FerriteSuiteTheme.primaryTextColor)
                     Spacer()
                     Text("9 NO_STD CRATES")
                         .font(.system(size: 9.5, weight: .bold, design: .monospaced))
                         .padding(.horizontal, 6)
                         .padding(.vertical, 2)
-                        .background(VesperTheme.neonAmber.opacity(0.18))
-                        .foregroundColor(VesperTheme.neonAmber)
+                        .background(FerriteSuiteTheme.neonAmber.opacity(0.18))
+                        .foregroundColor(FerriteSuiteTheme.neonAmber)
                         .cornerRadius(4)
                 }
                 
@@ -945,20 +945,20 @@ public struct FerriteWorkbenchView: View {
                             HStack(spacing: 8) {
                                 Text(crate.name)
                                     .font(.system(size: 13, weight: .bold, design: .monospaced))
-                                    .foregroundColor(VesperTheme.accentCyan)
+                                    .foregroundColor(FerriteSuiteTheme.accentCyan)
                                 
                                 Text(crate.specReference)
                                     .font(.system(size: 8.5, weight: .bold, design: .monospaced))
                                     .padding(.horizontal, 5)
                                     .padding(.vertical, 2)
-                                    .background(VesperTheme.secondaryCardBackground)
-                                    .foregroundColor(VesperTheme.cyberPurple)
+                                    .background(FerriteSuiteTheme.secondaryCardBackground)
+                                    .foregroundColor(FerriteSuiteTheme.cyberPurple)
                                     .cornerRadius(4)
                                 
                                 if crate.isPureNoStd {
                                     Text("no_std")
                                         .font(.system(size: 8, weight: .bold, design: .monospaced))
-                                        .foregroundColor(VesperTheme.neonGreen)
+                                        .foregroundColor(FerriteSuiteTheme.neonGreen)
                                 }
                                 
                                 if let status = crate.lastTestStatus {
@@ -966,8 +966,8 @@ public struct FerriteWorkbenchView: View {
                                         .font(.system(size: 8.5, weight: .black, design: .monospaced))
                                         .padding(.horizontal, 5)
                                         .padding(.vertical, 2)
-                                        .background((crate.passed ?? false) ? VesperTheme.neonGreen.opacity(0.2) : VesperTheme.neonRed.opacity(0.2))
-                                        .foregroundColor((crate.passed ?? false) ? VesperTheme.neonGreen : VesperTheme.neonRed)
+                                        .background((crate.passed ?? false) ? FerriteSuiteTheme.neonGreen.opacity(0.2) : FerriteSuiteTheme.neonRed.opacity(0.2))
+                                        .foregroundColor((crate.passed ?? false) ? FerriteSuiteTheme.neonGreen : FerriteSuiteTheme.neonRed)
                                         .cornerRadius(4)
                                 }
                             }
@@ -995,17 +995,17 @@ public struct FerriteWorkbenchView: View {
                             }
                             .padding(.horizontal, 10)
                             .padding(.vertical, 5)
-                            .background(VesperTheme.secondaryCardBackground)
+                            .background(FerriteSuiteTheme.secondaryCardBackground)
                             .cornerRadius(6)
-                            .overlay(RoundedRectangle(cornerRadius: 6).stroke(VesperTheme.subtleBorder, lineWidth: 1))
+                            .overlay(RoundedRectangle(cornerRadius: 6).stroke(FerriteSuiteTheme.subtleBorder, lineWidth: 1))
                         }
                         .buttonStyle(.plain)
                         .disabled(ferrite.testingCrateName != nil)
                     }
                     .padding(14)
-                    .background(VesperTheme.cardBackground)
+                    .background(FerriteSuiteTheme.cardBackground)
                     .cornerRadius(8)
-                    .overlay(RoundedRectangle(cornerRadius: 8).stroke(VesperTheme.subtleBorder, lineWidth: 1))
+                    .overlay(RoundedRectangle(cornerRadius: 8).stroke(FerriteSuiteTheme.subtleBorder, lineWidth: 1))
                 }
             }
             
@@ -1014,7 +1014,7 @@ public struct FerriteWorkbenchView: View {
                 VStack(alignment: .leading, spacing: 8) {
                     HStack {
                         Image(systemName: "terminal.fill")
-                            .foregroundColor(VesperTheme.neonGreen)
+                            .foregroundColor(FerriteSuiteTheme.neonGreen)
                         Text("CRATE TEST RESULTS")
                             .font(.system(size: 10, weight: .bold).monospaced())
                             .foregroundColor(.secondary)
@@ -1023,18 +1023,18 @@ public struct FerriteWorkbenchView: View {
                             ferrite.crateTestOutput = ""
                         }
                         .font(.caption.bold())
-                        .foregroundColor(VesperTheme.accentCyan)
+                        .foregroundColor(FerriteSuiteTheme.accentCyan)
                         .buttonStyle(.plain)
                     }
                     
                     Text(ferrite.crateTestOutput)
                         .font(.caption.monospaced())
-                        .foregroundColor(VesperTheme.neonGreen)
+                        .foregroundColor(FerriteSuiteTheme.neonGreen)
                         .padding(12)
                         .frame(maxWidth: .infinity, alignment: .leading)
-                        .background(VesperTheme.terminalBackground)
+                        .background(FerriteSuiteTheme.terminalBackground)
                         .cornerRadius(8)
-                        .overlay(RoundedRectangle(cornerRadius: 8).stroke(VesperTheme.subtleBorder, lineWidth: 1))
+                        .overlay(RoundedRectangle(cornerRadius: 8).stroke(FerriteSuiteTheme.subtleBorder, lineWidth: 1))
                 }
                 .padding(18)
                 .glassCard()
@@ -1048,7 +1048,7 @@ public struct FerriteWorkbenchView: View {
             VStack(alignment: .leading, spacing: 14) {
                 HStack {
                     Image(systemName: "cable.connector.horizontal")
-                        .foregroundColor(VesperTheme.accentCyan)
+                        .foregroundColor(FerriteSuiteTheme.accentCyan)
                     Text("FerriteOS Headless Wire Protocol Codec (SPEC-011)")
                         .font(.headline)
                     Spacer()
@@ -1056,8 +1056,8 @@ public struct FerriteWorkbenchView: View {
                         .font(.system(size: 9.5, weight: .bold, design: .monospaced))
                         .padding(.horizontal, 6)
                         .padding(.vertical, 2)
-                        .background(VesperTheme.accentCyan.opacity(0.18))
-                        .foregroundColor(VesperTheme.accentCyan)
+                        .background(FerriteSuiteTheme.accentCyan.opacity(0.18))
+                        .foregroundColor(FerriteSuiteTheme.accentCyan)
                         .cornerRadius(4)
                 }
                 
@@ -1078,7 +1078,7 @@ public struct FerriteWorkbenchView: View {
                         .font(.caption.bold())
                     }
                     .buttonStyle(.borderedProminent)
-                    .tint(VesperTheme.accentCyan)
+                    .tint(FerriteSuiteTheme.accentCyan)
                     
                     Button(action: runWireTest) {
                         HStack(spacing: 6) {
@@ -1115,22 +1115,22 @@ public struct FerriteWorkbenchView: View {
                 VStack(alignment: .leading, spacing: 14) {
                     HStack {
                         Image(systemName: "antenna.radiowaves.left.and.right")
-                            .foregroundColor(VesperTheme.neonGreen)
+                            .foregroundColor(FerriteSuiteTheme.neonGreen)
                         Text("LIVE HANDSHAKE OUTCOME")
                             .font(.system(size: 11, weight: .bold).monospaced())
-                            .foregroundColor(VesperTheme.primaryTextColor)
+                            .foregroundColor(FerriteSuiteTheme.primaryTextColor)
                         Spacer()
                         HStack(spacing: 5) {
                             Circle()
-                                .fill(handshake.handshakeState == "OPEN" ? VesperTheme.neonGreen : VesperTheme.neonRed)
+                                .fill(handshake.handshakeState == "OPEN" ? FerriteSuiteTheme.neonGreen : FerriteSuiteTheme.neonRed)
                                 .frame(width: 7, height: 7)
                             Text(handshake.handshakeState)
                                 .font(.system(size: 9.5, weight: .black, design: .monospaced))
-                                .foregroundColor(handshake.handshakeState == "OPEN" ? VesperTheme.neonGreen : VesperTheme.neonRed)
+                                .foregroundColor(handshake.handshakeState == "OPEN" ? FerriteSuiteTheme.neonGreen : FerriteSuiteTheme.neonRed)
                         }
                         .padding(.horizontal, 8)
                         .padding(.vertical, 4)
-                        .background(VesperTheme.secondaryCardBackground)
+                        .background(FerriteSuiteTheme.secondaryCardBackground)
                         .cornerRadius(6)
                     }
                     
@@ -1148,7 +1148,7 @@ public struct FerriteWorkbenchView: View {
                                 .foregroundColor(.secondary)
                             Text(handshake.requestHex)
                                 .font(.system(size: 10, design: .monospaced))
-                                .foregroundColor(VesperTheme.accentCyan)
+                                .foregroundColor(FerriteSuiteTheme.accentCyan)
                                 .padding(8)
                                 .frame(maxWidth: .infinity, alignment: .leading)
                                 .background(Color.black.opacity(0.35))
@@ -1163,7 +1163,7 @@ public struct FerriteWorkbenchView: View {
                                 .foregroundColor(.secondary)
                             Text(handshake.responseHex)
                                 .font(.system(size: 10, design: .monospaced))
-                                .foregroundColor(VesperTheme.neonGreen)
+                                .foregroundColor(FerriteSuiteTheme.neonGreen)
                                 .padding(8)
                                 .frame(maxWidth: .infinity, alignment: .leading)
                                 .background(Color.black.opacity(0.35))
@@ -1180,7 +1180,7 @@ public struct FerriteWorkbenchView: View {
                 VStack(alignment: .leading, spacing: 8) {
                     HStack {
                         Image(systemName: "terminal.fill")
-                            .foregroundColor(VesperTheme.neonGreen)
+                            .foregroundColor(FerriteSuiteTheme.neonGreen)
                         Text("WIRE CODEC LOG:")
                             .font(.system(size: 9.5, weight: .bold).monospaced())
                             .foregroundColor(.secondary)
@@ -1190,18 +1190,18 @@ public struct FerriteWorkbenchView: View {
                             NSPasteboard.general.setString(wireHandshakeResult, forType: .string)
                         }
                         .font(.caption.bold())
-                        .foregroundColor(VesperTheme.accentCyan)
+                        .foregroundColor(FerriteSuiteTheme.accentCyan)
                         .buttonStyle(.plain)
                     }
                     
                     Text(wireHandshakeResult)
                         .font(.caption.monospaced())
-                        .foregroundColor(VesperTheme.neonGreen)
+                        .foregroundColor(FerriteSuiteTheme.neonGreen)
                         .padding(12)
                         .frame(maxWidth: .infinity, alignment: .leading)
-                        .background(VesperTheme.terminalBackground)
+                        .background(FerriteSuiteTheme.terminalBackground)
                         .cornerRadius(8)
-                        .overlay(RoundedRectangle(cornerRadius: 8).stroke(VesperTheme.subtleBorder, lineWidth: 1))
+                        .overlay(RoundedRectangle(cornerRadius: 8).stroke(FerriteSuiteTheme.subtleBorder, lineWidth: 1))
                 }
                 .padding(20)
                 .glassCard()
@@ -1228,14 +1228,14 @@ public struct FerriteWorkbenchView: View {
         isRunningWireHandshake = true
         wireHandshakeResult = "Running cargo test -p ferrite-wire...\n"
         Task {
-            let cargoPath = "/Users/josaum/.cargo/bin/cargo"
+            let cargoPath = HostTools.cargo
             do {
                 let process = Process()
                 process.executableURL = URL(fileURLWithPath: cargoPath)
                 process.arguments = ["test", "-p", "ferrite-wire"]
                 process.currentDirectoryURL = URL(fileURLWithPath: ferrite.workspacePath)
                 var env = ProcessInfo.processInfo.environment
-                env["PATH"] = "/Users/josaum/.cargo/bin:/opt/homebrew/bin:/usr/bin:/bin"
+                env["PATH"] = HostTools.subprocessPath
                 process.environment = env
                 let pipe = Pipe()
                 process.standardOutput = pipe

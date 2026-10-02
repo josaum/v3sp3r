@@ -37,11 +37,11 @@ public enum FlipperFirmwareDistro: String, Codable, CaseIterable, Identifiable {
     
     public var accentColor: Color {
         switch self {
-        case .unleashed: return VesperTheme.neonGreen
-        case .official: return VesperTheme.accentCyan
-        case .momentum: return VesperTheme.cyberPurple
-        case .rogueMaster: return VesperTheme.neonRed
-        case .ferriteOs: return VesperTheme.neonAmber
+        case .unleashed: return FerriteSuiteTheme.neonGreen
+        case .official: return FerriteSuiteTheme.accentCyan
+        case .momentum: return FerriteSuiteTheme.cyberPurple
+        case .rogueMaster: return FerriteSuiteTheme.neonRed
+        case .ferriteOs: return FerriteSuiteTheme.neonAmber
         }
     }
     

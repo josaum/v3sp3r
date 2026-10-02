@@ -45,9 +45,9 @@ RAW_Data: 450 -450 450 -450 900 -450 450 -900 450 -450 900 -450 900 -450 450 -90
                     HStack(spacing: 16) {
                         Image(systemName: "waveform.path.ecg.rectangle.fill")
                             .font(.system(size: 40))
-                            .foregroundColor(VesperTheme.cyberPurple)
+                            .foregroundColor(FerriteSuiteTheme.cyberPurple)
                             .frame(width: 64, height: 64)
-                            .background(VesperTheme.cyberPurple.opacity(0.15))
+                            .background(FerriteSuiteTheme.cyberPurple.opacity(0.15))
                             .cornerRadius(14)
                         
                         VStack(alignment: .leading, spacing: 4) {
@@ -87,7 +87,7 @@ RAW_Data: 450 -450 450 -450 900 -450 450 -900 450 -450 900 -450 900 -450 450 -90
                                     Label("Run Oracle Analysis", systemImage: "sparkles")
                                         .padding(.horizontal, 12)
                                         .padding(.vertical, 6)
-                                        .background(VesperTheme.accentCyan)
+                                        .background(FerriteSuiteTheme.accentCyan)
                                         .foregroundColor(.black)
                                         .cornerRadius(8)
                                 }
@@ -104,14 +104,14 @@ RAW_Data: 450 -450 450 -450 900 -450 450 -900 450 -450 900 -450 900 -450 450 -90
                             .cornerRadius(8)
                             .overlay(
                                 RoundedRectangle(cornerRadius: 8)
-                                    .stroke(VesperTheme.subtleBorder, lineWidth: 1)
+                                    .stroke(FerriteSuiteTheme.subtleBorder, lineWidth: 1)
                             )
                         
                         if !oracleAnalysisOutput.isEmpty {
                             VStack(alignment: .leading, spacing: 8) {
                                 HStack {
                                     Image(systemName: "shield.lefthalf.filled")
-                                        .foregroundColor(VesperTheme.neonAmber)
+                                        .foregroundColor(FerriteSuiteTheme.neonAmber)
                                     Text("Oracle Signal Intelligence Verdict")
                                         .font(.headline)
                                 }
@@ -121,11 +121,11 @@ RAW_Data: 450 -450 450 -450 900 -450 450 -900 450 -450 900 -450 900 -450 450 -90
                                     .textSelection(.enabled)
                                     .padding(12)
                                     .frame(maxWidth: .infinity, alignment: .leading)
-                                    .background(VesperTheme.secondaryCardBackground)
+                                    .background(FerriteSuiteTheme.secondaryCardBackground)
                                     .cornerRadius(8)
                                     .overlay(
                                         RoundedRectangle(cornerRadius: 8)
-                                            .stroke(VesperTheme.accentCyan.opacity(0.4), lineWidth: 1)
+                                            .stroke(FerriteSuiteTheme.accentCyan.opacity(0.4), lineWidth: 1)
                                     )
                             }
                         }
@@ -152,8 +152,8 @@ RAW_Data: 450 -450 450 -450 900 -450 450 -900 450 -450 900 -450 900 -450 450 -90
                                         .font(.caption.monospaced().bold())
                                         .padding(.horizontal, 8)
                                         .padding(.vertical, 3)
-                                        .background(proto.isReplayable ? VesperTheme.neonAmber.opacity(0.2) : VesperTheme.neonGreen.opacity(0.2))
-                                        .foregroundColor(proto.isReplayable ? VesperTheme.neonAmber : VesperTheme.neonGreen)
+                                        .background(proto.isReplayable ? FerriteSuiteTheme.neonAmber.opacity(0.2) : FerriteSuiteTheme.neonGreen.opacity(0.2))
+                                        .foregroundColor(proto.isReplayable ? FerriteSuiteTheme.neonAmber : FerriteSuiteTheme.neonGreen)
                                         .cornerRadius(6)
                                 }
                                 
@@ -176,7 +176,7 @@ RAW_Data: 450 -450 450 -450 900 -450 450 -900 450 -450 900 -450 900 -450 450 -90
             }
             .padding(20)
         }
-        .background(VesperTheme.darkBackground)
+        .background(FerriteSuiteTheme.darkBackground)
     }
     
     private func runOracleAnalysis() {
@@ -228,7 +228,7 @@ private struct SignalArsenalCard: View {
             HStack {
                 Image(systemName: signal.type.icon)
                     .font(.title3)
-                    .foregroundColor(VesperTheme.accentCyan)
+                    .foregroundColor(FerriteSuiteTheme.accentCyan)
                 
                 VStack(alignment: .leading, spacing: 2) {
                     Text(signal.name)
@@ -246,7 +246,7 @@ private struct SignalArsenalCard: View {
                 .foregroundColor(.secondary)
                 .lineLimit(2)
             
-            Divider().background(VesperTheme.subtleBorder)
+            Divider().background(FerriteSuiteTheme.subtleBorder)
             
             HStack {
                 Text(signal.path)
@@ -267,7 +267,7 @@ private struct SignalArsenalCard: View {
                             .foregroundColor(.black)
                             .padding(.horizontal, 10)
                             .padding(.vertical, 5)
-                            .background(VesperTheme.neonAmber)
+                            .background(FerriteSuiteTheme.neonAmber)
                             .cornerRadius(6)
                     }
                 }
@@ -278,7 +278,7 @@ private struct SignalArsenalCard: View {
             if !feedbackText.isEmpty {
                 Text(feedbackText)
                     .font(.system(size: 9).monospaced())
-                    .foregroundColor(VesperTheme.accentCyan)
+                    .foregroundColor(FerriteSuiteTheme.accentCyan)
             }
         }
         .padding(14)

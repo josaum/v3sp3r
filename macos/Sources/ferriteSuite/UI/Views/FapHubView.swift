@@ -16,9 +16,9 @@ public struct FapHubView: View {
                     HStack(spacing: 16) {
                         Image(systemName: "app.badge.checkmark.fill")
                             .font(.system(size: 40))
-                            .foregroundColor(VesperTheme.flipperOrange)
+                            .foregroundColor(FerriteSuiteTheme.flipperOrange)
                             .frame(width: 64, height: 64)
-                            .background(VesperTheme.flipperOrange.opacity(0.15))
+                            .background(FerriteSuiteTheme.flipperOrange.opacity(0.15))
                             .cornerRadius(14)
                         
                         VStack(alignment: .leading, spacing: 4) {
@@ -57,7 +57,7 @@ public struct FapHubView: View {
                                     }
                                     .padding(.horizontal, 12)
                                     .padding(.vertical, 6)
-                                    .background(selectedCategory == cat ? VesperTheme.accentCyan : VesperTheme.secondaryCardBackground)
+                                    .background(selectedCategory == cat ? FerriteSuiteTheme.accentCyan : FerriteSuiteTheme.secondaryCardBackground)
                                     .foregroundColor(selectedCategory == cat ? .black : .primary)
                                     .cornerRadius(12)
                                 }
@@ -74,17 +74,17 @@ public struct FapHubView: View {
                             .textFieldStyle(.plain)
                     }
                     .padding(10)
-                    .background(VesperTheme.secondaryCardBackground)
+                    .background(FerriteSuiteTheme.secondaryCardBackground)
                     .cornerRadius(8)
                     .overlay(
                         RoundedRectangle(cornerRadius: 8)
-                            .stroke(VesperTheme.subtleBorder, lineWidth: 1)
+                            .stroke(FerriteSuiteTheme.subtleBorder, lineWidth: 1)
                     )
                     
                     if !service.installStatusText.isEmpty {
                         Text(service.installStatusText)
                             .font(.caption.monospaced())
-                            .foregroundColor(VesperTheme.accentCyan)
+                            .foregroundColor(FerriteSuiteTheme.accentCyan)
                             .padding(8)
                             .glassCard()
                     }
@@ -106,7 +106,7 @@ public struct FapHubView: View {
             }
             .padding(20)
         }
-        .background(VesperTheme.darkBackground)
+        .background(FerriteSuiteTheme.darkBackground)
     }
     
     private var filteredApps: [FapAppItem] {
@@ -126,11 +126,11 @@ private struct AppCard: View {
         VStack(alignment: .leading, spacing: 12) {
             HStack {
                 Circle()
-                    .fill(VesperTheme.accentCyan.opacity(0.15))
+                    .fill(FerriteSuiteTheme.accentCyan.opacity(0.15))
                     .frame(width: 36, height: 36)
                     .overlay(
                         Image(systemName: app.category.iconName)
-                            .foregroundColor(VesperTheme.accentCyan)
+                            .foregroundColor(FerriteSuiteTheme.accentCyan)
                     )
                 
                 VStack(alignment: .leading, spacing: 2) {
@@ -147,7 +147,7 @@ private struct AppCard: View {
                     .font(.system(size: 10, weight: .bold).monospaced())
                     .padding(.horizontal, 6)
                     .padding(.vertical, 2)
-                    .background(VesperTheme.secondaryCardBackground)
+                    .background(FerriteSuiteTheme.secondaryCardBackground)
                     .cornerRadius(4)
             }
             
@@ -157,7 +157,7 @@ private struct AppCard: View {
                 .lineLimit(3)
                 .frame(minHeight: 36, alignment: .topLeading)
             
-            Divider().background(VesperTheme.subtleBorder)
+            Divider().background(FerriteSuiteTheme.subtleBorder)
             
             HStack {
                 Text(app.flipperAppPath)
@@ -176,7 +176,7 @@ private struct AppCard: View {
                             .foregroundColor(.black)
                             .padding(.horizontal, 10)
                             .padding(.vertical, 5)
-                            .background(VesperTheme.neonGreen)
+                            .background(FerriteSuiteTheme.neonGreen)
                             .cornerRadius(6)
                     }
                     .buttonStyle(.plain)
@@ -192,7 +192,7 @@ private struct AppCard: View {
                                 .foregroundColor(.black)
                                 .padding(.horizontal, 10)
                                 .padding(.vertical, 5)
-                                .background(VesperTheme.flipperOrange)
+                                .background(FerriteSuiteTheme.flipperOrange)
                                 .cornerRadius(6)
                         }
                     }
@@ -214,14 +214,14 @@ private struct RepoCard: View {
             HStack {
                 Image(systemName: "folder.badge.gearshape")
                     .font(.title2)
-                    .foregroundColor(VesperTheme.cyberPurple)
+                    .foregroundColor(FerriteSuiteTheme.cyberPurple)
                 
                 VStack(alignment: .leading, spacing: 2) {
                     Text(repo.name)
                         .font(.headline)
                     Text(repo.category)
                         .font(.caption.monospaced())
-                        .foregroundColor(VesperTheme.accentCyan)
+                        .foregroundColor(FerriteSuiteTheme.accentCyan)
                 }
                 
                 Spacer()
@@ -231,7 +231,7 @@ private struct RepoCard: View {
                 .font(.caption)
                 .foregroundColor(.secondary)
             
-            Divider().background(VesperTheme.subtleBorder)
+            Divider().background(FerriteSuiteTheme.subtleBorder)
             
             HStack {
                 Text("Target: \(repo.targetDirectory)")
@@ -243,7 +243,7 @@ private struct RepoCard: View {
                 Link(destination: URL(string: repo.githubUrl)!) {
                     Label("View on GitHub ↗", systemImage: "link")
                         .font(.caption)
-                        .foregroundColor(VesperTheme.accentCyan)
+                        .foregroundColor(FerriteSuiteTheme.accentCyan)
                 }
             }
         }

@@ -27,18 +27,18 @@ public struct SignalLabView: View {
                                 HStack(spacing: 4) {
                                     Image(systemName: "bolt.fill")
                                         .font(.system(size: 9))
-                                        .foregroundColor(VesperTheme.neonGreen)
+                                        .foregroundColor(FerriteSuiteTheme.neonGreen)
                                     Text("FERRITEOS DIRECT RF ACCELERATION")
                                         .font(.system(size: 9, weight: .bold, design: .monospaced))
-                                        .foregroundColor(VesperTheme.neonGreen)
+                                        .foregroundColor(FerriteSuiteTheme.neonGreen)
                                 }
                                 .padding(.horizontal, 6)
                                 .padding(.vertical, 3)
-                                .background(VesperTheme.neonGreen.opacity(0.12))
+                                .background(FerriteSuiteTheme.neonGreen.opacity(0.12))
                                 .cornerRadius(6)
                                 .overlay(
                                     RoundedRectangle(cornerRadius: 6)
-                                        .stroke(VesperTheme.neonGreen.opacity(0.35), lineWidth: 1)
+                                        .stroke(FerriteSuiteTheme.neonGreen.opacity(0.35), lineWidth: 1)
                                 )
                             }
                         }
@@ -55,7 +55,7 @@ public struct SignalLabView: View {
                             Label("Transmit RF Now", systemImage: "antenna.radiowaves.left.and.right")
                                 .padding(.horizontal, 14)
                                 .padding(.vertical, 8)
-                                .background(VesperTheme.neonAmber)
+                                .background(FerriteSuiteTheme.neonAmber)
                                 .foregroundColor(.black)
                                 .cornerRadius(8)
                         }
@@ -74,16 +74,16 @@ public struct SignalLabView: View {
                         Spacer()
                         Text("\(Int(frequency * 1_000_000)) Hz • \(pulseCount) Pulses • \(Int(pulseWidth)) µs")
                             .font(.caption.monospaced())
-                            .foregroundColor(VesperTheme.accentCyan)
+                            .foregroundColor(FerriteSuiteTheme.accentCyan)
                     }
                     
                     WaveformCanvas(pulseCount: pulseCount, pulseWidth: pulseWidth)
                         .frame(height: 140)
-                        .background(VesperTheme.terminalBackground)
+                        .background(FerriteSuiteTheme.terminalBackground)
                         .cornerRadius(8)
                         .overlay(
                             RoundedRectangle(cornerRadius: 8)
-                                .stroke(VesperTheme.subtleBorder, lineWidth: 1)
+                                .stroke(FerriteSuiteTheme.subtleBorder, lineWidth: 1)
                         )
                 }
                 .padding(20)
@@ -136,7 +136,7 @@ public struct SignalLabView: View {
                             Label("Save .sub to SD Card", systemImage: "square.and.arrow.down")
                                 .padding(.horizontal, 12)
                                 .padding(.vertical, 6)
-                                .background(VesperTheme.secondaryCardBackground)
+                                .background(FerriteSuiteTheme.secondaryCardBackground)
                                 .cornerRadius(8)
                         }
                         .buttonStyle(.plain)
@@ -151,17 +151,17 @@ public struct SignalLabView: View {
                         .foregroundColor(Color(red: 0.2, green: 0.9, blue: 0.4))
                         .padding(10)
                         .frame(maxWidth: .infinity, alignment: .leading)
-                        .background(VesperTheme.terminalBackground)
+                        .background(FerriteSuiteTheme.terminalBackground)
                         .cornerRadius(6)
                         .overlay(
                             RoundedRectangle(cornerRadius: 6)
-                                .stroke(VesperTheme.subtleBorder, lineWidth: 1)
+                                .stroke(FerriteSuiteTheme.subtleBorder, lineWidth: 1)
                         )
                 }
             }
             .padding(20)
         }
-        .background(VesperTheme.darkBackground)
+        .background(FerriteSuiteTheme.darkBackground)
     }
     
     private func generateSubFile() -> String {
@@ -266,7 +266,7 @@ private struct WaveformCanvas: View {
                 currentX = nextX
             }
             
-            context.stroke(wavePath, with: .color(VesperTheme.accentCyan), lineWidth: 2)
+            context.stroke(wavePath, with: .color(FerriteSuiteTheme.accentCyan), lineWidth: 2)
         }
     }
 }

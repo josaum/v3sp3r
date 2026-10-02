@@ -25,12 +25,7 @@ public final class PiHarnessService {
     public var isExecuting: Bool = false
     public var lastError: String?
     
-    private let defaultSearchPaths = [
-        "/Users/josaum/.local/bin/pi",
-        "/Users/josaum/bin/pi",
-        "/opt/homebrew/bin/pi",
-        "/usr/local/bin/pi"
-    ]
+    private var defaultSearchPaths: [String] { HostTools.piCandidates }
     
     public init() {
         refreshStatus()
@@ -70,7 +65,7 @@ public final class PiHarnessService {
         whichProcess.arguments = ["pi"]
         
         var env = ProcessInfo.processInfo.environment
-        env["PATH"] = "/Users/josaum/.local/bin:/Users/josaum/bin:/Users/josaum/.cargo/bin:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
+        env["PATH"] = HostTools.subprocessPath
         whichProcess.environment = env
         
         let pipe = Pipe()
@@ -97,7 +92,7 @@ public final class PiHarnessService {
         proc.arguments = ["--version"]
         
         var env = ProcessInfo.processInfo.environment
-        env["PATH"] = "/Users/josaum/.local/bin:/Users/josaum/bin:/Users/josaum/.cargo/bin:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
+        env["PATH"] = HostTools.subprocessPath
         proc.environment = env
         
         let pipe = Pipe()
@@ -152,7 +147,8 @@ public final class PiHarnessService {
     public func testHarness() async -> (success: Bool, message: String) {
         refreshStatus()
         guard isAvailable else {
-            return (false, "Pi harness executable not found on host. Checked /Users/josaum/.local/bin/pi and system PATH.")
+            let searched = HostTools.searchedLocations("pi")
+            return (false, "Pi harness executable not found on host. Checked \(searched).")
         }
         
         let proc = Process()
@@ -160,7 +156,7 @@ public final class PiHarnessService {
         proc.arguments = ["-p", "--no-session", "--no-tools", "Respond with exact text: V3SP3R_PI_ONLINE"]
         
         var env = ProcessInfo.processInfo.environment
-        env["PATH"] = "/Users/josaum/.local/bin:/Users/josaum/bin:/Users/josaum/.cargo/bin:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
+        env["PATH"] = HostTools.subprocessPath
         proc.environment = env
         
         let pipe = Pipe()
@@ -187,7 +183,7 @@ public final class PiHarnessService {
     /// Emits `StreamChunk` deltas identical to OpenRouter streaming so the UI and tool executor remain unified.
     public func streamPrompt(
         prompt: String,
-        systemPrompt: String = VesperPrompts.systemPrompt,
+        systemPrompt: String = FerriteSuitePrompts.systemPrompt,
         model: String? = nil,
         onDelta: @escaping @MainActor (StreamChunk) -> Void
     ) async throws {
@@ -238,7 +234,7 @@ ACTION: <action_name> PARAMS: {"<key>": "<value>"}
         proc.arguments = args
         
         var env = ProcessInfo.processInfo.environment
-        env["PATH"] = "/Users/josaum/.local/bin:/Users/josaum/bin:/Users/josaum/.cargo/bin:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
+        env["PATH"] = HostTools.subprocessPath
         proc.environment = env
         
         let stdoutPipe = Pipe()
@@ -331,7 +327,7 @@ ACTION: <action_name> PARAMS: {"<key>": "<value>"}
         proc.arguments = ["--list-models"]
         
         var env = ProcessInfo.processInfo.environment
-        env["PATH"] = "/Users/josaum/.local/bin:/Users/josaum/bin:/Users/josaum/.cargo/bin:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
+        env["PATH"] = HostTools.subprocessPath
         proc.environment = env
         
         let pipe = Pipe()

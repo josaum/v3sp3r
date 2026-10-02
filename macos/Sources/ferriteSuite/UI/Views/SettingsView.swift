@@ -36,13 +36,13 @@ public struct SettingsView: View {
                 VStack(alignment: .leading, spacing: 14) {
                     HStack {
                         Image(systemName: "paintpalette.fill")
-                            .foregroundColor(VesperTheme.accentCyan)
+                            .foregroundColor(FerriteSuiteTheme.accentCyan)
                         Text("Appearance & Theme")
                             .font(.headline)
                         Spacer()
                         Text("Active: \(settings.appTheme.rawValue)")
                             .font(.caption.monospaced())
-                            .foregroundColor(VesperTheme.neonGreen)
+                            .foregroundColor(FerriteSuiteTheme.neonGreen)
                     }
                     
                     HStack(spacing: 14) {
@@ -51,7 +51,7 @@ public struct SettingsView: View {
                                 HStack(spacing: 8) {
                                     Image(systemName: mode.iconName)
                                         .font(.subheadline)
-                                        .foregroundColor(settings.appTheme == mode ? VesperTheme.accentCyan : .secondary)
+                                        .foregroundColor(settings.appTheme == mode ? FerriteSuiteTheme.accentCyan : .secondary)
                                     Text(mode.rawValue)
                                         .font(.subheadline)
                                         .fontWeight(settings.appTheme == mode ? .bold : .regular)
@@ -59,11 +59,11 @@ public struct SettingsView: View {
                                 .padding(.horizontal, 16)
                                 .padding(.vertical, 10)
                                 .frame(maxWidth: .infinity)
-                                .background(settings.appTheme == mode ? VesperTheme.accentCyan.opacity(0.15) : VesperTheme.secondaryCardBackground)
+                                .background(settings.appTheme == mode ? FerriteSuiteTheme.accentCyan.opacity(0.15) : FerriteSuiteTheme.secondaryCardBackground)
                                 .cornerRadius(8)
                                 .overlay(
                                     RoundedRectangle(cornerRadius: 8)
-                                        .stroke(settings.appTheme == mode ? VesperTheme.accentCyan : VesperTheme.subtleBorder, lineWidth: 1)
+                                        .stroke(settings.appTheme == mode ? FerriteSuiteTheme.accentCyan : FerriteSuiteTheme.subtleBorder, lineWidth: 1)
                                 )
                             }
                             .buttonStyle(.plain)
@@ -81,13 +81,13 @@ public struct SettingsView: View {
                 VStack(alignment: .leading, spacing: 16) {
                     HStack {
                         Image(systemName: "cpu.fill")
-                            .foregroundColor(VesperTheme.accentCyan)
+                            .foregroundColor(FerriteSuiteTheme.accentCyan)
                         Text("AI Engine Architecture")
                             .font(.headline)
                         Spacer()
                         Text("Selected: \(settings.aiEngine.rawValue)")
                             .font(.caption.monospaced())
-                            .foregroundColor(VesperTheme.neonGreen)
+                            .foregroundColor(FerriteSuiteTheme.neonGreen)
                     }
                     
                     HStack(spacing: 14) {
@@ -96,7 +96,7 @@ public struct SettingsView: View {
                                 HStack(spacing: 8) {
                                     Image(systemName: engine.iconName)
                                         .font(.subheadline)
-                                        .foregroundColor(settings.aiEngine == engine ? VesperTheme.accentCyan : .secondary)
+                                        .foregroundColor(settings.aiEngine == engine ? FerriteSuiteTheme.accentCyan : .secondary)
                                     VStack(alignment: .leading, spacing: 2) {
                                         Text(engine.rawValue)
                                             .font(.subheadline)
@@ -109,11 +109,11 @@ public struct SettingsView: View {
                                 .padding(.horizontal, 16)
                                 .padding(.vertical, 10)
                                 .frame(maxWidth: .infinity, alignment: .leading)
-                                .background(settings.aiEngine == engine ? VesperTheme.accentCyan.opacity(0.15) : VesperTheme.secondaryCardBackground)
+                                .background(settings.aiEngine == engine ? FerriteSuiteTheme.accentCyan.opacity(0.15) : FerriteSuiteTheme.secondaryCardBackground)
                                 .cornerRadius(8)
                                 .overlay(
                                     RoundedRectangle(cornerRadius: 8)
-                                        .stroke(settings.aiEngine == engine ? VesperTheme.accentCyan : VesperTheme.subtleBorder, lineWidth: 1)
+                                        .stroke(settings.aiEngine == engine ? FerriteSuiteTheme.accentCyan : FerriteSuiteTheme.subtleBorder, lineWidth: 1)
                                 )
                             }
                             .buttonStyle(.plain)
@@ -121,13 +121,13 @@ public struct SettingsView: View {
                     }
                     
                     if settings.aiEngine == .piHarness {
-                        Divider().background(VesperTheme.subtleBorder)
+                        Divider().background(FerriteSuiteTheme.subtleBorder)
                         
                         // Embedded Pi Harness Details
                         VStack(alignment: .leading, spacing: 12) {
                             HStack {
                                 Image(systemName: "terminal.fill")
-                                    .foregroundColor(VesperTheme.neonGreen)
+                                    .foregroundColor(FerriteSuiteTheme.neonGreen)
                                 Text("Host Pi Coding Agent Harness")
                                     .font(.subheadline.bold())
                                 
@@ -135,15 +135,15 @@ public struct SettingsView: View {
                                 
                                 HStack(spacing: 6) {
                                     Circle()
-                                        .fill(piHarness.isAvailable ? VesperTheme.neonGreen : VesperTheme.neonRed)
+                                        .fill(piHarness.isAvailable ? FerriteSuiteTheme.neonGreen : FerriteSuiteTheme.neonRed)
                                         .frame(width: 8, height: 8)
                                     Text(piHarness.isAvailable ? "ONLINE (\(piHarness.version))" : "NOT FOUND")
                                         .font(.caption.monospaced())
-                                        .foregroundColor(piHarness.isAvailable ? VesperTheme.neonGreen : VesperTheme.neonRed)
+                                        .foregroundColor(piHarness.isAvailable ? FerriteSuiteTheme.neonGreen : FerriteSuiteTheme.neonRed)
                                 }
                                 .padding(.horizontal, 8)
                                 .padding(.vertical, 3)
-                                .background(piHarness.isAvailable ? VesperTheme.neonGreen.opacity(0.15) : VesperTheme.neonRed.opacity(0.15))
+                                .background(piHarness.isAvailable ? FerriteSuiteTheme.neonGreen.opacity(0.15) : FerriteSuiteTheme.neonRed.opacity(0.15))
                                 .cornerRadius(6)
                             }
                             
@@ -156,19 +156,19 @@ public struct SettingsView: View {
                                 Grid(alignment: .leading, horizontalSpacing: 16, verticalSpacing: 6) {
                                     GridRow {
                                         Text("Config Path:").font(.caption.bold()).foregroundColor(.secondary)
-                                        Text("\(cfg.configDir)/settings.json").font(.caption.monospaced()).foregroundColor(VesperTheme.accentCyan)
+                                        Text("\(cfg.configDir)/settings.json").font(.caption.monospaced()).foregroundColor(FerriteSuiteTheme.accentCyan)
                                     }
                                     GridRow {
                                         Text("Active Provider:").font(.caption.bold()).foregroundColor(.secondary)
-                                        Text(cfg.defaultProvider).font(.caption.monospaced()).foregroundColor(VesperTheme.primaryTextColor)
+                                        Text(cfg.defaultProvider).font(.caption.monospaced()).foregroundColor(FerriteSuiteTheme.primaryTextColor)
                                     }
                                     GridRow {
                                         Text("Default Model:").font(.caption.bold()).foregroundColor(.secondary)
-                                        Text(cfg.defaultModel).font(.caption.monospaced()).foregroundColor(VesperTheme.neonGreen)
+                                        Text(cfg.defaultModel).font(.caption.monospaced()).foregroundColor(FerriteSuiteTheme.neonGreen)
                                     }
                                     GridRow {
                                         Text("Thinking Level:").font(.caption.bold()).foregroundColor(.secondary)
-                                        Text(cfg.defaultThinkingLevel.uppercased()).font(.caption.monospaced()).foregroundColor(VesperTheme.cyberPurple)
+                                        Text(cfg.defaultThinkingLevel.uppercased()).font(.caption.monospaced()).foregroundColor(FerriteSuiteTheme.cyberPurple)
                                     }
                                 }
                                 .padding(10)
@@ -181,7 +181,7 @@ public struct SettingsView: View {
                             VStack(alignment: .leading, spacing: 10) {
                                 HStack {
                                     Image(systemName: "cpu")
-                                        .foregroundColor(VesperTheme.cyberPurple)
+                                        .foregroundColor(FerriteSuiteTheme.cyberPurple)
                                     Text("Pi Harness Model Intelligence")
                                         .font(.subheadline.bold())
                                     
@@ -189,7 +189,7 @@ public struct SettingsView: View {
                                     
                                     Text(settings.piHarnessModel.isEmpty ? "Host Default (\(piHarness.hostConfig?.defaultModel ?? "kimi-k3"))" : settings.piHarnessModel)
                                         .font(.caption2.monospaced())
-                                        .foregroundColor(VesperTheme.neonGreen)
+                                        .foregroundColor(FerriteSuiteTheme.neonGreen)
                                 }
                                 
                                 Text("Choose from popular verified models or enter any custom model supported by pi (e.g. `anthropic/claude-3-7-sonnet`, `xai/grok-4.20-0309-reasoning`, `deepseek/deepseek-reasoner`).")
@@ -213,16 +213,16 @@ public struct SettingsView: View {
                                             if settings.piHarnessModel == top1.id {
                                                 Text("ACTIVE")
                                                     .font(.system(size: 9, weight: .heavy, design: .monospaced))
-                                                    .foregroundColor(VesperTheme.neonGreen)
+                                                    .foregroundColor(FerriteSuiteTheme.neonGreen)
                                             }
                                         }
                                         .padding(.horizontal, 10)
                                         .padding(.vertical, 6)
-                                        .background(settings.piHarnessModel == top1.id ? VesperTheme.neonGreen.opacity(0.15) : Color.black.opacity(0.3))
+                                        .background(settings.piHarnessModel == top1.id ? FerriteSuiteTheme.neonGreen.opacity(0.15) : Color.black.opacity(0.3))
                                         .cornerRadius(6)
                                         .overlay(
                                             RoundedRectangle(cornerRadius: 6)
-                                                .stroke(settings.piHarnessModel == top1.id ? VesperTheme.neonGreen : VesperTheme.subtleBorder, lineWidth: 1)
+                                                .stroke(settings.piHarnessModel == top1.id ? FerriteSuiteTheme.neonGreen : FerriteSuiteTheme.subtleBorder, lineWidth: 1)
                                         )
                                     }
                                     .buttonStyle(.plain)
@@ -250,7 +250,7 @@ public struct SettingsView: View {
                                             .foregroundColor(.secondary)
                                     }
                                     .padding(8)
-                                    .background(settings.piHarnessModel == preset.id ? VesperTheme.secondaryCardBackground : Color.clear)
+                                    .background(settings.piHarnessModel == preset.id ? FerriteSuiteTheme.secondaryCardBackground : Color.clear)
                                     .cornerRadius(6)
                                     .contentShape(Rectangle())
                                     .onTapGesture {
@@ -290,7 +290,7 @@ public struct SettingsView: View {
                                     .foregroundColor(.secondary)
                                 
                                 HStack {
-                                    TextField("/Users/josaum/.local/bin/pi", text: $customPiPathInput)
+                                    TextField(HostTools.pi.map { $0 } ?? "path to pi", text: $customPiPathInput)
                                         .textFieldStyle(.roundedBorder)
                                         .font(.caption.monospaced())
                                     
@@ -327,10 +327,10 @@ public struct SettingsView: View {
                             if let testMsg = piHarnessTestResult {
                                 HStack {
                                     Image(systemName: piHarnessTestSuccess ? "checkmark.circle.fill" : "exclamationmark.triangle.fill")
-                                        .foregroundColor(piHarnessTestSuccess ? VesperTheme.neonGreen : VesperTheme.neonRed)
+                                        .foregroundColor(piHarnessTestSuccess ? FerriteSuiteTheme.neonGreen : FerriteSuiteTheme.neonRed)
                                     Text(testMsg)
                                         .font(.caption)
-                                        .foregroundColor(piHarnessTestSuccess ? VesperTheme.neonGreen : VesperTheme.neonRed)
+                                        .foregroundColor(piHarnessTestSuccess ? FerriteSuiteTheme.neonGreen : FerriteSuiteTheme.neonRed)
                                 }
                                 .padding(8)
                                 .background(Color.black.opacity(0.2))
@@ -346,13 +346,13 @@ public struct SettingsView: View {
                 VStack(alignment: .leading, spacing: 14) {
                     HStack {
                         Image(systemName: "key.fill")
-                            .foregroundColor(VesperTheme.accentCyan)
+                            .foregroundColor(FerriteSuiteTheme.accentCyan)
                         Text("OpenRouter AI Credentials")
                             .font(.headline)
                         Spacer()
                         Link("Get Free API Key ↗", destination: URL(string: "https://openrouter.ai/keys")!)
                             .font(.caption)
-                            .foregroundColor(VesperTheme.accentCyan)
+                            .foregroundColor(FerriteSuiteTheme.accentCyan)
                     }
                     
                     HStack {
@@ -383,7 +383,7 @@ public struct SettingsView: View {
                     if saveConfirmation {
                         Text("✓ API Key Saved Successfully")
                             .font(.caption)
-                            .foregroundColor(VesperTheme.neonGreen)
+                            .foregroundColor(FerriteSuiteTheme.neonGreen)
                     }
                 }
                 .padding(20)
@@ -407,10 +407,10 @@ public struct SettingsView: View {
                                         Image(systemName: "arrow.up.right")
                                             .font(.system(size: 8))
                                     }
-                                    .foregroundColor(VesperTheme.accentCyan)
+                                    .foregroundColor(FerriteSuiteTheme.accentCyan)
                                     .padding(.horizontal, 6)
                                     .padding(.vertical, 2)
-                                    .background(VesperTheme.accentCyan.opacity(0.12))
+                                    .background(FerriteSuiteTheme.accentCyan.opacity(0.12))
                                     .cornerRadius(4)
                                 }
                             }
@@ -440,12 +440,12 @@ public struct SettingsView: View {
                             }
                             .padding(.horizontal, 10)
                             .padding(.vertical, 6)
-                            .background(VesperTheme.accentCyan.opacity(0.18))
-                            .foregroundColor(VesperTheme.accentCyan)
+                            .background(FerriteSuiteTheme.accentCyan.opacity(0.18))
+                            .foregroundColor(FerriteSuiteTheme.accentCyan)
                             .cornerRadius(6)
                             .overlay(
                                 RoundedRectangle(cornerRadius: 6)
-                                    .stroke(VesperTheme.accentCyan.opacity(0.5), lineWidth: 1)
+                                    .stroke(FerriteSuiteTheme.accentCyan.opacity(0.5), lineWidth: 1)
                             )
                         }
                         .buttonStyle(.plain)
@@ -456,7 +456,7 @@ public struct SettingsView: View {
                     HStack {
                         Image(systemName: "antenna.radiowaves.left.and.right")
                             .font(.caption2)
-                            .foregroundColor(VesperTheme.neonGreen)
+                            .foregroundColor(FerriteSuiteTheme.neonGreen)
                         
                         Text(leaderboardService.statusMessage.isEmpty ? "Live Leaderboard Active" : leaderboardService.statusMessage)
                             .font(.caption2.monospaced())
@@ -506,7 +506,7 @@ public struct SettingsView: View {
                                 HStack(spacing: 8) {
                                     Text(model.name)
                                         .font(.subheadline.bold())
-                                        .foregroundColor(isSelected ? VesperTheme.accentCyan : VesperTheme.primaryTextColor)
+                                        .foregroundColor(isSelected ? FerriteSuiteTheme.accentCyan : FerriteSuiteTheme.primaryTextColor)
                                     
                                     // Author Chip
                                     Text(model.author.uppercased())
@@ -522,9 +522,9 @@ public struct SettingsView: View {
                                         .font(.system(size: 9, weight: .bold, design: .monospaced))
                                         .padding(.horizontal, 6)
                                         .padding(.vertical, 2)
-                                        .background(VesperTheme.neonGreen.opacity(0.15))
+                                        .background(FerriteSuiteTheme.neonGreen.opacity(0.15))
                                         .cornerRadius(4)
-                                        .foregroundColor(VesperTheme.neonGreen)
+                                        .foregroundColor(FerriteSuiteTheme.neonGreen)
                                     
                                     // Growth Chip
                                     if !model.growth.isEmpty {
@@ -542,9 +542,9 @@ public struct SettingsView: View {
                                         .font(.system(size: 9, weight: .bold, design: .monospaced))
                                         .padding(.horizontal, 6)
                                         .padding(.vertical, 2)
-                                        .background(VesperTheme.cyberPurple.opacity(0.2))
+                                        .background(FerriteSuiteTheme.cyberPurple.opacity(0.2))
                                         .cornerRadius(4)
-                                        .foregroundColor(VesperTheme.cyberPurple)
+                                        .foregroundColor(FerriteSuiteTheme.cyberPurple)
                                     
                                     if model.isFree {
                                         Text("FREE")
@@ -567,29 +567,29 @@ public struct SettingsView: View {
                                 HStack {
                                     Text(model.id)
                                         .font(.caption2.monospaced())
-                                        .foregroundColor(isSelected ? VesperTheme.accentCyan : .secondary)
+                                        .foregroundColor(isSelected ? FerriteSuiteTheme.accentCyan : .secondary)
                                     
                                     Spacer()
                                     
                                     if isSelected {
                                         HStack(spacing: 4) {
                                             Circle()
-                                                .fill(VesperTheme.neonGreen)
+                                                .fill(FerriteSuiteTheme.neonGreen)
                                                 .frame(width: 6, height: 6)
                                             Text("ACTIVE INFERENCE MODEL")
                                                 .font(.system(size: 9, weight: .heavy, design: .monospaced))
-                                                .foregroundColor(VesperTheme.neonGreen)
+                                                .foregroundColor(FerriteSuiteTheme.neonGreen)
                                         }
                                     }
                                 }
                             }
                         }
                         .padding(12)
-                        .background(isSelected ? VesperTheme.accentCyan.opacity(0.08) : VesperTheme.secondaryCardBackground)
+                        .background(isSelected ? FerriteSuiteTheme.accentCyan.opacity(0.08) : FerriteSuiteTheme.secondaryCardBackground)
                         .cornerRadius(8)
                         .overlay(
                             RoundedRectangle(cornerRadius: 8)
-                                .stroke(isSelected ? VesperTheme.accentCyan.opacity(0.7) : VesperTheme.subtleBorder, lineWidth: 1)
+                                .stroke(isSelected ? FerriteSuiteTheme.accentCyan.opacity(0.7) : FerriteSuiteTheme.subtleBorder, lineWidth: 1)
                         )
                         .contentShape(Rectangle())
                         .onTapGesture {
@@ -633,9 +633,9 @@ public struct SettingsView: View {
                                         .font(.caption2.monospaced())
                                         .padding(.horizontal, 6)
                                         .padding(.vertical, 3)
-                                        .background(settings.selectedModel == preset ? VesperTheme.accentCyan.opacity(0.2) : Color.white.opacity(0.05))
+                                        .background(settings.selectedModel == preset ? FerriteSuiteTheme.accentCyan.opacity(0.2) : Color.white.opacity(0.05))
                                         .cornerRadius(4)
-                                        .foregroundColor(settings.selectedModel == preset ? VesperTheme.accentCyan : .secondary)
+                                        .foregroundColor(settings.selectedModel == preset ? FerriteSuiteTheme.accentCyan : .secondary)
                                 }
                                 .buttonStyle(.plain)
                             }
@@ -652,13 +652,13 @@ public struct SettingsView: View {
                 VStack(alignment: .leading, spacing: 14) {
                     HStack {
                         Image(systemName: "brain.head.profile")
-                            .foregroundColor(VesperTheme.accentCyan)
+                            .foregroundColor(FerriteSuiteTheme.accentCyan)
                         Text("Reasoning Effort")
                             .font(.headline)
                         Spacer()
                         Text("Active: \(settings.reasoningEffort.uppercased())")
                             .font(.caption.monospaced())
-                            .foregroundColor(VesperTheme.neonGreen)
+                            .foregroundColor(FerriteSuiteTheme.neonGreen)
                     }
                     
                     HStack(spacing: 12) {
@@ -666,7 +666,7 @@ public struct SettingsView: View {
                             Button(action: { settings.reasoningEffort = effort }) {
                                 HStack {
                                     Circle()
-                                        .fill(settings.reasoningEffort == effort ? VesperTheme.neonGreen : Color.clear)
+                                        .fill(settings.reasoningEffort == effort ? FerriteSuiteTheme.neonGreen : Color.clear)
                                         .frame(width: 8, height: 8)
                                     Text(effort.capitalized)
                                         .font(.subheadline)
@@ -674,11 +674,11 @@ public struct SettingsView: View {
                                 }
                                 .padding(.horizontal, 16)
                                 .padding(.vertical, 8)
-                                .background(settings.reasoningEffort == effort ? VesperTheme.accentCyan.opacity(0.15) : VesperTheme.secondaryCardBackground)
+                                .background(settings.reasoningEffort == effort ? FerriteSuiteTheme.accentCyan.opacity(0.15) : FerriteSuiteTheme.secondaryCardBackground)
                                 .cornerRadius(8)
                                 .overlay(
                                     RoundedRectangle(cornerRadius: 8)
-                                        .stroke(settings.reasoningEffort == effort ? VesperTheme.accentCyan : VesperTheme.subtleBorder, lineWidth: 1)
+                                        .stroke(settings.reasoningEffort == effort ? FerriteSuiteTheme.accentCyan : FerriteSuiteTheme.subtleBorder, lineWidth: 1)
                                 )
                             }
                             .buttonStyle(.plain)
@@ -696,13 +696,13 @@ public struct SettingsView: View {
                 VStack(alignment: .leading, spacing: 14) {
                     HStack {
                         Image(systemName: "bolt.shield.fill")
-                            .foregroundColor(VesperTheme.neonGreen)
+                            .foregroundColor(FerriteSuiteTheme.neonGreen)
                         Text("Autonomous Autopilot & Safety Engine")
                             .font(.headline)
                         Spacer()
                         Text(settings.autopilotMode.rawValue)
                             .font(.caption.monospaced())
-                            .foregroundColor(VesperTheme.neonGreen)
+                            .foregroundColor(FerriteSuiteTheme.neonGreen)
                     }
                     
                     // Autopilot Mode Picker
@@ -718,12 +718,12 @@ public struct SettingsView: View {
                                 }
                                 .padding(.horizontal, 14)
                                 .padding(.vertical, 8)
-                                .background(settings.autopilotMode == mode ? VesperTheme.neonGreen.opacity(0.18) : VesperTheme.secondaryCardBackground)
-                                .foregroundColor(settings.autopilotMode == mode ? VesperTheme.neonGreen : .secondary)
+                                .background(settings.autopilotMode == mode ? FerriteSuiteTheme.neonGreen.opacity(0.18) : FerriteSuiteTheme.secondaryCardBackground)
+                                .foregroundColor(settings.autopilotMode == mode ? FerriteSuiteTheme.neonGreen : .secondary)
                                 .cornerRadius(8)
                                 .overlay(
                                     RoundedRectangle(cornerRadius: 8)
-                                        .stroke(settings.autopilotMode == mode ? VesperTheme.neonGreen.opacity(0.6) : VesperTheme.subtleBorder, lineWidth: 1)
+                                        .stroke(settings.autopilotMode == mode ? FerriteSuiteTheme.neonGreen.opacity(0.6) : FerriteSuiteTheme.subtleBorder, lineWidth: 1)
                                 )
                             }
                             .buttonStyle(.plain)
@@ -746,7 +746,7 @@ public struct SettingsView: View {
                             .font(.subheadline.monospaced())
                     }
                     
-                    Divider().background(VesperTheme.subtleBorder)
+                    Divider().background(FerriteSuiteTheme.subtleBorder)
                     
                     Toggle(isOn: $settings.autoApproveLow) {
                         VStack(alignment: .leading) {
@@ -759,7 +759,7 @@ public struct SettingsView: View {
                     }
                     .toggleStyle(.switch)
                     
-                    Divider().background(VesperTheme.subtleBorder)
+                    Divider().background(FerriteSuiteTheme.subtleBorder)
                     
                     Toggle(isOn: $settings.autoApproveMedium) {
                         VStack(alignment: .leading) {
@@ -772,11 +772,11 @@ public struct SettingsView: View {
                     }
                     .toggleStyle(.switch)
                     
-                    Divider().background(VesperTheme.subtleBorder)
+                    Divider().background(FerriteSuiteTheme.subtleBorder)
                     
                     HStack {
                         Image(systemName: "lock.shield.fill")
-                            .foregroundColor(VesperTheme.neonRed)
+                            .foregroundColor(FerriteSuiteTheme.neonRed)
                         VStack(alignment: .leading) {
                             Text("High Risk Actions Always Protected")
                                 .font(.subheadline.bold())
@@ -796,7 +796,7 @@ public struct SettingsView: View {
                 VStack(alignment: .leading, spacing: 16) {
                     HStack {
                         Image(systemName: "network")
-                            .foregroundColor(VesperTheme.accentCyan)
+                            .foregroundColor(FerriteSuiteTheme.accentCyan)
                         Text("WebMCP Server & AI Bridge")
                             .font(.headline)
                         
@@ -804,15 +804,15 @@ public struct SettingsView: View {
                         
                         HStack(spacing: 6) {
                             Circle()
-                                .fill(webMcp.isRunning ? VesperTheme.neonGreen : VesperTheme.neonRed)
+                                .fill(webMcp.isRunning ? FerriteSuiteTheme.neonGreen : FerriteSuiteTheme.neonRed)
                                 .frame(width: 8, height: 8)
                             Text(webMcp.isRunning ? "RUNNING :\(webMcp.port)" : "STOPPED")
                                 .font(.system(size: 10, weight: .bold, design: .monospaced))
-                                .foregroundColor(webMcp.isRunning ? VesperTheme.neonGreen : VesperTheme.neonRed)
+                                .foregroundColor(webMcp.isRunning ? FerriteSuiteTheme.neonGreen : FerriteSuiteTheme.neonRed)
                         }
                         .padding(.horizontal, 8)
                         .padding(.vertical, 3)
-                        .background(webMcp.isRunning ? VesperTheme.neonGreen.opacity(0.15) : VesperTheme.neonRed.opacity(0.15))
+                        .background(webMcp.isRunning ? FerriteSuiteTheme.neonGreen.opacity(0.15) : FerriteSuiteTheme.neonRed.opacity(0.15))
                         .cornerRadius(6)
                     }
                     
@@ -832,7 +832,7 @@ public struct SettingsView: View {
                     .toggleStyle(.switch)
                     
                     if settings.enableWebMcpServer {
-                        Divider().background(VesperTheme.subtleBorder)
+                        Divider().background(FerriteSuiteTheme.subtleBorder)
                         
                         // Telemetry & Port Grid
                         HStack(spacing: 16) {
@@ -861,7 +861,7 @@ public struct SettingsView: View {
                                     VStack(alignment: .center) {
                                         Text("\(webMcp.requestCount)")
                                             .font(.headline.monospaced())
-                                            .foregroundColor(VesperTheme.accentCyan)
+                                            .foregroundColor(FerriteSuiteTheme.accentCyan)
                                         Text("Requests")
                                             .font(.system(size: 9))
                                             .foregroundColor(.secondary)
@@ -869,7 +869,7 @@ public struct SettingsView: View {
                                     VStack(alignment: .center) {
                                         Text("\(webMcp.activeSseClients)")
                                             .font(.headline.monospaced())
-                                            .foregroundColor(VesperTheme.neonGreen)
+                                            .foregroundColor(FerriteSuiteTheme.neonGreen)
                                         Text("SSE Clients")
                                             .font(.system(size: 9))
                                             .foregroundColor(.secondary)
@@ -878,13 +878,13 @@ public struct SettingsView: View {
                             }
                         }
                         
-                        Divider().background(VesperTheme.subtleBorder)
+                        Divider().background(FerriteSuiteTheme.subtleBorder)
                         
                         // Integration snippet buttons
                         VStack(alignment: .leading, spacing: 8) {
                             Text("External AI Client Setup")
                                 .font(.caption.bold())
-                                .foregroundColor(VesperTheme.primaryTextColor)
+                                .foregroundColor(FerriteSuiteTheme.primaryTextColor)
                             
                             HStack(spacing: 10) {
                                 Button(action: {
@@ -909,7 +909,7 @@ public struct SettingsView: View {
                                     .font(.caption.bold())
                                 }
                                 .buttonStyle(.borderedProminent)
-                                .tint(VesperTheme.cyberPurple)
+                                .tint(FerriteSuiteTheme.cyberPurple)
                                 
                                 Button(action: {
                                     let curl = "curl -s http://127.0.0.1:\(settings.webMcpPort)/health | jq ."
@@ -929,7 +929,7 @@ public struct SettingsView: View {
                                 if let toast = copiedMcpToast {
                                     Text("✓ \(toast)")
                                         .font(.caption.bold())
-                                        .foregroundColor(VesperTheme.neonGreen)
+                                        .foregroundColor(FerriteSuiteTheme.neonGreen)
                                 }
                             }
                         }
@@ -940,7 +940,7 @@ public struct SettingsView: View {
             }
             .padding(20)
         }
-        .background(VesperTheme.darkBackground)
+        .background(FerriteSuiteTheme.darkBackground)
         .onAppear {
             apiKeyInput = settings.openRouterApiKey
             customPiPathInput = settings.customPiBinaryPath.isEmpty ? piHarness.executablePath : settings.customPiBinaryPath
@@ -960,7 +960,7 @@ public struct SettingsView: View {
         case 1: return Color.yellow.opacity(0.2)
         case 2: return Color.white.opacity(0.15)
         case 3: return Color.orange.opacity(0.2)
-        default: return VesperTheme.cyberPurple.opacity(0.15)
+        default: return FerriteSuiteTheme.cyberPurple.opacity(0.15)
         }
     }
     
@@ -969,7 +969,7 @@ public struct SettingsView: View {
         case 1: return Color.yellow
         case 2: return Color.white.opacity(0.6)
         case 3: return Color.orange
-        default: return VesperTheme.subtleBorder
+        default: return FerriteSuiteTheme.subtleBorder
         }
     }
     
@@ -978,7 +978,7 @@ public struct SettingsView: View {
         case 1: return Color.yellow
         case 2: return Color.white
         case 3: return Color.orange
-        default: return VesperTheme.accentCyan
+        default: return FerriteSuiteTheme.accentCyan
         }
     }
     
@@ -986,7 +986,7 @@ public struct SettingsView: View {
         if growth.contains("-") {
             return Color.red.opacity(0.8)
         }
-        return VesperTheme.neonGreen
+        return FerriteSuiteTheme.neonGreen
     }
     
     private func formatContextLength(_ len: Int) -> String {
@@ -1006,11 +1006,11 @@ private struct RadioButton: View {
     var body: some View {
         Button(action: action) {
             Circle()
-                .stroke(isSelected ? VesperTheme.accentCyan : Color.secondary, lineWidth: 2)
+                .stroke(isSelected ? FerriteSuiteTheme.accentCyan : Color.secondary, lineWidth: 2)
                 .frame(width: 16, height: 16)
                 .overlay(
                     Circle()
-                        .fill(isSelected ? VesperTheme.accentCyan : Color.clear)
+                        .fill(isSelected ? FerriteSuiteTheme.accentCyan : Color.clear)
                         .frame(width: 8, height: 8)
                 )
         }

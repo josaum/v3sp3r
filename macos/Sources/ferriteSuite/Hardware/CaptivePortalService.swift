@@ -128,14 +128,15 @@ Generate the refined or redesigned standalone HTML/CSS page based on the operato
         _ = try? await connection.executeCommand("storage write \(targetFilePath)")
         let writeResult = try await connection.executeCommand("\(html)\r\n\u{04}") // EOT
         
-        // Persist local staging copy in assets/portals/index.html
-        let localDir = URL(fileURLWithPath: "/Users/josaum/projects/V3SP3R/assets/portals")
+        // Persist local staging copy next to the app bundle (Resources/portals),
+        // falling back to Application Support when running from a .build directory.
+        let localDir = Self.portalsStagingDirectory()
         try? FileManager.default.createDirectory(at: localDir, withIntermediateDirectories: true)
         let localFile = localDir.appendingPathComponent("index.html")
         try? html.write(to: localFile, atomically: true, encoding: .utf8)
         
         // Auto-record to Memory Vault
-        VesperMemoryStore.shared.addMemory(
+        FerriteSuiteMemoryStore.shared.addMemory(
             category: .hardware,
             title: "Captive Portal Deployed: \(selectedTemplate.title)",
             content: "Staged HTML portal (\(html.count) bytes) to Flipper SD card at \(targetFilePath) and local disk at \(localFile.path)."
@@ -145,6 +146,22 @@ Generate the refined or redesigned standalone HTML/CSS page based on the operato
         return "Deployed index.html (\(html.count) bytes) to \(targetFilePath). Output: \(writeResult)"
     }
     
+    /// Writable directory for locally staged captive portals.
+    ///
+    /// Prefers `Contents/Resources/portals` when running from a packaged `.app`,
+    /// and falls back to Application Support when running from SwiftPM's
+    /// `.build` directory (where there is no bundle to write into).
+    private static func portalsStagingDirectory() -> URL {
+        let fm = FileManager.default
+        if let bundled = Bundle.main.resourceURL?.appendingPathComponent("portals", isDirectory: true),
+           fm.isWritableFile(atPath: bundled.path) {
+            return bundled
+        }
+        let support = fm.urls(for: .applicationSupportDirectory, in: .userDomainMask).first
+            ?? URL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true)
+        return support.appendingPathComponent("portals", isDirectory: true)
+    }
+
     private func extractHtmlFromText(_ text: String) -> String {
         if let start = text.range(of: "```html"),
            let end = text.range(of: "```", range: start.upperBound..<text.endIndex) {

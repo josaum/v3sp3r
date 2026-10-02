@@ -38,9 +38,9 @@ public struct CaptivePortalArchitectView: View {
                 HStack(spacing: 14) {
                     Image(systemName: "network.badge.shield.half.filled")
                         .font(.system(size: 28))
-                        .foregroundColor(VesperTheme.accentCyan)
+                        .foregroundColor(FerriteSuiteTheme.accentCyan)
                         .frame(width: 48, height: 48)
-                        .background(VesperTheme.accentCyan.opacity(0.12))
+                        .background(FerriteSuiteTheme.accentCyan.opacity(0.12))
                         .cornerRadius(12)
                     
                     VStack(alignment: .leading, spacing: 2) {
@@ -89,7 +89,7 @@ public struct CaptivePortalArchitectView: View {
                 HStack(spacing: 10) {
                     HStack(spacing: 8) {
                         Image(systemName: "sparkles")
-                            .foregroundColor(VesperTheme.cyberPurple)
+                            .foregroundColor(FerriteSuiteTheme.cyberPurple)
                         TextField("Instruct AI: e.g. 'Redesign for ACME Corp with dark mode, Acceptable Use Policy, and 12-hour session notice'...", text: $aiPromptInput)
                             .textFieldStyle(.plain)
                             .font(.subheadline)
@@ -101,7 +101,7 @@ public struct CaptivePortalArchitectView: View {
                     .cornerRadius(8)
                     .overlay(
                         RoundedRectangle(cornerRadius: 8)
-                            .stroke(VesperTheme.cyberPurple.opacity(0.5), lineWidth: 1)
+                            .stroke(FerriteSuiteTheme.cyberPurple.opacity(0.5), lineWidth: 1)
                     )
                     
                     Button(action: generateWithAi) {
@@ -119,7 +119,7 @@ public struct CaptivePortalArchitectView: View {
                         .padding(.vertical, 8)
                     }
                     .buttonStyle(.borderedProminent)
-                    .tint(VesperTheme.cyberPurple)
+                    .tint(FerriteSuiteTheme.cyberPurple)
                     .disabled(service.isGenerating || aiPromptInput.trimmingCharacters(in: .whitespaces).isEmpty)
                 }
                 
@@ -127,10 +127,10 @@ public struct CaptivePortalArchitectView: View {
                 if let status = deployToast ?? service.lastStatus {
                     HStack {
                         Image(systemName: status.contains("✅") ? "checkmark.circle.fill" : "info.circle.fill")
-                            .foregroundColor(status.contains("✅") ? VesperTheme.neonGreen : VesperTheme.accentCyan)
+                            .foregroundColor(status.contains("✅") ? FerriteSuiteTheme.neonGreen : FerriteSuiteTheme.accentCyan)
                         Text(status)
                             .font(.caption.monospaced())
-                            .foregroundColor(status.contains("✅") ? VesperTheme.neonGreen : VesperTheme.accentCyan)
+                            .foregroundColor(status.contains("✅") ? FerriteSuiteTheme.neonGreen : FerriteSuiteTheme.accentCyan)
                         Spacer()
                     }
                     .padding(.horizontal, 10)
@@ -154,7 +154,7 @@ public struct CaptivePortalArchitectView: View {
                         Button(action: { service.selectTemplate(template) }) {
                             HStack(spacing: 6) {
                                 Circle()
-                                    .fill(service.selectedTemplate.id == template.id ? VesperTheme.accentCyan : Color.secondary.opacity(0.3))
+                                    .fill(service.selectedTemplate.id == template.id ? FerriteSuiteTheme.accentCyan : Color.secondary.opacity(0.3))
                                     .frame(width: 6, height: 6)
                                 Text(template.title)
                                     .font(.caption)
@@ -162,12 +162,12 @@ public struct CaptivePortalArchitectView: View {
                             }
                             .padding(.horizontal, 12)
                             .padding(.vertical, 6)
-                            .background(service.selectedTemplate.id == template.id ? VesperTheme.accentCyan.opacity(0.18) : VesperTheme.secondaryCardBackground)
-                            .foregroundColor(service.selectedTemplate.id == template.id ? VesperTheme.accentCyan : .secondary)
+                            .background(service.selectedTemplate.id == template.id ? FerriteSuiteTheme.accentCyan.opacity(0.18) : FerriteSuiteTheme.secondaryCardBackground)
+                            .foregroundColor(service.selectedTemplate.id == template.id ? FerriteSuiteTheme.accentCyan : .secondary)
                             .cornerRadius(8)
                             .overlay(
                                 RoundedRectangle(cornerRadius: 8)
-                                    .stroke(service.selectedTemplate.id == template.id ? VesperTheme.accentCyan.opacity(0.6) : VesperTheme.subtleBorder, lineWidth: 1)
+                                    .stroke(service.selectedTemplate.id == template.id ? FerriteSuiteTheme.accentCyan.opacity(0.6) : FerriteSuiteTheme.subtleBorder, lineWidth: 1)
                             )
                         }
                         .buttonStyle(.plain)
@@ -177,7 +177,7 @@ public struct CaptivePortalArchitectView: View {
                 .padding(.vertical, 10)
             }
             
-            Divider().background(VesperTheme.subtleBorder)
+            Divider().background(FerriteSuiteTheme.subtleBorder)
             
             // Split-Pane Workspace: Left Code Editor, Right Live Preview
             HSplitView {
@@ -185,7 +185,7 @@ public struct CaptivePortalArchitectView: View {
                 VStack(alignment: .leading, spacing: 8) {
                     HStack {
                         Image(systemName: "curlybraces")
-                            .foregroundColor(VesperTheme.accentCyan)
+                            .foregroundColor(FerriteSuiteTheme.accentCyan)
                         Text("index.html Source")
                             .font(.caption.bold())
                         
@@ -201,18 +201,18 @@ public struct CaptivePortalArchitectView: View {
                     TextEditor(text: $service.currentHtml)
                         .font(.system(.caption, design: .monospaced))
                         .scrollContentBackground(.hidden)
-                        .background(VesperTheme.terminalBackground)
+                        .background(FerriteSuiteTheme.terminalBackground)
                         .cornerRadius(8)
                         .padding([.horizontal, .bottom], 10)
                 }
                 .frame(minWidth: 320)
-                .background(VesperTheme.darkBackground)
+                .background(FerriteSuiteTheme.darkBackground)
                 
                 // Right: Interactive Live Rendering Preview
                 VStack(alignment: .leading, spacing: 8) {
                     HStack {
                         Image(systemName: "safari.fill")
-                            .foregroundColor(VesperTheme.neonGreen)
+                            .foregroundColor(FerriteSuiteTheme.neonGreen)
                         Text("Live Portal Preview")
                             .font(.caption.bold())
                         
@@ -228,8 +228,8 @@ public struct CaptivePortalArchitectView: View {
                                 .font(.caption2)
                                 .padding(.horizontal, 8)
                                 .padding(.vertical, 4)
-                                .background(isMobilePreview ? VesperTheme.neonGreen.opacity(0.2) : Color.clear)
-                                .foregroundColor(isMobilePreview ? VesperTheme.neonGreen : .secondary)
+                                .background(isMobilePreview ? FerriteSuiteTheme.neonGreen.opacity(0.2) : Color.clear)
+                                .foregroundColor(isMobilePreview ? FerriteSuiteTheme.neonGreen : .secondary)
                                 .cornerRadius(6)
                             }
                             .buttonStyle(.plain)
@@ -242,13 +242,13 @@ public struct CaptivePortalArchitectView: View {
                                 .font(.caption2)
                                 .padding(.horizontal, 8)
                                 .padding(.vertical, 4)
-                                .background(!isMobilePreview ? VesperTheme.neonGreen.opacity(0.2) : Color.clear)
-                                .foregroundColor(!isMobilePreview ? VesperTheme.neonGreen : .secondary)
+                                .background(!isMobilePreview ? FerriteSuiteTheme.neonGreen.opacity(0.2) : Color.clear)
+                                .foregroundColor(!isMobilePreview ? FerriteSuiteTheme.neonGreen : .secondary)
                                 .cornerRadius(6)
                             }
                             .buttonStyle(.plain)
                         }
-                        .background(VesperTheme.secondaryCardBackground)
+                        .background(FerriteSuiteTheme.secondaryCardBackground)
                         .cornerRadius(6)
                     }
                     .padding(.horizontal, 12)
@@ -291,10 +291,10 @@ public struct CaptivePortalArchitectView: View {
                     .padding([.horizontal, .bottom], 10)
                 }
                 .frame(minWidth: 380)
-                .background(VesperTheme.darkBackground)
+                .background(FerriteSuiteTheme.darkBackground)
             }
         }
-        .background(VesperTheme.darkBackground)
+        .background(FerriteSuiteTheme.darkBackground)
     }
     
     private func generateWithAi() {

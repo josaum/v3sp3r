@@ -17,9 +17,9 @@ public struct SwarmFleetView: View {
                     HStack(spacing: 16) {
                         Image(systemName: "square.grid.2x2.fill")
                             .font(.system(size: 40))
-                            .foregroundColor(VesperTheme.accentCyan)
+                            .foregroundColor(FerriteSuiteTheme.accentCyan)
                             .frame(width: 64, height: 64)
-                            .background(VesperTheme.accentCyan.opacity(0.15))
+                            .background(FerriteSuiteTheme.accentCyan.opacity(0.15))
                             .cornerRadius(14)
                         
                         VStack(alignment: .leading, spacing: 4) {
@@ -38,7 +38,7 @@ public struct SwarmFleetView: View {
                             Label("Scan & Discover USB", systemImage: "arrow.clockwise")
                                 .padding(.horizontal, 12)
                                 .padding(.vertical, 7)
-                                .background(VesperTheme.secondaryCardBackground)
+                                .background(FerriteSuiteTheme.secondaryCardBackground)
                                 .cornerRadius(8)
                         }
                         .buttonStyle(.plain)
@@ -56,7 +56,7 @@ public struct SwarmFleetView: View {
                         Button(action: { Task { await swarm.fleetVibrate() } }) {
                             Label("Fleet Buzz (All)", systemImage: "waveform")
                                 .padding(10)
-                                .background(VesperTheme.secondaryCardBackground)
+                                .background(FerriteSuiteTheme.secondaryCardBackground)
                                 .cornerRadius(8)
                         }
                         .buttonStyle(.plain)
@@ -64,7 +64,7 @@ public struct SwarmFleetView: View {
                         Button(action: { Task { await swarm.fleetLedPulse(r: 0, g: 255, b: 255) } }) {
                             Label("Fleet Cyan Pulse", systemImage: "lightbulb.fill")
                                 .padding(10)
-                                .background(VesperTheme.secondaryCardBackground)
+                                .background(FerriteSuiteTheme.secondaryCardBackground)
                                 .cornerRadius(8)
                         }
                         .buttonStyle(.plain)
@@ -72,7 +72,7 @@ public struct SwarmFleetView: View {
                         Button(action: { Task { await swarm.fleetLedPulse(r: 255, g: 80, b: 0) } }) {
                             Label("Fleet Orange Pulse", systemImage: "lightbulb.fill")
                                 .padding(10)
-                                .background(VesperTheme.secondaryCardBackground)
+                                .background(FerriteSuiteTheme.secondaryCardBackground)
                                 .cornerRadius(8)
                         }
                         .buttonStyle(.plain)
@@ -80,7 +80,7 @@ public struct SwarmFleetView: View {
                         Button(action: { Task { await swarm.refreshAll() } }) {
                             Label("Refresh All Battery", systemImage: "battery.100")
                                 .padding(10)
-                                .background(VesperTheme.secondaryCardBackground)
+                                .background(FerriteSuiteTheme.secondaryCardBackground)
                                 .cornerRadius(8)
                         }
                         .buttonStyle(.plain)
@@ -97,7 +97,7 @@ public struct SwarmFleetView: View {
                     HStack(spacing: 10) {
                         Text("FLEET >:")
                             .font(.body.monospaced().bold())
-                            .foregroundColor(VesperTheme.neonAmber)
+                            .foregroundColor(FerriteSuiteTheme.neonAmber)
                         
                         TextField("Command to broadcast across ALL connected Flippers (e.g. 'info device', 'vibro 1')...", text: $broadcastInput)
                             .textFieldStyle(.plain)
@@ -113,7 +113,7 @@ public struct SwarmFleetView: View {
                                 Label("Broadcast", systemImage: "paperplane.fill")
                                     .padding(.horizontal, 12)
                                     .padding(.vertical, 6)
-                                    .background(VesperTheme.accentCyan)
+                                    .background(FerriteSuiteTheme.accentCyan)
                                     .foregroundColor(.black)
                                     .cornerRadius(6)
                             }
@@ -135,7 +135,7 @@ public struct SwarmFleetView: View {
                                 VStack(alignment: .leading, spacing: 2) {
                                     Text("Node: \(nodeName)")
                                         .font(.caption.monospaced().bold())
-                                        .foregroundColor(VesperTheme.accentCyan)
+                                        .foregroundColor(FerriteSuiteTheme.accentCyan)
                                     Text(broadcastResults[nodeName] ?? "")
                                         .font(.caption.monospaced())
                                         .padding(6)
@@ -146,7 +146,7 @@ public struct SwarmFleetView: View {
                             }
                         }
                         .padding(10)
-                        .background(VesperTheme.secondaryCardBackground)
+                        .background(FerriteSuiteTheme.secondaryCardBackground)
                         .cornerRadius(8)
                     }
                 }
@@ -183,7 +183,7 @@ public struct SwarmFleetView: View {
             }
             .padding(20)
         }
-        .background(VesperTheme.darkBackground)
+        .background(FerriteSuiteTheme.darkBackground)
     }
     
     private func submitBroadcast() {
@@ -212,7 +212,7 @@ private struct NodeCard: View {
             // Header
             HStack {
                 Circle()
-                    .fill(node.status.isConnected ? VesperTheme.neonGreen : VesperTheme.neonRed)
+                    .fill(node.status.isConnected ? FerriteSuiteTheme.neonGreen : FerriteSuiteTheme.neonRed)
                     .frame(width: 8, height: 8)
                 
                 TextField("Node Name", text: $node.customName)
@@ -225,7 +225,7 @@ private struct NodeCard: View {
                     .foregroundColor(.secondary)
             }
             
-            Divider().background(VesperTheme.subtleBorder)
+            Divider().background(FerriteSuiteTheme.subtleBorder)
             
             // Status & Battery
             HStack {
@@ -249,7 +249,7 @@ private struct NodeCard: View {
                 VStack(alignment: .trailing, spacing: 2) {
                     HStack(spacing: 4) {
                         Image(systemName: node.deviceInfo.isCharging ? "bolt.batteryblock.fill" : "battery.75percent")
-                            .foregroundColor(node.deviceInfo.batteryLevel < 20 ? VesperTheme.neonRed : VesperTheme.neonGreen)
+                            .foregroundColor(node.deviceInfo.batteryLevel < 20 ? FerriteSuiteTheme.neonRed : FerriteSuiteTheme.neonGreen)
                         Text("\(node.deviceInfo.batteryLevel)%")
                             .font(.caption.monospaced().bold())
                     }
@@ -273,7 +273,7 @@ private struct NodeCard: View {
                         .font(.caption2)
                         .padding(.horizontal, 8)
                         .padding(.vertical, 4)
-                        .background(VesperTheme.secondaryCardBackground)
+                        .background(FerriteSuiteTheme.secondaryCardBackground)
                         .cornerRadius(4)
                 }
                 .buttonStyle(.plain)
@@ -285,7 +285,7 @@ private struct NodeCard: View {
                         .font(.caption2)
                 }
                 .buttonStyle(.plain)
-                .foregroundColor(VesperTheme.accentCyan)
+                .foregroundColor(FerriteSuiteTheme.accentCyan)
                 
                 Spacer()
                 
@@ -294,7 +294,7 @@ private struct NodeCard: View {
                 }) {
                     Image(systemName: "xmark.circle")
                         .font(.caption)
-                        .foregroundColor(VesperTheme.neonRed)
+                        .foregroundColor(FerriteSuiteTheme.neonRed)
                 }
                 .buttonStyle(.plain)
                 .help("Disconnect Node")

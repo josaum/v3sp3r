@@ -130,16 +130,18 @@ public struct FerriteCrateInfo: Identifiable, Equatable {
 public final class FerriteOSService {
     public static let shared = FerriteOSService()
     
-    public let workspacePath: String = "/Users/josaum/projects/FerriteOS"
-    public let binaryPath: String = "/Users/josaum/projects/FerriteOS/target/debug/ferrite-console"
-    public let firmwareDir: String = "/Users/josaum/projects/FerriteOS/firmware"
-    public let firmwareBinPath: String = "/Users/josaum/projects/FerriteOS/firmware/ferrite-fw.bin"
-    public let firmwareAppBinPath: String = "/Users/josaum/projects/FerriteOS/firmware/ferrite-app.bin"
-    public let firmwareElfPath: String = "/Users/josaum/projects/FerriteOS/firmware/target/thumbv7em-none-eabihf/release/ferrite-fw"
-    public let firmwareManifestPath: String = "/Users/josaum/projects/FerriteOS/firmware/ferrite-fw.manifest.json"
-    public let firmwareAppManifestPath: String = "/Users/josaum/projects/FerriteOS/firmware/ferrite-app.manifest.json"
-    public let dfuUtilPath: String = "/opt/homebrew/bin/dfu-util"
-    public let probeRsPath: String = "/Users/josaum/.cargo/bin/probe-rs"
+    // Resolved at runtime via FerriteOSPaths (env var -> user default -> bundle
+    // -> ~/projects/FerriteOS) rather than hardcoded to one developer's machine.
+    public var workspacePath: String { FerriteOSPaths.workspace }
+    public var binaryPath: String { FerriteOSPaths.consoleBinary }
+    public var firmwareDir: String { FerriteOSPaths.firmwareDir }
+    public var firmwareBinPath: String { FerriteOSPaths.firmwareBin }
+    public var firmwareAppBinPath: String { FerriteOSPaths.firmwareAppBin }
+    public var firmwareElfPath: String { FerriteOSPaths.firmwareElf }
+    public var firmwareManifestPath: String { FerriteOSPaths.firmwareManifest }
+    public var firmwareAppManifestPath: String { FerriteOSPaths.firmwareAppManifest }
+    public var dfuUtilPath: String { FerriteOSPaths.dfuUtil }
+    public var probeRsPath: String { FerriteOSPaths.probeRs }
     
     public var isAvailable: Bool = false
     public var isWorkspacePresent: Bool = false
@@ -244,7 +246,7 @@ public final class FerriteOSService {
             self.recentOutputs.removeLast()
         }
         
-        VesperMemoryStore.shared.addMemory(
+        FerriteSuiteMemoryStore.shared.addMemory(
             category: .ferritePlan,
             title: "FerriteOS: \(parsed.intent) on \(parsed.domain)",
             content: "Phrase: '\(phrase)'\nConfidence: \(parsed.confidence)\nResult:\n\(parsed.rawOutput)"
@@ -324,7 +326,7 @@ public final class FerriteOSService {
         
         // Also feed the ferriteSuite memory store
         if let finding = decodedFinding {
-            VesperMemoryStore.shared.addMemory(
+            FerriteSuiteMemoryStore.shared.addMemory(
                 category: .ferritePlan,
                 title: "FerriteOS Decoded: \(finding.protocolName ?? domain)",
                 content: "File: \(filePath)\nSummary: \(finding.summary)\nDetails: \(finding.details ?? "")"
@@ -341,19 +343,19 @@ public final class FerriteOSService {
         }
         args.append(filePath)
         
-        let cargoPath = "/Users/josaum/.cargo/bin/cargo"
+        let cargoPath = HostTools.cargo
         return try await runCommand(executable: cargoPath, args: args, cwd: workspacePath)
     }
     
     public func inspectNfc(filePath: String, flag: String = "--pages") async throws -> String {
         let args = ["run", "-p", "ferrite-rf", "--example", "inspect_nfc", "--", flag, filePath]
-        let cargoPath = "/Users/josaum/.cargo/bin/cargo"
+        let cargoPath = HostTools.cargo
         return try await runCommand(executable: cargoPath, args: args, cwd: workspacePath)
     }
     
     public func simulateWireHandshake() async throws -> FerriteWireHandshakeResult {
         let args = ["run", "-p", "ferrite-wire", "--example", "inspect_wire", "--", "--json"]
-        let cargoPath = "/Users/josaum/.cargo/bin/cargo"
+        let cargoPath = HostTools.cargo
         let output = try await runCommand(executable: cargoPath, args: args, cwd: workspacePath)
         
         var handshakeState = "CLOSED"
@@ -485,7 +487,7 @@ public final class FerriteOSService {
         self.testingCrateName = crateName
         defer { self.testingCrateName = nil }
         
-        let cargoPath = "/Users/josaum/.cargo/bin/cargo"
+        let cargoPath = HostTools.cargo
         let args = ["test", "-p", crateName]
         do {
             let output = try await runCommand(executable: cargoPath, args: args, cwd: workspacePath)
@@ -575,7 +577,7 @@ public final class FerriteOSService {
                 process.currentDirectoryURL = URL(fileURLWithPath: cwd)
                 
                 var env = ProcessInfo.processInfo.environment
-                env["PATH"] = "/Users/josaum/.cargo/bin:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
+                env["PATH"] = HostTools.subprocessPath
                 process.environment = env
                 
                 let stdoutPipe = Pipe()

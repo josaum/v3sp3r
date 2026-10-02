@@ -19,10 +19,10 @@ public struct QuickstartSheetView: View {
                 VStack(alignment: .leading, spacing: 2) {
                     Text("ferriteSuite OPERATOR ONBOARDING")
                         .font(.system(size: 13, weight: .black, design: .monospaced))
-                        .foregroundColor(VesperTheme.accentCyan)
+                        .foregroundColor(FerriteSuiteTheme.accentCyan)
                     Text("Interactive System Walkthrough")
                         .font(.title3.bold())
-                        .foregroundColor(VesperTheme.primaryTextColor)
+                        .foregroundColor(FerriteSuiteTheme.primaryTextColor)
                 }
                 
                 Spacer()
@@ -35,9 +35,9 @@ public struct QuickstartSheetView: View {
                 .buttonStyle(.plain)
             }
             .padding(20)
-            .background(VesperTheme.cardBackground)
+            .background(FerriteSuiteTheme.cardBackground)
             
-            Divider().background(VesperTheme.subtleBorder)
+            Divider().background(FerriteSuiteTheme.subtleBorder)
             
             // Step Body
             VStack(spacing: 20) {
@@ -59,7 +59,7 @@ public struct QuickstartSheetView: View {
             .padding(24)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             
-            Divider().background(VesperTheme.subtleBorder)
+            Divider().background(FerriteSuiteTheme.subtleBorder)
             
             // Footer Navigation
             HStack {
@@ -67,7 +67,7 @@ public struct QuickstartSheetView: View {
                 HStack(spacing: 6) {
                     ForEach(0..<totalSteps, id: \.self) { idx in
                         Circle()
-                            .fill(idx == currentStep ? VesperTheme.accentCyan : VesperTheme.subtleBorder)
+                            .fill(idx == currentStep ? FerriteSuiteTheme.accentCyan : FerriteSuiteTheme.subtleBorder)
                             .frame(width: 8, height: 8)
                     }
                 }
@@ -91,20 +91,20 @@ public struct QuickstartSheetView: View {
                         }
                     }
                     .buttonStyle(.borderedProminent)
-                    .tint(VesperTheme.accentCyan)
+                    .tint(FerriteSuiteTheme.accentCyan)
                 } else {
                     Button("Finish & Launch") {
                         dismiss()
                     }
                     .buttonStyle(.borderedProminent)
-                    .tint(VesperTheme.neonGreen)
+                    .tint(FerriteSuiteTheme.neonGreen)
                 }
             }
             .padding(20)
-            .background(VesperTheme.cardBackground)
+            .background(FerriteSuiteTheme.cardBackground)
         }
         .frame(width: 620, height: 490)
-        .background(VesperTheme.darkBackground)
+        .background(FerriteSuiteTheme.darkBackground)
     }
     
     // Step 0: Hardware Connection
@@ -112,11 +112,11 @@ public struct QuickstartSheetView: View {
         VStack(spacing: 16) {
             Image(systemName: "cable.connector.horizontal")
                 .font(.system(size: 42))
-                .foregroundColor(connection.status.isConnected ? VesperTheme.neonGreen : VesperTheme.flipperOrange)
+                .foregroundColor(connection.status.isConnected ? FerriteSuiteTheme.neonGreen : FerriteSuiteTheme.flipperOrange)
             
             Text("Step 1: Connect Your Flipper Zero")
                 .font(.title3.bold())
-                .foregroundColor(VesperTheme.primaryTextColor)
+                .foregroundColor(FerriteSuiteTheme.primaryTextColor)
             
             Text("Plug in your Flipper Zero using USB-C. ferriteSuite automatically scans serial ports (`/dev/cu.usbmodemflip_*`) and starts bidirectional CLI communication.")
                 .font(.subheadline)
@@ -126,16 +126,16 @@ public struct QuickstartSheetView: View {
             
             HStack(spacing: 12) {
                 Circle()
-                    .fill(connection.status.isConnected ? VesperTheme.neonGreen : VesperTheme.neonRed)
+                    .fill(connection.status.isConnected ? FerriteSuiteTheme.neonGreen : FerriteSuiteTheme.neonRed)
                     .frame(width: 10, height: 10)
                 Text(connection.status.isConnected ? "Hardware Online: \(connection.deviceInfo.hardwareModel) (\(connection.deviceInfo.firmwareVersion))" : "Waiting for Flipper connection...")
                     .font(.caption.bold().monospaced())
-                    .foregroundColor(connection.status.isConnected ? VesperTheme.neonGreen : .secondary)
+                    .foregroundColor(connection.status.isConnected ? FerriteSuiteTheme.neonGreen : .secondary)
             }
             .padding(10)
-            .background(VesperTheme.cardBackground)
+            .background(FerriteSuiteTheme.cardBackground)
             .cornerRadius(8)
-            .overlay(RoundedRectangle(cornerRadius: 8).stroke(VesperTheme.subtleBorder, lineWidth: 1))
+            .overlay(RoundedRectangle(cornerRadius: 8).stroke(FerriteSuiteTheme.subtleBorder, lineWidth: 1))
         }
     }
     
@@ -144,11 +144,11 @@ public struct QuickstartSheetView: View {
         VStack(spacing: 16) {
             Image(systemName: "point.3.connected.trianglepath.dotted")
                 .font(.system(size: 42))
-                .foregroundColor(VesperTheme.flipperOrange)
+                .foregroundColor(FerriteSuiteTheme.flipperOrange)
             
             Text("Step 2: Autonomous Workflows & Subgraphs")
                 .font(.title3.bold())
-                .foregroundColor(VesperTheme.primaryTextColor)
+                .foregroundColor(FerriteSuiteTheme.primaryTextColor)
             
             Text("Execute multi-stage hardware DAGs with real-time telemetry streaming in chat. Pause, resume, or single-step execution safely with automatic safety guardrails.")
                 .font(.subheadline)
@@ -162,7 +162,7 @@ public struct QuickstartSheetView: View {
                 workflowBullet("Access Control Badge Auditor", desc: "Audits RFID & NFC keys and generates safety reports")
             }
             .padding(12)
-            .background(VesperTheme.cardBackground)
+            .background(FerriteSuiteTheme.cardBackground)
             .cornerRadius(8)
         }
     }
@@ -172,11 +172,11 @@ public struct QuickstartSheetView: View {
         VStack(spacing: 16) {
             Image(systemName: "atom")
                 .font(.system(size: 42))
-                .foregroundColor(VesperTheme.cyberPurple)
+                .foregroundColor(FerriteSuiteTheme.cyberPurple)
             
             Text("Step 3: FerriteOS Offline Intent Engine")
                 .font(.title3.bold())
-                .foregroundColor(VesperTheme.primaryTextColor)
+                .foregroundColor(FerriteSuiteTheme.primaryTextColor)
             
             Text("FerriteOS is a deterministic Rust-based natural language model running locally on your Mac. Type commands like 'scan 433mhz' or 'dump memory vault' to trigger actions instantly without cloud latency or internet.")
                 .font(.subheadline)
@@ -186,13 +186,13 @@ public struct QuickstartSheetView: View {
             
             HStack(spacing: 8) {
                 Image(systemName: "checkmark.shield.fill")
-                    .foregroundColor(VesperTheme.neonGreen)
+                    .foregroundColor(FerriteSuiteTheme.neonGreen)
                 Text("Zero API tokens required • 100% Air-Gapped Capable")
                     .font(.caption.bold())
-                    .foregroundColor(VesperTheme.neonGreen)
+                    .foregroundColor(FerriteSuiteTheme.neonGreen)
             }
             .padding(8)
-            .background(VesperTheme.neonGreen.opacity(0.12))
+            .background(FerriteSuiteTheme.neonGreen.opacity(0.12))
             .cornerRadius(6)
         }
     }
@@ -202,11 +202,11 @@ public struct QuickstartSheetView: View {
         VStack(spacing: 16) {
             Image(systemName: "network")
                 .font(.system(size: 42))
-                .foregroundColor(VesperTheme.accentCyan)
+                .foregroundColor(FerriteSuiteTheme.accentCyan)
             
             Text("Step 4: WebMCP AI Bridge (Claude Desktop / Cursor)")
                 .font(.title3.bold())
-                .foregroundColor(VesperTheme.primaryTextColor)
+                .foregroundColor(FerriteSuiteTheme.primaryTextColor)
             
             Text("ferriteSuite runs an embedded Model Context Protocol (MCP) server on port \(server.port). Connect Claude Desktop or Cursor to pilot your Flipper Zero from external AI environments.")
                 .font(.subheadline)
@@ -238,7 +238,7 @@ public struct QuickstartSheetView: View {
                 .font(.caption.bold())
             }
             .buttonStyle(.borderedProminent)
-            .tint(copiedConfirmation ? VesperTheme.neonGreen : VesperTheme.accentCyan)
+            .tint(copiedConfirmation ? FerriteSuiteTheme.neonGreen : FerriteSuiteTheme.accentCyan)
         }
     }
     
@@ -247,11 +247,11 @@ public struct QuickstartSheetView: View {
         VStack(spacing: 16) {
             Image(systemName: "checkmark.seal.fill")
                 .font(.system(size: 46))
-                .foregroundColor(VesperTheme.neonGreen)
+                .foregroundColor(FerriteSuiteTheme.neonGreen)
             
             Text("Ready for Field Operations")
                 .font(.title3.bold())
-                .foregroundColor(VesperTheme.primaryTextColor)
+                .foregroundColor(FerriteSuiteTheme.primaryTextColor)
             
             Text("You are ready to command your Flipper Zero with full AI autonomy, visual workflows, and tactical memory persistence. You can re-open this guide anytime via the '?' icon.")
                 .font(.subheadline)
@@ -267,9 +267,9 @@ public struct QuickstartSheetView: View {
                 Label("FerriteOS Ready", systemImage: "atom")
             }
             .font(.caption.bold())
-            .foregroundColor(VesperTheme.accentCyan)
+            .foregroundColor(FerriteSuiteTheme.accentCyan)
             .padding(10)
-            .background(VesperTheme.cardBackground)
+            .background(FerriteSuiteTheme.cardBackground)
             .cornerRadius(8)
         }
     }
@@ -277,12 +277,12 @@ public struct QuickstartSheetView: View {
     private func workflowBullet(_ title: String, desc: String) -> some View {
         HStack(alignment: .top, spacing: 8) {
             Text("•")
-                .foregroundColor(VesperTheme.flipperOrange)
+                .foregroundColor(FerriteSuiteTheme.flipperOrange)
                 .font(.headline)
             VStack(alignment: .leading, spacing: 2) {
                 Text(title)
                     .font(.caption.bold())
-                    .foregroundColor(VesperTheme.primaryTextColor)
+                    .foregroundColor(FerriteSuiteTheme.primaryTextColor)
                 Text(desc)
                     .font(.caption2)
                     .foregroundColor(.secondary)

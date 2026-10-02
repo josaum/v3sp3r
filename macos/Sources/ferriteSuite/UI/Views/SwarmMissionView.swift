@@ -20,11 +20,11 @@ public struct SwarmMissionView: View {
             HStack(spacing: 12) {
                 HStack(spacing: 8) {
                     Circle()
-                        .fill(orchestrator.isMissionActive ? VesperTheme.neonAmber : VesperTheme.neonGreen)
+                        .fill(orchestrator.isMissionActive ? FerriteSuiteTheme.neonAmber : FerriteSuiteTheme.neonGreen)
                         .frame(width: 8, height: 8)
                     Text(orchestrator.missionStatusText)
                         .font(.caption.monospaced().bold())
-                        .foregroundColor(VesperTheme.accentCyan)
+                        .foregroundColor(FerriteSuiteTheme.accentCyan)
                 }
                 
                 Spacer()
@@ -34,7 +34,7 @@ public struct SwarmMissionView: View {
                     .foregroundColor(.secondary)
                     .padding(.horizontal, 8)
                     .padding(.vertical, 3)
-                    .background(VesperTheme.secondaryCardBackground)
+                    .background(FerriteSuiteTheme.secondaryCardBackground)
                     .cornerRadius(6)
                 
                 Button(action: {
@@ -54,9 +54,9 @@ public struct SwarmMissionView: View {
             }
             .padding(.horizontal, 16)
             .padding(.vertical, 10)
-            .background(VesperTheme.cardBackground)
+            .background(FerriteSuiteTheme.cardBackground)
             
-            Divider().background(VesperTheme.subtleBorder)
+            Divider().background(FerriteSuiteTheme.subtleBorder)
             
             // Mission Messages Stream
             ScrollViewReader { proxy in
@@ -78,7 +78,7 @@ public struct SwarmMissionView: View {
                 }
             }
             
-            Divider().background(VesperTheme.subtleBorder)
+            Divider().background(FerriteSuiteTheme.subtleBorder)
             
             // Preset Missions
             ScrollView(.horizontal, showsIndicators: false) {
@@ -93,11 +93,11 @@ public struct SwarmMissionView: View {
                                 .foregroundColor(.primary)
                                 .padding(.horizontal, 10)
                                 .padding(.vertical, 5)
-                                .background(VesperTheme.secondaryCardBackground)
+                                .background(FerriteSuiteTheme.secondaryCardBackground)
                                 .cornerRadius(10)
                                 .overlay(
                                     RoundedRectangle(cornerRadius: 10)
-                                        .stroke(VesperTheme.subtleBorder, lineWidth: 1)
+                                        .stroke(FerriteSuiteTheme.subtleBorder, lineWidth: 1)
                                 )
                         }
                         .buttonStyle(.plain)
@@ -106,7 +106,7 @@ public struct SwarmMissionView: View {
                 .padding(.horizontal, 16)
                 .padding(.vertical, 8)
             }
-            .background(VesperTheme.cardBackground.opacity(0.5))
+            .background(FerriteSuiteTheme.cardBackground.opacity(0.5))
             
             // Input Bar
             HStack(spacing: 12) {
@@ -117,11 +117,11 @@ public struct SwarmMissionView: View {
                         submitMission()
                     }
                     .padding(10)
-                    .background(VesperTheme.secondaryCardBackground)
+                    .background(FerriteSuiteTheme.secondaryCardBackground)
                     .cornerRadius(8)
                     .overlay(
                         RoundedRectangle(cornerRadius: 8)
-                            .stroke(VesperTheme.subtleBorder, lineWidth: 1)
+                            .stroke(FerriteSuiteTheme.subtleBorder, lineWidth: 1)
                     )
                 
                 Button(action: submitMission) {
@@ -131,16 +131,16 @@ public struct SwarmMissionView: View {
                     } else {
                         Image(systemName: "bolt.horizontal.circle.fill")
                             .font(.title2)
-                            .foregroundColor(missionInput.isEmpty ? .secondary : VesperTheme.accentCyan)
+                            .foregroundColor(missionInput.isEmpty ? .secondary : FerriteSuiteTheme.accentCyan)
                     }
                 }
                 .buttonStyle(.plain)
                 .disabled(missionInput.isEmpty || orchestrator.isMissionActive)
             }
             .padding(16)
-            .background(VesperTheme.cardBackground)
+            .background(FerriteSuiteTheme.cardBackground)
         }
-        .background(VesperTheme.darkBackground)
+        .background(FerriteSuiteTheme.darkBackground)
     }
     
     private func submitMission() {
@@ -179,7 +179,7 @@ private struct SwarmMessageRow: View {
                     .font(.body)
                     .textSelection(.enabled)
                     .padding(12)
-                    .background(message.role == .user ? VesperTheme.cyberPurple.opacity(0.25) : VesperTheme.cardBackground)
+                    .background(message.role == .user ? FerriteSuiteTheme.cyberPurple.opacity(0.25) : FerriteSuiteTheme.cardBackground)
                     .cornerRadius(12)
                     .overlay(
                         RoundedRectangle(cornerRadius: 12)
@@ -191,7 +191,7 @@ private struct SwarmMessageRow: View {
                 Spacer(minLength: 40)
             } else {
                 Circle()
-                    .fill(VesperTheme.accentCyan.gradient)
+                    .fill(FerriteSuiteTheme.accentCyan.gradient)
                     .frame(width: 28, height: 28)
                     .overlay(
                         Image(systemName: "person.fill")
@@ -204,20 +204,20 @@ private struct SwarmMessageRow: View {
     
     private var cardBorderColor: Color {
         if message.role == .user {
-            return VesperTheme.cyberPurple.opacity(0.5)
+            return FerriteSuiteTheme.cyberPurple.opacity(0.5)
         }
         if let role = message.agentRole {
             return roleColor(role).opacity(0.5)
         }
-        return VesperTheme.subtleBorder
+        return FerriteSuiteTheme.subtleBorder
     }
     
     private func roleColor(_ role: AgentRole) -> Color {
         switch role {
-        case .commander: return VesperTheme.accentCyan
-        case .recon: return VesperTheme.neonGreen
-        case .forge: return VesperTheme.neonAmber
-        case .cipher: return VesperTheme.cyberPurple
+        case .commander: return FerriteSuiteTheme.accentCyan
+        case .recon: return FerriteSuiteTheme.neonGreen
+        case .forge: return FerriteSuiteTheme.neonAmber
+        case .cipher: return FerriteSuiteTheme.cyberPurple
         case .sentry: return Color.blue
         }
     }
@@ -243,10 +243,10 @@ private struct AgentAvatar: View {
     
     private var avatarColor: Color {
         switch role {
-        case .commander: return VesperTheme.accentCyan
-        case .recon: return VesperTheme.neonGreen
-        case .forge: return VesperTheme.neonAmber
-        case .cipher: return VesperTheme.cyberPurple
+        case .commander: return FerriteSuiteTheme.accentCyan
+        case .recon: return FerriteSuiteTheme.neonGreen
+        case .forge: return FerriteSuiteTheme.neonAmber
+        case .cipher: return FerriteSuiteTheme.cyberPurple
         case .sentry: return Color.blue
         }
     }

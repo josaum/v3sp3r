@@ -24,6 +24,13 @@ mkdir -p "$RESOURCES_DIR"
 cp "$DIR/.build/release/ferriteSuite" "$MACOS_DIR/ferriteSuite"
 chmod +x "$MACOS_DIR/ferriteSuite"
 
+# Bundle runtime assets into Contents/Resources (portal templates, firmware, branding).
+# Previously Resources/ was created but left empty, so the app shipped with no assets.
+if [ -d "$DIR/../assets" ]; then
+    echo "📦 Bundling assets/ into Contents/Resources..."
+    cp -R "$DIR/../assets/." "$RESOURCES_DIR/"
+fi
+
 # Generate Info.plist
 # Unquoted heredoc: $APP_NAME must interpolate so the display name has ONE source
 # of truth. CFBundleExecutable must match the SwiftPM product name (Package.swift).

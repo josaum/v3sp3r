@@ -3,8 +3,8 @@ import SwiftUI
 
 @MainActor
 @Observable
-public final class VesperAgent {
-    public static let shared = VesperAgent()
+public final class FerriteSuiteAgent {
+    public static let shared = FerriteSuiteAgent()
     
     public var messages: [ChatMessage] = []
     public var isThinking: Bool = false
@@ -262,25 +262,25 @@ public final class VesperAgent {
         guard !trimmed.isEmpty, !trimmed.contains("Error") else { return }
         
         if tool.action == "execute_cli" && (trimmed.contains("Frequency:") || trimmed.contains("Protocol:") || trimmed.contains("Key:")) {
-            VesperMemoryStore.shared.addMemory(
+            FerriteSuiteMemoryStore.shared.addMemory(
                 category: .signal,
                 title: "Observed RF Signal via CLI",
                 content: String(trimmed.prefix(350))
             )
         } else if tool.action == "get_device_info" && (trimmed.contains("firmware") || trimmed.contains("battery")) {
-            VesperMemoryStore.shared.addMemory(
+            FerriteSuiteMemoryStore.shared.addMemory(
                 category: .hardware,
                 title: "Flipper Hardware Snapshot",
                 content: String(trimmed.prefix(350))
             )
         } else if tool.action == "ferrite_decode" {
-            VesperMemoryStore.shared.addMemory(
+            FerriteSuiteMemoryStore.shared.addMemory(
                 category: .ferritePlan,
                 title: "FerriteOS Decoded Signal",
                 content: String(trimmed.prefix(350))
             )
         } else if (tool.action == "flash_flipper_firmware" || tool.action == "flash_gpio_board") && !trimmed.contains("Error") {
-            VesperMemoryStore.shared.addMemory(
+            FerriteSuiteMemoryStore.shared.addMemory(
                 category: .hardware,
                 title: "Firmware Flashed (\(tool.parameters["distro"] ?? tool.parameters["firmware"] ?? "unknown"))",
                 content: String(trimmed.prefix(350))
@@ -362,7 +362,7 @@ public final class VesperAgent {
     }
     
     private func buildSystemPrompt() -> String {
-        var systemContent = VesperPrompts.systemPrompt
+        var systemContent = FerriteSuitePrompts.systemPrompt
         
         // Inject Autopilot Status
         systemContent += "\n\n### AUTOPILOT MODE: \(settings.autopilotMode.rawValue.uppercased())\n"
@@ -396,7 +396,7 @@ public final class VesperAgent {
         }
         
         // Inject persistent memory vault
-        systemContent += VesperMemoryStore.shared.generateMemoryContextPrompt()
+        systemContent += FerriteSuiteMemoryStore.shared.generateMemoryContextPrompt()
         return systemContent
     }
     

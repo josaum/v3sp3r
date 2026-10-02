@@ -14,9 +14,9 @@ public struct WirelessAuditView: View {
                     HStack(spacing: 16) {
                         Image(systemName: "wifi.circle.fill")
                             .font(.system(size: 40))
-                            .foregroundColor(VesperTheme.neonGreen)
+                            .foregroundColor(FerriteSuiteTheme.neonGreen)
                             .frame(width: 64, height: 64)
-                            .background(VesperTheme.neonGreen.opacity(0.15))
+                            .background(FerriteSuiteTheme.neonGreen.opacity(0.15))
                             .cornerRadius(14)
                         
                         VStack(alignment: .leading, spacing: 4) {
@@ -31,10 +31,10 @@ public struct WirelessAuditView: View {
                         
                         Text(audit.currentMode)
                             .font(.caption.monospaced().bold())
-                            .foregroundColor(VesperTheme.neonGreen)
+                            .foregroundColor(FerriteSuiteTheme.neonGreen)
                             .padding(.horizontal, 10)
                             .padding(.vertical, 5)
-                            .background(VesperTheme.neonGreen.opacity(0.1))
+                            .background(FerriteSuiteTheme.neonGreen.opacity(0.1))
                             .cornerRadius(8)
                     }
                 }
@@ -50,7 +50,7 @@ public struct WirelessAuditView: View {
                         Button(action: { Task { await audit.surveyAccessPoints() } }) {
                             Label("Survey APs", systemImage: "wifi")
                                 .padding(10)
-                                .background(VesperTheme.secondaryCardBackground)
+                                .background(FerriteSuiteTheme.secondaryCardBackground)
                                 .cornerRadius(8)
                         }
                         .buttonStyle(.plain)
@@ -58,7 +58,7 @@ public struct WirelessAuditView: View {
                         Button(action: { Task { await audit.auditBeaconFrames() } }) {
                             Label("Audit Beacons", systemImage: "antenna.radiowaves.left.and.right")
                                 .padding(10)
-                                .background(VesperTheme.secondaryCardBackground)
+                                .background(FerriteSuiteTheme.secondaryCardBackground)
                                 .cornerRadius(8)
                         }
                         .buttonStyle(.plain)
@@ -66,7 +66,7 @@ public struct WirelessAuditView: View {
                         Button(action: { Task { await audit.auditKeyNegotiation() } }) {
                             Label("Audit Key Handshake", systemImage: "key.fill")
                                 .padding(10)
-                                .background(VesperTheme.secondaryCardBackground)
+                                .background(FerriteSuiteTheme.secondaryCardBackground)
                                 .cornerRadius(8)
                         }
                         .buttonStyle(.plain)
@@ -74,8 +74,8 @@ public struct WirelessAuditView: View {
                         Button(action: { Task { await audit.stopSurvey() } }) {
                             Label("Stop Audit", systemImage: "stop.circle.fill")
                                 .padding(10)
-                                .background(VesperTheme.neonRed.opacity(0.2))
-                                .foregroundColor(VesperTheme.neonRed)
+                                .background(FerriteSuiteTheme.neonRed.opacity(0.2))
+                                .foregroundColor(FerriteSuiteTheme.neonRed)
                                 .cornerRadius(8)
                         }
                         .buttonStyle(.plain)
@@ -85,8 +85,8 @@ public struct WirelessAuditView: View {
                         }) {
                             Label("Portal Architect", systemImage: "network.badge.shield.half.filled")
                                 .padding(10)
-                                .background(VesperTheme.accentCyan.opacity(0.18))
-                                .foregroundColor(VesperTheme.accentCyan)
+                                .background(FerriteSuiteTheme.accentCyan.opacity(0.18))
+                                .foregroundColor(FerriteSuiteTheme.accentCyan)
                                 .cornerRadius(8)
                         }
                         .buttonStyle(.plain)
@@ -123,15 +123,15 @@ public struct WirelessAuditView: View {
                                     .font(.caption.monospaced().bold())
                                     .padding(.horizontal, 6)
                                     .padding(.vertical, 2)
-                                    .background(VesperTheme.secondaryCardBackground)
+                                    .background(FerriteSuiteTheme.secondaryCardBackground)
                                     .cornerRadius(4)
                                 
                                 Text(ap.security)
                                     .font(.caption.monospaced())
-                                    .foregroundColor(VesperTheme.accentCyan)
+                                    .foregroundColor(FerriteSuiteTheme.accentCyan)
                                     .padding(.horizontal, 6)
                                     .padding(.vertical, 2)
-                                    .background(VesperTheme.accentCyan.opacity(0.1))
+                                    .background(FerriteSuiteTheme.accentCyan.opacity(0.1))
                                     .cornerRadius(4)
                                 
                                 Text("\(ap.rssi) dBm")
@@ -140,7 +140,7 @@ public struct WirelessAuditView: View {
                                     .frame(width: 70, alignment: .trailing)
                             }
                             .padding(10)
-                            .background(VesperTheme.secondaryCardBackground)
+                            .background(FerriteSuiteTheme.secondaryCardBackground)
                             .cornerRadius(8)
                         }
                     }
@@ -161,7 +161,7 @@ public struct WirelessAuditView: View {
                         }) {
                             Label("Copy", systemImage: "doc.on.doc")
                                 .font(.caption.monospaced())
-                                .foregroundColor(VesperTheme.accentCyan)
+                                .foregroundColor(FerriteSuiteTheme.accentCyan)
                         }
                         .buttonStyle(.plain)
                         
@@ -193,11 +193,11 @@ public struct WirelessAuditView: View {
                         .padding(10)
                     }
                     .frame(height: 130)
-                    .background(VesperTheme.terminalBackground)
+                    .background(FerriteSuiteTheme.terminalBackground)
                     .cornerRadius(8)
                     .overlay(
                         RoundedRectangle(cornerRadius: 8)
-                            .stroke(VesperTheme.subtleBorder, lineWidth: 1)
+                            .stroke(FerriteSuiteTheme.subtleBorder, lineWidth: 1)
                     )
                     
                     // Interactive Diagnostic Command Input
@@ -212,8 +212,8 @@ public struct WirelessAuditView: View {
                                 .font(.caption.bold())
                                 .padding(.horizontal, 12)
                                 .padding(.vertical, 5)
-                                .background(VesperTheme.neonGreen.opacity(0.2))
-                                .foregroundColor(VesperTheme.neonGreen)
+                                .background(FerriteSuiteTheme.neonGreen.opacity(0.2))
+                                .foregroundColor(FerriteSuiteTheme.neonGreen)
                                 .cornerRadius(6)
                         }
                         .buttonStyle(.plain)
@@ -225,13 +225,13 @@ public struct WirelessAuditView: View {
             }
             .padding(20)
         }
-        .background(VesperTheme.darkBackground)
+        .background(FerriteSuiteTheme.darkBackground)
     }
     
     private func signalColor(_ rssi: Int) -> Color {
-        if rssi > -60 { return VesperTheme.neonGreen }
-        if rssi > -75 { return VesperTheme.neonAmber }
-        return VesperTheme.neonRed
+        if rssi > -60 { return FerriteSuiteTheme.neonGreen }
+        if rssi > -75 { return FerriteSuiteTheme.neonAmber }
+        return FerriteSuiteTheme.neonRed
     }
     
     private func sendAuditCommand() {

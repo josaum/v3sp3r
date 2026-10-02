@@ -37,12 +37,12 @@ public struct MicroDocsView: View {
             // Header Bar
             headerBar
             
-            Divider().background(VesperTheme.subtleBorder)
+            Divider().background(FerriteSuiteTheme.subtleBorder)
             
             // Tab Selector
             tabSelectorBar
             
-            Divider().background(VesperTheme.subtleBorder)
+            Divider().background(FerriteSuiteTheme.subtleBorder)
             
             // Content
             ScrollView {
@@ -50,16 +50,16 @@ public struct MicroDocsView: View {
                     if let toast = copiedToast {
                         HStack(spacing: 8) {
                             Image(systemName: "checkmark.circle.fill")
-                                .foregroundColor(VesperTheme.neonGreen)
+                                .foregroundColor(FerriteSuiteTheme.neonGreen)
                             Text(toast)
                                 .font(.caption.bold())
-                                .foregroundColor(VesperTheme.neonGreen)
+                                .foregroundColor(FerriteSuiteTheme.neonGreen)
                             Spacer()
                         }
                         .padding(10)
-                        .background(VesperTheme.neonGreen.opacity(0.12))
+                        .background(FerriteSuiteTheme.neonGreen.opacity(0.12))
                         .cornerRadius(8)
-                        .overlay(RoundedRectangle(cornerRadius: 8).stroke(VesperTheme.neonGreen.opacity(0.3), lineWidth: 1))
+                        .overlay(RoundedRectangle(cornerRadius: 8).stroke(FerriteSuiteTheme.neonGreen.opacity(0.3), lineWidth: 1))
                         .transition(.move(edge: .top).combined(with: .opacity))
                     }
                     
@@ -83,7 +83,7 @@ public struct MicroDocsView: View {
                 .padding(24)
             }
         }
-        .background(VesperTheme.darkBackground)
+        .background(FerriteSuiteTheme.darkBackground)
     }
     
     // MARK: - Header
@@ -93,17 +93,17 @@ public struct MicroDocsView: View {
                 HStack(spacing: 8) {
                     Image(systemName: "book.pages.fill")
                         .font(.title2)
-                        .foregroundColor(VesperTheme.accentCyan)
+                        .foregroundColor(FerriteSuiteTheme.accentCyan)
                     Text("FIELD OPERATOR MANUAL")
                         .font(.system(size: 18, weight: .black, design: .monospaced))
-                        .foregroundColor(VesperTheme.primaryTextColor)
+                        .foregroundColor(FerriteSuiteTheme.primaryTextColor)
                     
                     Text("MICRO-DOCS")
                         .font(.system(size: 10, weight: .bold, design: .monospaced))
                         .padding(.horizontal, 6)
                         .padding(.vertical, 2)
-                        .background(VesperTheme.accentCyan.opacity(0.2))
-                        .foregroundColor(VesperTheme.accentCyan)
+                        .background(FerriteSuiteTheme.accentCyan.opacity(0.2))
+                        .foregroundColor(FerriteSuiteTheme.accentCyan)
                         .cornerRadius(4)
                 }
                 
@@ -132,13 +132,13 @@ public struct MicroDocsView: View {
             .padding(.horizontal, 10)
             .padding(.vertical, 7)
             .frame(width: 260)
-            .background(VesperTheme.secondaryCardBackground)
+            .background(FerriteSuiteTheme.secondaryCardBackground)
             .cornerRadius(8)
-            .overlay(RoundedRectangle(cornerRadius: 8).stroke(VesperTheme.subtleBorder, lineWidth: 1))
+            .overlay(RoundedRectangle(cornerRadius: 8).stroke(FerriteSuiteTheme.subtleBorder, lineWidth: 1))
         }
         .padding(.horizontal, 24)
         .padding(.vertical, 16)
-        .background(VesperTheme.cardBackground)
+        .background(FerriteSuiteTheme.cardBackground)
     }
     
     // MARK: - Tab Bar
@@ -159,12 +159,12 @@ public struct MicroDocsView: View {
                         }
                         .padding(.horizontal, 14)
                         .padding(.vertical, 8)
-                        .background(selectedTab == tab ? VesperTheme.accentCyan.opacity(0.2) : Color.clear)
-                        .foregroundColor(selectedTab == tab ? VesperTheme.accentCyan : .secondary)
+                        .background(selectedTab == tab ? FerriteSuiteTheme.accentCyan.opacity(0.2) : Color.clear)
+                        .foregroundColor(selectedTab == tab ? FerriteSuiteTheme.accentCyan : .secondary)
                         .cornerRadius(7)
                         .overlay(
                             RoundedRectangle(cornerRadius: 7)
-                                .stroke(selectedTab == tab ? VesperTheme.accentCyan.opacity(0.5) : Color.clear, lineWidth: 1)
+                                .stroke(selectedTab == tab ? FerriteSuiteTheme.accentCyan.opacity(0.5) : Color.clear, lineWidth: 1)
                         )
                     }
                     .buttonStyle(.plain)
@@ -173,7 +173,7 @@ public struct MicroDocsView: View {
             .padding(.horizontal, 20)
             .padding(.vertical, 8)
         }
-        .background(VesperTheme.cardBackground.opacity(0.7))
+        .background(FerriteSuiteTheme.cardBackground.opacity(0.7))
     }
     
     private func copyToClipboard(_ text: String, label: String = "Copied to clipboard") {
@@ -198,7 +198,7 @@ private struct QuickstartTabContent: View {
         VStack(alignment: .leading, spacing: 18) {
             Text("Field Operator Quickstart (5-Minute Onboarding)")
                 .font(.title3.bold())
-                .foregroundColor(VesperTheme.primaryTextColor)
+                .foregroundColor(FerriteSuiteTheme.primaryTextColor)
             
             // Steps Grid
             VStack(spacing: 14) {
@@ -206,7 +206,7 @@ private struct QuickstartTabContent: View {
                     number: "01",
                     title: "Connect Flipper via USB CDC or BLE",
                     icon: "cable.connector",
-                    color: VesperTheme.accentCyan,
+                    color: FerriteSuiteTheme.accentCyan,
                     desc: "Plug your Flipper Zero into your Mac with USB-C. ferriteSuite automatically probes `/dev/cu.usbmodemflip_*` at 230,400 baud. The bottom-left telemetry indicator turns bright green once connected."
                 )
                 
@@ -214,7 +214,7 @@ private struct QuickstartTabContent: View {
                     number: "02",
                     title: "Deploy Autonomous Hardware Workflows",
                     icon: "point.3.connected.trianglepath.dotted",
-                    color: VesperTheme.flipperOrange,
+                    color: FerriteSuiteTheme.flipperOrange,
                     desc: "Navigate to 'Workflows & DAG'. Click 'Run Workflow' to execute autonomous multi-node security tasks (e.g. Sub-GHz Recon, Hardware Diagnostics, or Access Control Badge Auditor). You can pause, step, or inspect live execution at any moment."
                 )
                 
@@ -222,7 +222,7 @@ private struct QuickstartTabContent: View {
                     number: "03",
                     title: "Offline Deterministic AI with FerriteOS",
                     icon: "atom",
-                    color: VesperTheme.cyberPurple,
+                    color: FerriteSuiteTheme.cyberPurple,
                     desc: "FerriteOS is bundled locally with a compiled Rust micro-model. Speak or type natural language instructions like 'scan for garage doors on 433mhz'. FerriteOS deterministically parses the intent and maps it directly to hardware parameters with zero cloud latency."
                 )
                 
@@ -230,7 +230,7 @@ private struct QuickstartTabContent: View {
                     number: "04",
                     title: "Connect Claude Desktop / WebMCP",
                     icon: "network",
-                    color: VesperTheme.neonGreen,
+                    color: FerriteSuiteTheme.neonGreen,
                     desc: "ferriteSuite includes an embedded WebMCP bridge on `http://127.0.0.1:8765/sse`. Add this URL to your `claude_desktop_config.json` or Cursor to let external LLMs read, transmit, and flash directly through ferriteSuite."
                 )
                 
@@ -238,31 +238,31 @@ private struct QuickstartTabContent: View {
                     number: "05",
                     title: "Flash Firmware & WiFi Devboard Over-The-Air",
                     icon: "arrow.triangle.2.circlepath.circle.fill",
-                    color: VesperTheme.neonAmber,
+                    color: FerriteSuiteTheme.neonAmber,
                     desc: "Use 'Firmware & Flashing' to switch between Unleashed, Momentum, and Official Flipper releases, or install ESP32 Marauder to your WiFi Devboard with automated GitHub asset fetching."
                 )
             }
             
-            Divider().background(VesperTheme.subtleBorder)
+            Divider().background(FerriteSuiteTheme.subtleBorder)
             
             // Helpful Quick Links
             HStack(spacing: 16) {
                 Link(destination: URL(string: "https://docs.flipper.net")!) {
                     Label("Official Flipper Docs ↗", systemImage: "safari")
                         .font(.caption.bold())
-                        .foregroundColor(VesperTheme.accentCyan)
+                        .foregroundColor(FerriteSuiteTheme.accentCyan)
                 }
                 
                 Link(destination: URL(string: "https://github.com/DarkFlippers/unleashed-firmware")!) {
                     Label("Unleashed Firmware GitHub ↗", systemImage: "arrow.up.right.circle")
                         .font(.caption.bold())
-                        .foregroundColor(VesperTheme.accentCyan)
+                        .foregroundColor(FerriteSuiteTheme.accentCyan)
                 }
                 
                 Link(destination: URL(string: "https://modelcontextprotocol.io")!) {
                     Label("Model Context Protocol Spec ↗", systemImage: "network")
                         .font(.caption.bold())
-                        .foregroundColor(VesperTheme.accentCyan)
+                        .foregroundColor(FerriteSuiteTheme.accentCyan)
                 }
             }
         }
@@ -281,7 +281,7 @@ private struct QuickstartTabContent: View {
                         .foregroundColor(color)
                     Text(title)
                         .font(.headline)
-                        .foregroundColor(VesperTheme.primaryTextColor)
+                        .foregroundColor(FerriteSuiteTheme.primaryTextColor)
                 }
                 
                 Text(desc)
@@ -292,9 +292,9 @@ private struct QuickstartTabContent: View {
             Spacer()
         }
         .padding(16)
-        .background(VesperTheme.cardBackground)
+        .background(FerriteSuiteTheme.cardBackground)
         .cornerRadius(10)
-        .overlay(RoundedRectangle(cornerRadius: 10).stroke(VesperTheme.subtleBorder, lineWidth: 1))
+        .overlay(RoundedRectangle(cornerRadius: 10).stroke(FerriteSuiteTheme.subtleBorder, lineWidth: 1))
     }
 }
 
@@ -319,7 +319,7 @@ private struct SubGhzTabContent: View {
                 VStack(alignment: .leading, spacing: 4) {
                     Text("Sub-GHz Radio Architecture & Frequencies")
                         .font(.title3.bold())
-                        .foregroundColor(VesperTheme.primaryTextColor)
+                        .foregroundColor(FerriteSuiteTheme.primaryTextColor)
                     Text("Hardware: Texas Instruments CC1101 low-power Sub-1 GHz transceiver.")
                         .font(.caption)
                         .foregroundColor(.secondary)
@@ -327,7 +327,7 @@ private struct SubGhzTabContent: View {
                 Spacer()
                 Link("Flipper Sub-GHz Docs ↗", destination: URL(string: "https://docs.flipper.net/sub-ghz")!)
                     .font(.caption.bold())
-                    .foregroundColor(VesperTheme.accentCyan)
+                    .foregroundColor(FerriteSuiteTheme.accentCyan)
             }
             
             // Bands Table
@@ -336,12 +336,12 @@ private struct SubGhzTabContent: View {
                     HStack(spacing: 12) {
                         Text(band.0)
                             .font(.system(size: 13, weight: .bold, design: .monospaced))
-                            .foregroundColor(VesperTheme.flipperOrange)
+                            .foregroundColor(FerriteSuiteTheme.flipperOrange)
                             .frame(width: 120, alignment: .leading)
                         
                         Text(band.1)
                             .font(.caption.bold())
-                            .foregroundColor(VesperTheme.accentCyan)
+                            .foregroundColor(FerriteSuiteTheme.accentCyan)
                             .frame(width: 140, alignment: .leading)
                         
                         Text(band.2)
@@ -361,9 +361,9 @@ private struct SubGhzTabContent: View {
                         .help("Copy frequency")
                     }
                     .padding(10)
-                    .background(VesperTheme.cardBackground)
+                    .background(FerriteSuiteTheme.cardBackground)
                     .cornerRadius(6)
-                    .overlay(RoundedRectangle(cornerRadius: 6).stroke(VesperTheme.subtleBorder, lineWidth: 1))
+                    .overlay(RoundedRectangle(cornerRadius: 6).stroke(FerriteSuiteTheme.subtleBorder, lineWidth: 1))
                 }
             }
             
@@ -371,7 +371,7 @@ private struct SubGhzTabContent: View {
             VStack(alignment: .leading, spacing: 10) {
                 Text("Modulations & Signal Parsing")
                     .font(.headline)
-                    .foregroundColor(VesperTheme.primaryTextColor)
+                    .foregroundColor(FerriteSuiteTheme.primaryTextColor)
                 
                 Text("• **AM / ASK (Amplitude Shift Keying)**: Used by 80% of consumer remotes (Princeton, Nice, Came, CAME TOP).\n• **FM / 2-FSK (Frequency Shift Keying)**: Higher noise resistance, used by automotive fobs (Keeloq, StarLine).\n• **Static Code**: Signal repeats identical pulse pattern on every press. Can be captured and replayed freely.\n• **Dynamic / Rolling Code (KeeLoq, Alutech, Nice Flor-S)**: Counter increments with cryptographic MAC. *Caution: Replaying old rolling codes will fail and may de-synchronize the original remote.*")
                     .font(.subheadline)
@@ -414,7 +414,7 @@ private struct GpioTabContent: View {
                 VStack(alignment: .leading, spacing: 4) {
                     Text("18-Pin GPIO Header Reference & Devboard Wiring")
                         .font(.title3.bold())
-                        .foregroundColor(VesperTheme.primaryTextColor)
+                        .foregroundColor(FerriteSuiteTheme.primaryTextColor)
                     Text("Flipper Zero features an 18-pin 2.54mm female pitch header for external sensors and microcontrollers.")
                         .font(.caption)
                         .foregroundColor(.secondary)
@@ -422,21 +422,21 @@ private struct GpioTabContent: View {
                 Spacer()
                 Link("Official Pinout Specs ↗", destination: URL(string: "https://docs.flipper.net/gpio-and-modules")!)
                     .font(.caption.bold())
-                    .foregroundColor(VesperTheme.accentCyan)
+                    .foregroundColor(FerriteSuiteTheme.accentCyan)
             }
             
             // ESP32 Marauder Wiring Box
             VStack(alignment: .leading, spacing: 12) {
                 HStack {
                     Image(systemName: "wifi.circle.fill")
-                        .foregroundColor(VesperTheme.neonAmber)
+                        .foregroundColor(FerriteSuiteTheme.neonAmber)
                     Text("ESP32 WiFi Marauder Quick Wiring Guide")
                         .font(.headline)
-                        .foregroundColor(VesperTheme.primaryTextColor)
+                        .foregroundColor(FerriteSuiteTheme.primaryTextColor)
                     Spacer()
                     Link("Marauder GitHub ↗", destination: URL(string: "https://github.com/justcallmekoko/ESP32Marauder")!)
                         .font(.caption.bold())
-                        .foregroundColor(VesperTheme.accentCyan)
+                        .foregroundColor(FerriteSuiteTheme.accentCyan)
                 }
                 
                 Text("To connect a standalone ESP32-WROOM or ESP32-S2/S3 Devboard:")
@@ -459,12 +459,12 @@ private struct GpioTabContent: View {
                     HStack(spacing: 12) {
                         Text(pin.0)
                             .font(.system(size: 12, weight: .bold, design: .monospaced))
-                            .foregroundColor(VesperTheme.accentCyan)
+                            .foregroundColor(FerriteSuiteTheme.accentCyan)
                             .frame(width: 70, alignment: .leading)
                         
                         Text(pin.1)
                             .font(.system(size: 13, weight: .black, design: .monospaced))
-                            .foregroundColor(VesperTheme.neonGreen)
+                            .foregroundColor(FerriteSuiteTheme.neonGreen)
                             .frame(width: 130, alignment: .leading)
                         
                         Text(pin.2)
@@ -483,9 +483,9 @@ private struct GpioTabContent: View {
                         .buttonStyle(.plain)
                     }
                     .padding(8)
-                    .background(VesperTheme.cardBackground)
+                    .background(FerriteSuiteTheme.cardBackground)
                     .cornerRadius(6)
-                    .overlay(RoundedRectangle(cornerRadius: 6).stroke(VesperTheme.subtleBorder, lineWidth: 1))
+                    .overlay(RoundedRectangle(cornerRadius: 6).stroke(FerriteSuiteTheme.subtleBorder, lineWidth: 1))
                 }
             }
         }
@@ -495,7 +495,7 @@ private struct GpioTabContent: View {
         HStack {
             Text(text)
                 .font(.system(size: 12, design: .monospaced))
-                .foregroundColor(VesperTheme.neonGreen)
+                .foregroundColor(FerriteSuiteTheme.neonGreen)
             Spacer()
             Button(action: { copyAction(text, "Copied wiring instruction") }) {
                 Image(systemName: "doc.on.doc")
@@ -518,7 +518,7 @@ private struct FirmwareMatrixTabContent: View {
         VStack(alignment: .leading, spacing: 18) {
             Text("Flipper Zero Firmware Distribution Matrix")
                 .font(.title3.bold())
-                .foregroundColor(VesperTheme.primaryTextColor)
+                .foregroundColor(FerriteSuiteTheme.primaryTextColor)
             
             Text("ferriteSuite supports seamless flashing and OTA synchronizing with all major Flipper community and official distributions.")
                 .font(.subheadline)
@@ -529,7 +529,7 @@ private struct FirmwareMatrixTabContent: View {
                 distroCard(
                     name: "Unleashed Firmware",
                     badge: "MOST POPULAR",
-                    badgeColor: VesperTheme.neonAmber,
+                    badgeColor: FerriteSuiteTheme.neonAmber,
                     icon: "flame.fill",
                     author: "DarkFlippers Community",
                     highlights: [
@@ -544,7 +544,7 @@ private struct FirmwareMatrixTabContent: View {
                 distroCard(
                     name: "Momentum Firmware",
                     badge: "CUSTOMIZABLE & MODERN",
-                    badgeColor: VesperTheme.cyberPurple,
+                    badgeColor: FerriteSuiteTheme.cyberPurple,
                     icon: "sparkles",
                     author: "Next-Flip / Momentum Team",
                     highlights: [
@@ -559,7 +559,7 @@ private struct FirmwareMatrixTabContent: View {
                 distroCard(
                     name: "Official Flipper Firmware",
                     badge: "STABLE & COMPLIANT",
-                    badgeColor: VesperTheme.accentCyan,
+                    badgeColor: FerriteSuiteTheme.accentCyan,
                     icon: "shield.checkmark.fill",
                     author: "Flipper Devices Inc.",
                     highlights: [
@@ -573,7 +573,7 @@ private struct FirmwareMatrixTabContent: View {
                 distroCard(
                     name: "RogueMaster",
                     badge: "EXPERIMENTAL",
-                    badgeColor: VesperTheme.neonRed,
+                    badgeColor: FerriteSuiteTheme.neonRed,
                     icon: "bolt.badge.automatic.fill",
                     author: "RogueMaster Community",
                     highlights: [
@@ -598,7 +598,7 @@ private struct FirmwareMatrixTabContent: View {
                     HStack(spacing: 8) {
                         Text(name)
                             .font(.headline)
-                            .foregroundColor(VesperTheme.primaryTextColor)
+                            .foregroundColor(FerriteSuiteTheme.primaryTextColor)
                         Text(badge)
                             .font(.system(size: 9, weight: .bold, design: .monospaced))
                             .padding(.horizontal, 6)
@@ -616,7 +616,7 @@ private struct FirmwareMatrixTabContent: View {
                 
                 Link("GitHub Repo ↗", destination: URL(string: repoUrl)!)
                     .font(.caption.bold())
-                    .foregroundColor(VesperTheme.accentCyan)
+                    .foregroundColor(FerriteSuiteTheme.accentCyan)
             }
             
             VStack(alignment: .leading, spacing: 6) {
@@ -660,7 +660,7 @@ private struct BadUsbTabContent: View {
                 VStack(alignment: .leading, spacing: 4) {
                     Text("BadUSB & DuckyScript 3.0 Reference")
                         .font(.title3.bold())
-                        .foregroundColor(VesperTheme.primaryTextColor)
+                        .foregroundColor(FerriteSuiteTheme.primaryTextColor)
                     Text("Flipper Zero emulates a standard USB HID keyboard to execute automated system commands.")
                         .font(.caption)
                         .foregroundColor(.secondary)
@@ -668,7 +668,7 @@ private struct BadUsbTabContent: View {
                 Spacer()
                 Link("Hak5 DuckyScript Docs ↗", destination: URL(string: "https://docs.hak5.org/ducky-script")!)
                     .font(.caption.bold())
-                    .foregroundColor(VesperTheme.accentCyan)
+                    .foregroundColor(FerriteSuiteTheme.accentCyan)
             }
             
             // Example macOS Script
@@ -676,7 +676,7 @@ private struct BadUsbTabContent: View {
                 HStack {
                     Text("macOS Spotlight Quick Terminal Payload Example")
                         .font(.subheadline.bold())
-                        .foregroundColor(VesperTheme.primaryTextColor)
+                        .foregroundColor(FerriteSuiteTheme.primaryTextColor)
                     Spacer()
                     Button("Copy Script") {
                         let script = """
@@ -693,7 +693,7 @@ private struct BadUsbTabContent: View {
                         copyAction(script, "Copied macOS DuckyScript template")
                     }
                     .font(.caption.bold())
-                    .foregroundColor(VesperTheme.accentCyan)
+                    .foregroundColor(FerriteSuiteTheme.accentCyan)
                     .buttonStyle(.plain)
                 }
                 
@@ -709,7 +709,7 @@ private struct BadUsbTabContent: View {
                 STRINGLN echo 'ferriteSuite Operational' && whoami
                 """)
                 .font(.system(size: 11, design: .monospaced))
-                .foregroundColor(VesperTheme.neonGreen)
+                .foregroundColor(FerriteSuiteTheme.neonGreen)
                 .padding(10)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .background(Color.black.opacity(0.4))
@@ -724,7 +724,7 @@ private struct BadUsbTabContent: View {
                     HStack(spacing: 12) {
                         Text(item.0)
                             .font(.system(size: 12, weight: .bold, design: .monospaced))
-                            .foregroundColor(VesperTheme.flipperOrange)
+                            .foregroundColor(FerriteSuiteTheme.flipperOrange)
                             .frame(width: 140, alignment: .leading)
                         
                         Text(item.1)
@@ -734,9 +734,9 @@ private struct BadUsbTabContent: View {
                         Spacer()
                     }
                     .padding(8)
-                    .background(VesperTheme.cardBackground)
+                    .background(FerriteSuiteTheme.cardBackground)
                     .cornerRadius(6)
-                    .overlay(RoundedRectangle(cornerRadius: 6).stroke(VesperTheme.subtleBorder, lineWidth: 1))
+                    .overlay(RoundedRectangle(cornerRadius: 6).stroke(FerriteSuiteTheme.subtleBorder, lineWidth: 1))
                 }
             }
         }
@@ -754,7 +754,7 @@ private struct FerriteOsTabContent: View {
                 VStack(alignment: .leading, spacing: 4) {
                     Text("FerriteOS: Zero-Latency Local Intent Engine")
                         .font(.title3.bold())
-                        .foregroundColor(VesperTheme.primaryTextColor)
+                        .foregroundColor(FerriteSuiteTheme.primaryTextColor)
                     Text("High-speed deterministic Rust token classifier running completely offline on your Mac.")
                         .font(.caption)
                         .foregroundColor(.secondary)
@@ -762,14 +762,14 @@ private struct FerriteOsTabContent: View {
                 Spacer()
                 Link("FerriteOS Project ↗", destination: URL(string: "https://github.com/dext7r/FerriteOS")!)
                     .font(.caption.bold())
-                    .foregroundColor(VesperTheme.accentCyan)
+                    .foregroundColor(FerriteSuiteTheme.accentCyan)
             }
             
             // Architecture Highlights
             VStack(alignment: .leading, spacing: 12) {
                 Text("How FerriteOS Complements LLMs:")
                     .font(.headline)
-                    .foregroundColor(VesperTheme.primaryTextColor)
+                    .foregroundColor(FerriteSuiteTheme.primaryTextColor)
                 
                 Text("• **100% Air-Gapped & Offline**: Does not require WiFi, cellular, or API tokens to parse tactical commands.\n• **Deterministic Microsecond Routing**: Dissects raw phrases into structured `{ domain, intent, parameters }` JSON in <2ms.\n• **RF Signal Demodulator**: FerriteOS includes compiled Rust routines to decode pulse-length intervals directly from `.sub` captures.\n• **Hybrid Autonomous Execution**: High-level reasoning is handled by Grok/Claude, while FerriteOS validates raw binary parameters before reaching the hardware.")
                     .font(.subheadline)
@@ -783,7 +783,7 @@ private struct FerriteOsTabContent: View {
             VStack(alignment: .leading, spacing: 10) {
                 Text("Sample FerriteOS Output Schema")
                     .font(.subheadline.bold())
-                    .foregroundColor(VesperTheme.primaryTextColor)
+                    .foregroundColor(FerriteSuiteTheme.primaryTextColor)
                 
                 Text("""
                 {
@@ -798,7 +798,7 @@ private struct FerriteOsTabContent: View {
                 }
                 """)
                 .font(.system(size: 11, design: .monospaced))
-                .foregroundColor(VesperTheme.accentCyan)
+                .foregroundColor(FerriteSuiteTheme.accentCyan)
                 .padding(10)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .background(Color.black.opacity(0.4))
@@ -821,7 +821,7 @@ private struct WebMcpTabContent: View {
                 VStack(alignment: .leading, spacing: 4) {
                     Text("WebMCP: Model Context Protocol over HTTP/SSE")
                         .font(.title3.bold())
-                        .foregroundColor(VesperTheme.primaryTextColor)
+                        .foregroundColor(FerriteSuiteTheme.primaryTextColor)
                     Text("Bridge external AI assistants (Claude Desktop, Cursor, Web Agents) directly to Flipper Zero.")
                         .font(.caption)
                         .foregroundColor(.secondary)
@@ -829,19 +829,19 @@ private struct WebMcpTabContent: View {
                 Spacer()
                 Link("MCP Specification ↗", destination: URL(string: "https://modelcontextprotocol.io")!)
                     .font(.caption.bold())
-                    .foregroundColor(VesperTheme.accentCyan)
+                    .foregroundColor(FerriteSuiteTheme.accentCyan)
             }
             
             // Server Status Box
             HStack(spacing: 16) {
                 Circle()
-                    .fill(server.isRunning ? VesperTheme.neonGreen : VesperTheme.neonRed)
+                    .fill(server.isRunning ? FerriteSuiteTheme.neonGreen : FerriteSuiteTheme.neonRed)
                     .frame(width: 12, height: 12)
                 
                 VStack(alignment: .leading, spacing: 2) {
                     Text(server.isRunning ? "WebMCP Server Running" : "WebMCP Server Stopped")
                         .font(.headline)
-                        .foregroundColor(VesperTheme.primaryTextColor)
+                        .foregroundColor(FerriteSuiteTheme.primaryTextColor)
                     Text(server.isRunning ? "Listening at http://127.0.0.1:\(server.port)/sse" : "Start server in Settings to connect external clients.")
                         .font(.caption)
                         .foregroundColor(.secondary)
@@ -854,8 +854,8 @@ private struct WebMcpTabContent: View {
                         .font(.system(size: 11, weight: .bold, design: .monospaced))
                         .padding(.horizontal, 8)
                         .padding(.vertical, 3)
-                        .background(VesperTheme.accentCyan.opacity(0.2))
-                        .foregroundColor(VesperTheme.accentCyan)
+                        .background(FerriteSuiteTheme.accentCyan.opacity(0.2))
+                        .foregroundColor(FerriteSuiteTheme.accentCyan)
                         .cornerRadius(6)
                 }
             }
@@ -866,10 +866,10 @@ private struct WebMcpTabContent: View {
             VStack(alignment: .leading, spacing: 12) {
                 HStack {
                     Image(systemName: "desktopcomputer")
-                        .foregroundColor(VesperTheme.cyberPurple)
+                        .foregroundColor(FerriteSuiteTheme.cyberPurple)
                     Text("Claude Desktop Integration (`claude_desktop_config.json`)")
                         .font(.headline)
-                        .foregroundColor(VesperTheme.primaryTextColor)
+                        .foregroundColor(FerriteSuiteTheme.primaryTextColor)
                     Spacer()
                     Button("Copy JSON") {
                         let json = """
@@ -884,7 +884,7 @@ private struct WebMcpTabContent: View {
                         copyAction(json, "Copied Claude Desktop configuration")
                     }
                     .font(.caption.bold())
-                    .foregroundColor(VesperTheme.accentCyan)
+                    .foregroundColor(FerriteSuiteTheme.accentCyan)
                     .buttonStyle(.plain)
                 }
                 
@@ -902,7 +902,7 @@ private struct WebMcpTabContent: View {
                 }
                 """)
                 .font(.system(size: 11, design: .monospaced))
-                .foregroundColor(VesperTheme.neonGreen)
+                .foregroundColor(FerriteSuiteTheme.neonGreen)
                 .padding(10)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .background(Color.black.opacity(0.4))
@@ -916,20 +916,20 @@ private struct WebMcpTabContent: View {
                 HStack {
                     Text("Quick Verification (Terminal curl)")
                         .font(.subheadline.bold())
-                        .foregroundColor(VesperTheme.primaryTextColor)
+                        .foregroundColor(FerriteSuiteTheme.primaryTextColor)
                     Spacer()
                     Button("Copy Command") {
                         let cmd = "curl -s http://127.0.0.1:\(server.port)/health | jq ."
                         copyAction(cmd, "Copied curl command")
                     }
                     .font(.caption.bold())
-                    .foregroundColor(VesperTheme.accentCyan)
+                    .foregroundColor(FerriteSuiteTheme.accentCyan)
                     .buttonStyle(.plain)
                 }
                 
                 Text("curl -s http://127.0.0.1:\(server.port)/health | jq .")
                     .font(.system(size: 11, design: .monospaced))
-                    .foregroundColor(VesperTheme.accentCyan)
+                    .foregroundColor(FerriteSuiteTheme.accentCyan)
                     .padding(8)
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .background(Color.black.opacity(0.35))

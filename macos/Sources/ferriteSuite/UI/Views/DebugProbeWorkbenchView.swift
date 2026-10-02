@@ -14,7 +14,7 @@ public struct DebugProbeWorkbenchView: View {
             // Header Bar
             headerBar
             
-            Divider().background(VesperTheme.subtleBorder)
+            Divider().background(FerriteSuiteTheme.subtleBorder)
             
             ScrollView {
                 VStack(spacing: 18) {
@@ -36,7 +36,7 @@ public struct DebugProbeWorkbenchView: View {
                 .padding(20)
             }
         }
-        .background(VesperTheme.darkBackground)
+        .background(FerriteSuiteTheme.darkBackground)
         .alert("Erase Nonvolatile Chip Flash?", isPresented: $showEraseAlert) {
             Button("Cancel", role: .cancel) {}
             Button("Erase All Flash", role: .destructive) {
@@ -55,30 +55,30 @@ public struct DebugProbeWorkbenchView: View {
         HStack(spacing: 14) {
             ZStack {
                 Circle()
-                    .fill(VesperTheme.accentCyan.opacity(0.15))
+                    .fill(FerriteSuiteTheme.accentCyan.opacity(0.15))
                     .frame(width: 36, height: 36)
                 Image(systemName: "cpu.fill")
                     .font(.system(size: 16, weight: .bold))
-                    .foregroundColor(VesperTheme.accentCyan)
+                    .foregroundColor(FerriteSuiteTheme.accentCyan)
             }
             
             VStack(alignment: .leading, spacing: 2) {
                 HStack(spacing: 8) {
                     Text("SWD / JTAG Hardware Probe Lab")
                         .font(.title3.bold())
-                        .foregroundColor(VesperTheme.primaryTextColor)
+                        .foregroundColor(FerriteSuiteTheme.primaryTextColor)
                     
                     Text("probe-rs 0.29")
                         .font(.system(size: 10, weight: .bold, design: .monospaced))
                         .padding(.horizontal, 6)
                         .padding(.vertical, 2)
-                        .background(VesperTheme.accentCyan.opacity(0.2))
-                        .foregroundColor(VesperTheme.accentCyan)
+                        .background(FerriteSuiteTheme.accentCyan.opacity(0.2))
+                        .foregroundColor(FerriteSuiteTheme.accentCyan)
                         .cornerRadius(4)
                 }
                 Text("Direct bare-metal debugging, memory extraction, registers inspection, and flash unbricking.")
                     .font(.caption)
-                    .foregroundColor(VesperTheme.secondaryTextColor)
+                    .foregroundColor(FerriteSuiteTheme.secondaryTextColor)
             }
             
             Spacer()
@@ -86,16 +86,16 @@ public struct DebugProbeWorkbenchView: View {
             // Status Pill
             HStack(spacing: 6) {
                 Circle()
-                    .fill(probeService.targetTelemetry.isConnected ? VesperTheme.neonGreen : (probeService.selectedProbe != nil ? VesperTheme.neonAmber : VesperTheme.neonRed))
+                    .fill(probeService.targetTelemetry.isConnected ? FerriteSuiteTheme.neonGreen : (probeService.selectedProbe != nil ? FerriteSuiteTheme.neonAmber : FerriteSuiteTheme.neonRed))
                     .frame(width: 8, height: 8)
                 Text(probeService.statusMessage)
                     .font(.caption.monospaced())
-                    .foregroundColor(VesperTheme.primaryTextColor)
+                    .foregroundColor(FerriteSuiteTheme.primaryTextColor)
                     .lineLimit(1)
             }
             .padding(.horizontal, 10)
             .padding(.vertical, 5)
-            .background(VesperTheme.secondaryCardBackground)
+            .background(FerriteSuiteTheme.secondaryCardBackground)
             .cornerRadius(8)
             
             Button(action: {
@@ -112,12 +112,12 @@ public struct DebugProbeWorkbenchView: View {
                 }
                 .padding(.horizontal, 12)
                 .padding(.vertical, 6)
-                .background(VesperTheme.accentCyan.opacity(0.15))
-                .foregroundColor(VesperTheme.accentCyan)
+                .background(FerriteSuiteTheme.accentCyan.opacity(0.15))
+                .foregroundColor(FerriteSuiteTheme.accentCyan)
                 .cornerRadius(8)
                 .overlay(
                     RoundedRectangle(cornerRadius: 8)
-                        .stroke(VesperTheme.accentCyan.opacity(0.4), lineWidth: 1)
+                        .stroke(FerriteSuiteTheme.accentCyan.opacity(0.4), lineWidth: 1)
                 )
             }
             .buttonStyle(.plain)
@@ -125,7 +125,7 @@ public struct DebugProbeWorkbenchView: View {
         }
         .padding(.horizontal, 20)
         .padding(.vertical, 14)
-        .background(VesperTheme.cardBackground)
+        .background(FerriteSuiteTheme.cardBackground)
     }
     
     // MARK: - Probe Selection Card
@@ -134,10 +134,10 @@ public struct DebugProbeWorkbenchView: View {
         VStack(alignment: .leading, spacing: 12) {
             HStack {
                 Image(systemName: "cable.connector.horizontal")
-                    .foregroundColor(VesperTheme.accentCyan)
+                    .foregroundColor(FerriteSuiteTheme.accentCyan)
                 Text("Connected Probes (\(probeService.probes.count))")
                     .font(.subheadline.bold())
-                    .foregroundColor(VesperTheme.primaryTextColor)
+                    .foregroundColor(FerriteSuiteTheme.primaryTextColor)
                 Spacer()
             }
             
@@ -145,17 +145,17 @@ public struct DebugProbeWorkbenchView: View {
                 VStack(spacing: 8) {
                     Image(systemName: "exclamationmark.triangle")
                         .font(.title2)
-                        .foregroundColor(VesperTheme.neonAmber)
+                        .foregroundColor(FerriteSuiteTheme.neonAmber)
                     Text("No hardware debug probes found")
                         .font(.caption.bold())
                     Text("Connect an ST-Link V2/V3, J-Link, CMSIS-DAP, or BlackMagic Probe via USB.")
                         .font(.caption2)
-                        .foregroundColor(VesperTheme.secondaryTextColor)
+                        .foregroundColor(FerriteSuiteTheme.secondaryTextColor)
                         .multilineTextAlignment(.center)
                 }
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, 20)
-                .background(VesperTheme.secondaryCardBackground.opacity(0.4))
+                .background(FerriteSuiteTheme.secondaryCardBackground.opacity(0.4))
                 .cornerRadius(8)
             } else {
                 VStack(spacing: 8) {
@@ -167,29 +167,29 @@ public struct DebugProbeWorkbenchView: View {
                         }) {
                             HStack(spacing: 10) {
                                 Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
-                                    .foregroundColor(isSelected ? VesperTheme.neonGreen : VesperTheme.secondaryTextColor)
+                                    .foregroundColor(isSelected ? FerriteSuiteTheme.neonGreen : FerriteSuiteTheme.secondaryTextColor)
                                 
                                 VStack(alignment: .leading, spacing: 2) {
                                     HStack {
                                         Text(probe.name)
                                             .font(.caption.bold())
-                                            .foregroundColor(VesperTheme.primaryTextColor)
+                                            .foregroundColor(FerriteSuiteTheme.primaryTextColor)
                                         Spacer()
                                         Text("[\(probe.probeType)]")
                                             .font(.caption2.monospaced())
-                                            .foregroundColor(VesperTheme.accentCyan)
+                                            .foregroundColor(FerriteSuiteTheme.accentCyan)
                                     }
                                     Text("VID:PID \(probe.vid):\(probe.pid) • S/N: \(probe.serial.isEmpty ? "Direct" : probe.serial)")
                                         .font(.system(size: 9.5).monospaced())
-                                        .foregroundColor(VesperTheme.secondaryTextColor)
+                                        .foregroundColor(FerriteSuiteTheme.secondaryTextColor)
                                 }
                             }
                             .padding(10)
-                            .background(isSelected ? VesperTheme.accentCyan.opacity(0.12) : VesperTheme.secondaryCardBackground)
+                            .background(isSelected ? FerriteSuiteTheme.accentCyan.opacity(0.12) : FerriteSuiteTheme.secondaryCardBackground)
                             .cornerRadius(8)
                             .overlay(
                                 RoundedRectangle(cornerRadius: 8)
-                                    .stroke(isSelected ? VesperTheme.accentCyan : Color.clear, lineWidth: 1)
+                                    .stroke(isSelected ? FerriteSuiteTheme.accentCyan : Color.clear, lineWidth: 1)
                             )
                         }
                         .buttonStyle(.plain)
@@ -201,14 +201,14 @@ public struct DebugProbeWorkbenchView: View {
             HStack(spacing: 8) {
                 Text("Target MCU:")
                     .font(.caption.bold())
-                    .foregroundColor(VesperTheme.secondaryTextColor)
+                    .foregroundColor(FerriteSuiteTheme.secondaryTextColor)
                 Picker("", selection: $probeService.selectedChip) {
                     ForEach(probeService.commonChips, id: \.self) { chip in
                         Text(chip).tag(chip)
                     }
                 }
                 .pickerStyle(.menu)
-                .tint(VesperTheme.accentCyan)
+                .tint(FerriteSuiteTheme.accentCyan)
                 .onChange(of: probeService.selectedChip) { _, _ in
                     Task { await probeService.inspectTargetChip() }
                 }
@@ -217,11 +217,11 @@ public struct DebugProbeWorkbenchView: View {
         }
         .padding(16)
         .frame(maxWidth: .infinity, alignment: .topLeading)
-        .background(VesperTheme.cardBackground)
+        .background(FerriteSuiteTheme.cardBackground)
         .cornerRadius(10)
         .overlay(
             RoundedRectangle(cornerRadius: 10)
-                .stroke(VesperTheme.subtleBorder, lineWidth: 1)
+                .stroke(FerriteSuiteTheme.subtleBorder, lineWidth: 1)
         )
     }
     
@@ -232,18 +232,18 @@ public struct DebugProbeWorkbenchView: View {
         return VStack(alignment: .leading, spacing: 12) {
             HStack {
                 Image(systemName: "memorychip")
-                    .foregroundColor(VesperTheme.neonGreen)
+                    .foregroundColor(FerriteSuiteTheme.neonGreen)
                 Text("Target Telemetry: \(t.chip)")
                     .font(.subheadline.bold())
-                    .foregroundColor(VesperTheme.primaryTextColor)
+                    .foregroundColor(FerriteSuiteTheme.primaryTextColor)
                 Spacer()
                 if t.isConnected {
                     Text("SWD SYNCHRONIZED")
                         .font(.system(size: 9, weight: .bold, design: .monospaced))
                         .padding(.horizontal, 6)
                         .padding(.vertical, 2)
-                        .background(VesperTheme.neonGreen.opacity(0.2))
-                        .foregroundColor(VesperTheme.neonGreen)
+                        .background(FerriteSuiteTheme.neonGreen.opacity(0.2))
+                        .foregroundColor(FerriteSuiteTheme.neonGreen)
                         .cornerRadius(4)
                 }
             }
@@ -251,10 +251,10 @@ public struct DebugProbeWorkbenchView: View {
             LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible())], spacing: 10) {
                 telemetryCell(title: "Device Signature", value: t.deviceId.isEmpty ? "—" : "\(t.deviceId) (1024KB)", icon: "signature")
                 telemetryCell(title: "CPU Core", value: t.cpuid.isEmpty ? "ARM Cortex-M4" : t.cpuid, icon: "cpu")
-                telemetryCell(title: "Readout Protection", value: t.rdpLevel, icon: t.rdpUnlocked ? "lock.open.fill" : "lock.fill", valueColor: t.rdpUnlocked ? VesperTheme.neonGreen : VesperTheme.neonRed)
+                telemetryCell(title: "Readout Protection", value: t.rdpLevel, icon: t.rdpUnlocked ? "lock.open.fill" : "lock.fill", valueColor: t.rdpUnlocked ? FerriteSuiteTheme.neonGreen : FerriteSuiteTheme.neonRed)
                 telemetryCell(title: "Main Stack Pointer", value: t.msp.isEmpty ? "—" : t.msp, icon: "arrow.down.to.line")
                 telemetryCell(title: "Bootloader Vector (0x08000000)", value: t.resetVector.isEmpty ? "—" : t.resetVector, icon: "arrow.uturn.right")
-                telemetryCell(title: "FerriteOS Slot (0x08008000)", value: t.appResetVector.isEmpty ? "—" : t.appResetVector, icon: "atom", valueColor: VesperTheme.accentCyan)
+                telemetryCell(title: "FerriteOS Slot (0x08008000)", value: t.appResetVector.isEmpty ? "—" : t.appResetVector, icon: "atom", valueColor: FerriteSuiteTheme.accentCyan)
             }
             
             // 96-bit Unique ID Banner
@@ -262,41 +262,41 @@ public struct DebugProbeWorkbenchView: View {
                 HStack {
                     Text("96-Bit Silicon Unique ID (UID):")
                         .font(.system(size: 9.5, weight: .bold, design: .monospaced))
-                        .foregroundColor(VesperTheme.secondaryTextColor)
+                        .foregroundColor(FerriteSuiteTheme.secondaryTextColor)
                     Spacer()
                     Text("FLASH_OPTR: \(t.optionBytes)")
                         .font(.system(size: 9.5, design: .monospaced))
-                        .foregroundColor(VesperTheme.secondaryTextColor)
+                        .foregroundColor(FerriteSuiteTheme.secondaryTextColor)
                 }
                 Text(t.uid.isEmpty ? "Not connected or read error" : t.uid)
                     .font(.system(size: 11, weight: .bold, design: .monospaced))
-                    .foregroundColor(t.uid.isEmpty ? VesperTheme.secondaryTextColor : VesperTheme.accentCyan)
+                    .foregroundColor(t.uid.isEmpty ? FerriteSuiteTheme.secondaryTextColor : FerriteSuiteTheme.accentCyan)
                     .textSelection(.enabled)
             }
             .padding(10)
             .frame(maxWidth: .infinity, alignment: .leading)
-            .background(VesperTheme.secondaryCardBackground)
+            .background(FerriteSuiteTheme.secondaryCardBackground)
             .cornerRadius(8)
         }
         .padding(16)
         .frame(maxWidth: .infinity, alignment: .topLeading)
-        .background(VesperTheme.cardBackground)
+        .background(FerriteSuiteTheme.cardBackground)
         .cornerRadius(10)
         .overlay(
             RoundedRectangle(cornerRadius: 10)
-                .stroke(VesperTheme.subtleBorder, lineWidth: 1)
+                .stroke(FerriteSuiteTheme.subtleBorder, lineWidth: 1)
         )
     }
     
-    private func telemetryCell(title: String, value: String, icon: String, valueColor: Color = VesperTheme.primaryTextColor) -> some View {
+    private func telemetryCell(title: String, value: String, icon: String, valueColor: Color = FerriteSuiteTheme.primaryTextColor) -> some View {
         VStack(alignment: .leading, spacing: 3) {
             HStack(spacing: 4) {
                 Image(systemName: icon)
                     .font(.system(size: 9))
-                    .foregroundColor(VesperTheme.secondaryTextColor)
+                    .foregroundColor(FerriteSuiteTheme.secondaryTextColor)
                 Text(title)
                     .font(.system(size: 9, weight: .bold))
-                    .foregroundColor(VesperTheme.secondaryTextColor)
+                    .foregroundColor(FerriteSuiteTheme.secondaryTextColor)
             }
             Text(value)
                 .font(.system(size: 11, weight: .bold, design: .monospaced))
@@ -305,7 +305,7 @@ public struct DebugProbeWorkbenchView: View {
         }
         .padding(8)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(VesperTheme.secondaryCardBackground)
+        .background(FerriteSuiteTheme.secondaryCardBackground)
         .cornerRadius(6)
     }
     
@@ -315,21 +315,21 @@ public struct DebugProbeWorkbenchView: View {
         VStack(alignment: .leading, spacing: 12) {
             HStack {
                 Image(systemName: "bolt.horizontal.fill")
-                    .foregroundColor(VesperTheme.neonAmber)
+                    .foregroundColor(FerriteSuiteTheme.neonAmber)
                 Text("SWD Direct Hardware Actions")
                     .font(.subheadline.bold())
-                    .foregroundColor(VesperTheme.primaryTextColor)
+                    .foregroundColor(FerriteSuiteTheme.primaryTextColor)
                 Spacer()
             }
             
             HStack(spacing: 12) {
                 // Inspect Registers
-                actionButton(title: "Inspect Target", icon: "magnifyingglass", color: VesperTheme.accentCyan) {
+                actionButton(title: "Inspect Target", icon: "magnifyingglass", color: FerriteSuiteTheme.accentCyan) {
                     Task { await probeService.inspectTargetChip() }
                 }
                 
                 // Hardware Reset
-                actionButton(title: "Hardware Reset", icon: "arrow.counterclockwise", color: VesperTheme.neonAmber) {
+                actionButton(title: "Hardware Reset", icon: "arrow.counterclockwise", color: FerriteSuiteTheme.neonAmber) {
                     Task { await probeService.resetTarget(halt: false) }
                 }
                 
@@ -339,7 +339,7 @@ public struct DebugProbeWorkbenchView: View {
                 }
                 
                 // Flash FerriteOS App
-                actionButton(title: "Flash FerriteOS (App)", icon: "bolt.fill", color: VesperTheme.neonGreen) {
+                actionButton(title: "Flash FerriteOS (App)", icon: "bolt.fill", color: FerriteSuiteTheme.neonGreen) {
                     Task {
                         _ = try? await probeService.flashBinary(
                             binaryPath: ferrite.firmwareAppBinPath,
@@ -373,17 +373,17 @@ public struct DebugProbeWorkbenchView: View {
                 }
                 
                 // Mass Erase
-                actionButton(title: "Mass Erase Flash", icon: "trash.fill", color: VesperTheme.neonRed) {
+                actionButton(title: "Mass Erase Flash", icon: "trash.fill", color: FerriteSuiteTheme.neonRed) {
                     showEraseAlert = true
                 }
             }
         }
         .padding(16)
-        .background(VesperTheme.cardBackground)
+        .background(FerriteSuiteTheme.cardBackground)
         .cornerRadius(10)
         .overlay(
             RoundedRectangle(cornerRadius: 10)
-                .stroke(VesperTheme.subtleBorder, lineWidth: 1)
+                .stroke(FerriteSuiteTheme.subtleBorder, lineWidth: 1)
         )
     }
     
@@ -416,10 +416,10 @@ public struct DebugProbeWorkbenchView: View {
         VStack(alignment: .leading, spacing: 12) {
             HStack {
                 Image(systemName: "tablecells")
-                    .foregroundColor(VesperTheme.accentCyan)
+                    .foregroundColor(FerriteSuiteTheme.accentCyan)
                 Text("Memory & Register Inspector")
                     .font(.subheadline.bold())
-                    .foregroundColor(VesperTheme.primaryTextColor)
+                    .foregroundColor(FerriteSuiteTheme.primaryTextColor)
                 
                 Spacer()
                 
@@ -436,18 +436,18 @@ public struct DebugProbeWorkbenchView: View {
             HStack(spacing: 10) {
                 Text("Address:")
                     .font(.caption.bold())
-                    .foregroundColor(VesperTheme.secondaryTextColor)
+                    .foregroundColor(FerriteSuiteTheme.secondaryTextColor)
                 TextField("0x1FFF7580", text: $probeService.memoryInspectAddressHex)
                     .textFieldStyle(.plain)
                     .font(.system(size: 11, design: .monospaced))
                     .padding(6)
                     .frame(width: 120)
-                    .background(VesperTheme.secondaryCardBackground)
+                    .background(FerriteSuiteTheme.secondaryCardBackground)
                     .cornerRadius(6)
                 
                 Text("Words:")
                     .font(.caption.bold())
-                    .foregroundColor(VesperTheme.secondaryTextColor)
+                    .foregroundColor(FerriteSuiteTheme.secondaryTextColor)
                 Stepper("\(probeService.memoryInspectWordsCount)", value: $probeService.memoryInspectWordsCount, in: 1...64)
                     .font(.caption.monospaced())
                 
@@ -455,7 +455,7 @@ public struct DebugProbeWorkbenchView: View {
                     Task { await probeService.readMemoryChunk() }
                 }
                 .buttonStyle(.borderedProminent)
-                .tint(VesperTheme.accentCyan)
+                .tint(FerriteSuiteTheme.accentCyan)
                 .controlSize(.small)
                 
                 Spacer()
@@ -467,14 +467,14 @@ public struct DebugProbeWorkbenchView: View {
                         .font(.system(size: 10, design: .monospaced))
                         .padding(5)
                         .frame(width: 90)
-                        .background(VesperTheme.secondaryCardBackground)
+                        .background(FerriteSuiteTheme.secondaryCardBackground)
                         .cornerRadius(6)
                     TextField("Val", text: $newWriteValue)
                         .textFieldStyle(.plain)
                         .font(.system(size: 10, design: .monospaced))
                         .padding(5)
                         .frame(width: 90)
-                        .background(VesperTheme.secondaryCardBackground)
+                        .background(FerriteSuiteTheme.secondaryCardBackground)
                         .cornerRadius(6)
                     Button("Write RAM") {
                         Task {
@@ -490,7 +490,7 @@ public struct DebugProbeWorkbenchView: View {
             if probeService.memoryData.isEmpty {
                 Text("No memory read executed yet.")
                     .font(.caption)
-                    .foregroundColor(VesperTheme.secondaryTextColor)
+                    .foregroundColor(FerriteSuiteTheme.secondaryTextColor)
                     .padding(.vertical, 12)
             } else {
                 VStack(spacing: 4) {
@@ -504,45 +504,45 @@ public struct DebugProbeWorkbenchView: View {
                             .frame(maxWidth: .infinity, alignment: .leading)
                     }
                     .font(.system(size: 9.5, weight: .bold, design: .monospaced))
-                    .foregroundColor(VesperTheme.secondaryTextColor)
+                    .foregroundColor(FerriteSuiteTheme.secondaryTextColor)
                     .padding(.horizontal, 8)
                     .padding(.vertical, 4)
-                    .background(VesperTheme.secondaryCardBackground.opacity(0.5))
+                    .background(FerriteSuiteTheme.secondaryCardBackground.opacity(0.5))
                     
                     ForEach(probeService.memoryData) { item in
                         HStack {
                             Text(String(format: "0x%08X", item.address))
                                 .font(.system(size: 11, weight: .bold, design: .monospaced))
-                                .foregroundColor(VesperTheme.accentCyan)
+                                .foregroundColor(FerriteSuiteTheme.accentCyan)
                                 .frame(width: 90, alignment: .leading)
                             
                             Text(item.hexValue)
                                 .font(.system(size: 11, weight: .medium, design: .monospaced))
-                                .foregroundColor(VesperTheme.primaryTextColor)
+                                .foregroundColor(FerriteSuiteTheme.primaryTextColor)
                                 .frame(width: 140, alignment: .leading)
                             
                             Text(item.asciiRepresentation)
                                 .font(.system(size: 11, design: .monospaced))
-                                .foregroundColor(VesperTheme.neonGreen)
+                                .foregroundColor(FerriteSuiteTheme.neonGreen)
                                 .frame(maxWidth: .infinity, alignment: .leading)
                         }
                         .padding(.horizontal, 8)
                         .padding(.vertical, 4)
-                        .background(VesperTheme.secondaryCardBackground.opacity(0.3))
+                        .background(FerriteSuiteTheme.secondaryCardBackground.opacity(0.3))
                         .cornerRadius(4)
                     }
                 }
                 .padding(8)
-                .background(VesperTheme.darkBackground)
+                .background(FerriteSuiteTheme.darkBackground)
                 .cornerRadius(8)
             }
         }
         .padding(16)
-        .background(VesperTheme.cardBackground)
+        .background(FerriteSuiteTheme.cardBackground)
         .cornerRadius(10)
         .overlay(
             RoundedRectangle(cornerRadius: 10)
-                .stroke(VesperTheme.subtleBorder, lineWidth: 1)
+                .stroke(FerriteSuiteTheme.subtleBorder, lineWidth: 1)
         )
     }
     
@@ -555,8 +555,8 @@ public struct DebugProbeWorkbenchView: View {
                 .font(.system(size: 9, weight: .bold, design: .monospaced))
                 .padding(.horizontal, 6)
                 .padding(.vertical, 3)
-                .background(VesperTheme.secondaryCardBackground)
-                .foregroundColor(VesperTheme.accentCyan)
+                .background(FerriteSuiteTheme.secondaryCardBackground)
+                .foregroundColor(FerriteSuiteTheme.accentCyan)
                 .cornerRadius(4)
         }
         .buttonStyle(.plain)
@@ -568,41 +568,41 @@ public struct DebugProbeWorkbenchView: View {
         VStack(alignment: .leading, spacing: 8) {
             HStack {
                 Image(systemName: "terminal.fill")
-                    .foregroundColor(VesperTheme.secondaryTextColor)
+                    .foregroundColor(FerriteSuiteTheme.secondaryTextColor)
                 Text("Hardware Probe CLI Telemetry")
                     .font(.subheadline.bold())
-                    .foregroundColor(VesperTheme.primaryTextColor)
+                    .foregroundColor(FerriteSuiteTheme.primaryTextColor)
                 Spacer()
                 Button("Clear") {
                     probeService.consoleOutput = ""
                 }
                 .buttonStyle(.plain)
                 .font(.caption)
-                .foregroundColor(VesperTheme.accentCyan)
+                .foregroundColor(FerriteSuiteTheme.accentCyan)
             }
             
             ScrollView {
                 Text(probeService.consoleOutput.isEmpty ? "Probe telemetry ready. Run any action above to stream diagnostic output." : probeService.consoleOutput)
                     .font(.system(size: 10.5, design: .monospaced))
-                    .foregroundColor(probeService.consoleOutput.contains("Error") ? VesperTheme.neonRed : VesperTheme.accentCyan)
+                    .foregroundColor(probeService.consoleOutput.contains("Error") ? FerriteSuiteTheme.neonRed : FerriteSuiteTheme.accentCyan)
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(10)
                     .textSelection(.enabled)
             }
             .frame(height: 120)
-            .background(VesperTheme.darkBackground)
+            .background(FerriteSuiteTheme.darkBackground)
             .cornerRadius(8)
             .overlay(
                 RoundedRectangle(cornerRadius: 8)
-                    .stroke(VesperTheme.subtleBorder, lineWidth: 1)
+                    .stroke(FerriteSuiteTheme.subtleBorder, lineWidth: 1)
             )
         }
         .padding(16)
-        .background(VesperTheme.cardBackground)
+        .background(FerriteSuiteTheme.cardBackground)
         .cornerRadius(10)
         .overlay(
             RoundedRectangle(cornerRadius: 10)
-                .stroke(VesperTheme.subtleBorder, lineWidth: 1)
+                .stroke(FerriteSuiteTheme.subtleBorder, lineWidth: 1)
         )
     }
 }

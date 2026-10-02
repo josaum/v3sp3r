@@ -424,7 +424,7 @@ public final class WebMcpServer {
             return ["uri": uri, "mimeType": "application/json", "text": json]
             
         case "flipper://memory/vault":
-            let memories = VesperMemoryStore.shared.memories
+            let memories = FerriteSuiteMemoryStore.shared.memories
             let md = "# ferriteSuite Memory Vault Export\n\n" + memories.map { mem in
                 "### [\(mem.category.rawValue)] \(mem.title)\n*\(mem.timestamp.formatted())*\n\n\(mem.content)\n"
             }.joined(separator: "\n---\n\n")

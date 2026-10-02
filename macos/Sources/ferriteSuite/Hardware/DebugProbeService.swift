@@ -49,7 +49,7 @@ public struct ProbeTargetTelemetry: Equatable {
 public final class DebugProbeService {
     public static let shared = DebugProbeService()
     
-    public let probeRsPath: String = "/Users/josaum/.cargo/bin/probe-rs"
+    public let probeRsPath: String = HostTools.probeRs
     public var isInstalled: Bool = false
     
     // Probe state
@@ -480,7 +480,7 @@ public final class DebugProbeService {
                 process.arguments = args
                 
                 var env = ProcessInfo.processInfo.environment
-                env["PATH"] = "/Users/josaum/.cargo/bin:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
+                env["PATH"] = HostTools.subprocessPath
                 process.environment = env
                 
                 let outPipe = Pipe()

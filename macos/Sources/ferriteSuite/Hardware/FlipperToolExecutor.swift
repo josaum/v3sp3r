@@ -126,7 +126,7 @@ public final class FlipperToolExecutor {
                 let content = params["content"] ?? ""
                 let catRaw = params["category"] ?? "Operator Knowledge"
                 let cat = MemoryCategory(rawValue: catRaw) ?? .operatorNote
-                VesperMemoryStore.shared.addMemory(category: cat, title: title, content: content)
+                FerriteSuiteMemoryStore.shared.addMemory(category: cat, title: title, content: content)
                 return ToolResult(toolCallId: "", output: "Memory successfully recorded in Memory Vault.")
                 
             case "trigger_workflow":

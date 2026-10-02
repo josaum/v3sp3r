@@ -74,7 +74,7 @@ public final class AppSettings {
     }
     
     public var openRouterApiKey: String {
-        didSet { defaults.set(openRouterApiKey, forKey: "openRouterApiKey") }
+        didSet { SecretStore.setAPIKey(openRouterApiKey, defaults: defaults) }
     }
     
     public var selectedModel: String {
@@ -137,11 +137,14 @@ public final class AppSettings {
         
         let savedTheme = defaults.string(forKey: "appTheme") ?? AppThemeMode.system.rawValue
         self.appTheme = AppThemeMode(rawValue: savedTheme) ?? .system
-        let envKey = ProcessInfo.processInfo.environment["OPENROUTER_API_KEY"] 
-            ?? ProcessInfo.processInfo.environment["GROK_API_KEY"] 
+        // API key lives in the Keychain (migrating any legacy plaintext copy);
+        // env vars are the fallback when nothing is stored.
+        let envKey = ProcessInfo.processInfo.environment["OPENROUTER_API_KEY"]
+            ?? ProcessInfo.processInfo.environment["GROK_API_KEY"]
             ?? ProcessInfo.processInfo.environment["XAI_API_KEY"]
             ?? ""
-        self.openRouterApiKey = defaults.string(forKey: "openRouterApiKey") ?? envKey
+        let storedKey = SecretStore.apiKey(defaults: defaults)
+        self.openRouterApiKey = storedKey.isEmpty ? envKey : storedKey
         self.selectedModel = defaults.string(forKey: "selectedModel") ?? "x-ai/grok-4.7"
         self.reasoningEffort = defaults.string(forKey: "reasoningEffort") ?? "low"
         self.autoApproveLow = defaults.object(forKey: "autoApproveLow") as? Bool ?? true
