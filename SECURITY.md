@@ -50,8 +50,8 @@ Every AI-initiated action is classified before execution:
 
 ### Data Protection
 
-- API keys are stored in Android's EncryptedSharedPreferences
-- Chat history is stored locally in an encrypted Room database
+- API keys are stored in the macOS Keychain
+- Chat history is stored locally on disk
 - No telemetry or analytics are collected
 - No data is sent to third parties (except your chosen LLM provider via OpenRouter)
 
@@ -67,10 +67,10 @@ Every AI-initiated action is classified before execution:
 ### What We Consider Out-of-Scope
 
 - Social engineering attacks
-- Physical access attacks (someone with your unlocked phone)
+- Physical access attacks (someone with your unlocked machine)
 - Denial of service against OpenRouter or other third-party APIs
 - Vulnerabilities in the Flipper Zero firmware itself (report those to [Flipper Devices](https://flipperzero.one))
-- Issues requiring root/jailbroken Android device
+- Issues requiring root/jailbroken macOS
 
 ## Acknowledgments
 

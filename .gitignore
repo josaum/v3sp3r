@@ -1,42 +1,11 @@
 *.iml
-.gradle
-/local.properties
-local.properties
 /.idea
 .DS_Store
 /build
 /captures
-.externalNativeBuild
-.cxx
-/app/build
-
-# Signing keys — NEVER commit these
-*.jks
-*.keystore
-keystore/
-
-# Generated files
-*.apk
-*.aab
-*.ap_
-*.dex
 
 # Log files
 *.log
-
-# Android Studio navigation editor temp files
-.navigation/
-
-# Android Studio captures folder
-captures/
-
-# IntelliJ
-*.iws
-.idea/
-out/
-
-# Kotlin
-*.class
 
 # OS files
 .DS_Store

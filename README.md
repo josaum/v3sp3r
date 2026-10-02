@@ -8,14 +8,13 @@
 
 # V3SP3R — Sovereign AI Brain & Hardware Lab for Flipper Zero & FerriteOS
 
-> **Talk to your hardware like it's your partner-in-hacking.** V3SP3R turns your pocket security toolkit into an autonomous, AI-commanded hardware lab. Built with a native macOS SwiftUI command center and an Android client, V3SP3R bridges natural language reasoning directly into raw RF, Sub-GHz, NFC, RFID, Infrared, and bare-metal embedded coprocessors.
+> **Talk to your hardware like it's your partner-in-hacking.** ferriteSuite turns your pocket security toolkit into an autonomous, AI-commanded hardware lab. Built as a native macOS SwiftUI command center, ferriteSuite bridges natural language reasoning directly into raw RF, Sub-GHz, NFC, RFID, Infrared, and bare-metal embedded coprocessors.
 
 [![License: GPL-3.0](https://img.shields.io/badge/License-GPL--3.0-blue.svg)](LICENSE)
 [![macOS](https://img.shields.io/badge/macOS-14.0%2B-black.svg?logo=apple)](macos/)
 [![Swift](https://img.shields.io/badge/Swift-6.0-orange.svg?logo=swift)](macos/)
 [![Rust / FerriteOS](https://img.shields.io/badge/FerriteOS-SOTA%20Co--Processor-red.svg?logo=rust)](https://github.com/ferrite-os)
 [![SPEC-011 Wire](https://img.shields.io/badge/Protocol-SPEC--011%20HDLC-green.svg)](macos/)
-[![Android](https://img.shields.io/badge/Android-8.0%2B-green.svg?logo=android)](https://developer.android.com)
 
 ---
 
@@ -26,7 +25,7 @@ V3SP3R is engineered around dual execution tracks: a cloud/local LLM multimodal 
 ```
 ┌───────────────────────────────────────────────────────────────────────────┐
 │                          V3SP3R COMMAND CENTER                            │
-│  macOS Native (SwiftUI 6)  │  Android Native (Jetpack Compose)            │
+│                     macOS Native (SwiftUI 6)                              │
 ├───────────────────────────────────────────────────────────────────────────┤
 │                             AI BRAIN & ORCHESTRATION                      │
 │  • OpenRouter Live Leaderboard Models (Claude Opus, Hermes 4, Sonnet 4)   │
@@ -108,9 +107,8 @@ V3SP3R embeds the complete FerriteOS ecosystem as a high-speed, offline coproces
 | Component | Specification |
 |-----------|---------------|
 | **macOS App** | macOS Sonoma 14.0+ with Xcode 15+ / Swift 6.0 |
-| **Android App** | Android 8.0+ (API 26+) with Bluetooth Low Energy |
 | **Hardware** | Flipper Zero (Official or Custom Firmware: Momentum / Unleashed / RogueMaster) |
-| **Optional Hardware** | ESP32 WiFi Devboard (Marauder), BlackMagic Probe, Mentra Smart Glasses |
+| **Optional Hardware** | ESP32 WiFi Devboard (Marauder), BlackMagic Probe |
 
 ---
 
@@ -125,19 +123,25 @@ cd v3sp3r
 cd macos
 swift build -c release
 
-# Launch V3SP3R macOS App
-open build/Vesper.app
+# Launch the ferriteSuite macOS app
+open build/ferriteSuite.app
 ```
 
-### Android Quick Build
+### Build status
 
-```bash
-# From repository root
-./gradlew assembleDebug
+| Target | Status | Notes |
+|--------|--------|-------|
+| macOS (`macos/`) | **Verified** | `swift build -c release` succeeds; `macos/bundle.sh` produces a signed `build/ferriteSuite.app` |
 
-# Output APK: app/build/outputs/apk/debug/app-debug.apk
-adb install app/build/outputs/apk/debug/app-debug.apk
-```
+macOS is the only build target. The former Android client (`app/`) and its Gradle
+scaffolding were removed; see git history to recover it.
+
+Removing the Android client also orphaned two things that are still in the tree:
+
+- `mentra-bridge/` relayed smart-glasses traffic to the Android app. No remaining
+  code speaks that protocol, so the server currently has no client.
+- `docs/architecture.md` and `docs/vesper_system.txt` documented the removed
+  client and were deleted.
 
 ---
 
@@ -160,9 +164,8 @@ v3sp3r/
 │   │   ├── UI/                 # Oscilloscope, Workbench, Chat, Ops Center
 │   │   └── Models/             # Signal, State, and Telemetry models
 │   └── Package.swift
-├── app/                        # Native Android Jetpack Compose Application
-├── mentra-bridge/              # Smart glasses bridge server (Node.js)
-└── docs/                       # Architecture diagrams, protocol specs
+├── mentra-bridge/              # Smart glasses bridge server (Node.js) — no client; see note
+└── docs/                       # Protocol schemas
 ```
 
 ---

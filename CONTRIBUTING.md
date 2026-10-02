@@ -14,14 +14,12 @@ Thanks for your interest in contributing! Vesper is an open-source project and w
    ```bash
    git checkout -b feature/your-feature-name
    ```
-4. **Open in Android Studio** and let Gradle sync
+4. **Build the macOS app** via Swift Package Manager
 5. **Build and test** your changes
 
 ### Requirements
 
-- Android Studio (latest stable recommended)
-- JDK 17+
-- Android SDK with API 26+ (Android 8.0)
+- macOS Sonoma 14.0+ with Xcode 15+ (Swift 6.0 toolchain)
 - A Flipper Zero device (for testing hardware features)
 
 ## Development Guidelines
@@ -73,7 +71,6 @@ out-of-range values.
 
 ### Areas That Need Help
 
-- **iOS version** — SwiftUI port of the Android app
 - **Signal format parsers** — Support for new RF/IR protocols
 - **Payload templates** — BadUSB scripts, SubGHz signals, IR remotes, NFC tags
 - **UI/UX improvements** — Animations, accessibility, responsive layouts
@@ -108,7 +105,7 @@ Use the [Bug Report](../../issues/new?template=bug_report.md) issue template. In
 
 - Steps to reproduce
 - Expected vs actual behavior
-- Device info (Android version, Flipper firmware version)
+- Device info (macOS version, Flipper firmware version)
 - Logs or screenshots if available
 
 ## Requesting Features

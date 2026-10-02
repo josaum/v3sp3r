@@ -62,7 +62,7 @@ public struct VirtualFlipperView: View {
                         
                         Spacer()
                         
-                        Text("V3SP3R")
+                        Text(AppInfo.productName)
                             .font(.system(size: 10, weight: .black).monospaced())
                             .foregroundColor(.gray)
                     }

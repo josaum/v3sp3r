@@ -31,10 +31,10 @@ If applicable, add screenshots or relevant log output.
 
 ## Environment
 
-- **Android version**:
-- **Phone model**:
+- **macOS version**:
+- **Mac model**:
 - **Flipper firmware**:
-- **Vesper version/commit**:
+- **ferriteSuite version/commit**:
 - **AI model used**:
 
 ## Additional Context

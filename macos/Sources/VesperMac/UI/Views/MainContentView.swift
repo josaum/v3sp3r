@@ -83,7 +83,7 @@ public struct MainContentView: View {
                         )
                     
                     VStack(alignment: .leading, spacing: 1) {
-                        Text("V3SP3R")
+                        Text(AppInfo.productName)
                             .font(.system(size: 15, weight: .black, design: .monospaced))
                             .foregroundColor(VesperTheme.primaryTextColor)
                         Text("Flipper AI Desktop")

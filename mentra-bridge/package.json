@@ -1,7 +1,7 @@
 {
   "name": "vesper-mentra-bridge",
   "version": "1.0.0",
-  "description": "MentraOS cloud app that bridges smart glasses to V3SP3R Android app",
+  "description": "MentraOS cloud app bridging Mentra smart glasses to ferriteSuite (the V3SP3R Android client was removed; no client currently speaks this protocol)",
   "main": "dist/index.js",
   "scripts": {
     "build": "tsc",

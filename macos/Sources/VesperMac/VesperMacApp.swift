@@ -19,7 +19,7 @@ struct VesperMacApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     
     var body: some Scene {
-        WindowGroup("V3SP3R — Flipper Zero AI Command Center") {
+        WindowGroup("\(AppInfo.productName) — Flipper Zero AI Command Center") {
             MainContentView()
                 .frame(minWidth: 950, minHeight: 650)
         }
