@@ -322,7 +322,7 @@ public final class FerriteOSService {
         
         self.lastDecodedCapture = result
         
-        // Also feed Vesper memory store
+        // Also feed the ferriteSuite memory store
         if let finding = decodedFinding {
             VesperMemoryStore.shared.addMemory(
                 category: .ferritePlan,

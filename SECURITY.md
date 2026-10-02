@@ -9,7 +9,7 @@
 
 ## Reporting a Vulnerability
 
-If you discover a security vulnerability in V3SP3R, **please report it responsibly**.
+If you discover a security vulnerability in ferriteSuite, **please report it responsibly**.
 
 ### Do NOT
 
@@ -50,8 +50,9 @@ Every AI-initiated action is classified before execution:
 
 ### Data Protection
 
-- API keys are stored in the macOS Keychain
-- Chat history is stored locally on disk
+- API keys are stored in `UserDefaults` (plaintext, unencrypted on disk)
+- Chat history and memory vaults are written as plaintext JSON under
+  `~/Library/Application Support/<bundle-id>/`
 - No telemetry or analytics are collected
 - No data is sent to third parties (except your chosen LLM provider via OpenRouter)
 

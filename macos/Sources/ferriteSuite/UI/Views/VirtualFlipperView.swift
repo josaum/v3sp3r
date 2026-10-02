@@ -11,7 +11,7 @@ public struct VirtualFlipperView: View {
     @State private var connection = FlipperConnectionManager.shared
     @State private var lastKeyPressed: String = "Ready"
     @State private var isPressingKey: [FlipperKey: Bool] = [:]
-    @State private var simulatedScreenMessage: String = "V3SP3R HUD"
+    @State private var simulatedScreenMessage: String = "ferriteSuite HUD"
     @State private var caseEdition: FlipperCaseEdition = .white
     
     public init() {}

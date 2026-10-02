@@ -21,21 +21,21 @@ mkdir -p "$MACOS_DIR"
 mkdir -p "$RESOURCES_DIR"
 
 # Copy binary
-cp "$DIR/.build/release/VesperMac" "$MACOS_DIR/VesperMac"
-chmod +x "$MACOS_DIR/VesperMac"
+cp "$DIR/.build/release/ferriteSuite" "$MACOS_DIR/ferriteSuite"
+chmod +x "$MACOS_DIR/ferriteSuite"
 
 # Generate Info.plist
 # Unquoted heredoc: $APP_NAME must interpolate so the display name has ONE source
-# of truth. CFBundleExecutable stays VesperMac — it must match the SwiftPM product.
+# of truth. CFBundleExecutable must match the SwiftPM product name (Package.swift).
 cat << EOF > "$CONTENTS_DIR/Info.plist"
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
     <key>CFBundleExecutable</key>
-    <string>VesperMac</string>
+    <string>$APP_NAME</string>
     <key>CFBundleIdentifier</key>
-    <string>com.vesper.flipper.mac</string>
+    <string>com.ferriteos.suite</string>
     <key>CFBundleName</key>
     <string>$APP_NAME</string>
     <key>CFBundleDisplayName</key>

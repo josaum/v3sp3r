@@ -30,7 +30,7 @@ public struct MemoryVaultView: View {
                         Image(systemName: "brain.head.profile")
                             .font(.title2)
                             .foregroundColor(VesperTheme.accentCyan)
-                        Text("Vesper Memory Vault")
+                        Text("ferriteSuite Memory Vault")
                             .font(.title2.bold())
                     }
                     Text("Persistent long-term epistemic memory injected into Grok 4.7 context.")

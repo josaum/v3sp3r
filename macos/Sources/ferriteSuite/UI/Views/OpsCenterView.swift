@@ -4,7 +4,7 @@ public struct OpsCenterView: View {
     @State private var connection = FlipperConnectionManager.shared
     @State private var commandInput: String = ""
     @State private var commandHistory: [String] = []
-    @State private var consoleOutput: String = "Vesper Hardware Console Initialized.\nReady for direct Flipper CLI commands (type 'help' for built-in commands).\n"
+    @State private var consoleOutput: String = "ferriteSuite Hardware Console Initialized.\nReady for direct Flipper CLI commands (type 'help' for built-in commands).\n"
     @State private var isExecuting: Bool = false
     
     public init() {}

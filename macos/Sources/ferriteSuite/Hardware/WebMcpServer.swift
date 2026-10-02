@@ -425,7 +425,7 @@ public final class WebMcpServer {
             
         case "flipper://memory/vault":
             let memories = VesperMemoryStore.shared.memories
-            let md = "# V3SP3R Memory Vault Export\n\n" + memories.map { mem in
+            let md = "# ferriteSuite Memory Vault Export\n\n" + memories.map { mem in
                 "### [\(mem.category.rawValue)] \(mem.title)\n*\(mem.timestamp.formatted())*\n\n\(mem.content)\n"
             }.joined(separator: "\n---\n\n")
             return ["uri": uri, "mimeType": "text/markdown", "text": md]
@@ -616,7 +616,7 @@ public final class WebMcpServer {
             ],
             [
                 "name": "record_memory",
-                "description": "Save security findings, access credentials, and RF observations into V3SP3R memory vault.",
+                "description": "Save security findings, access credentials, and RF observations into ferriteSuite memory vault.",
                 "inputSchema": [
                     "type": "object",
                     "properties": [
@@ -838,7 +838,7 @@ public final class WebMcpServer {
             ],
             [
                 "uri": "flipper://memory/vault",
-                "name": "V3SP3R Tactical Memory Vault",
+                "name": "ferriteSuite Tactical Memory Vault",
                 "description": "Export of all recorded operator memories, credentials, and RF notes",
                 "mimeType": "text/markdown"
             ],
@@ -863,7 +863,7 @@ public final class WebMcpServer {
         let model = dev.hardwareModel.trimmingCharacters(in: .whitespacesAndNewlines)
         let report: [String: Any] = [
             "status": "online",
-            "server": "V3SP3R WebMCP Bridge",
+            "server": "ferriteSuite WebMCP Bridge",
             "version": "1.0.0",
             "port": port,
             "flipper_connected": connectionManager.status.isConnected,

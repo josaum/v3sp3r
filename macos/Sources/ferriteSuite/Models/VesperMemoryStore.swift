@@ -64,9 +64,9 @@ public final class VesperMemoryStore {
     
     public init() {
         let appSupport = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!
-        let vesperDir = appSupport.appendingPathComponent("Vesper", isDirectory: true)
-        try? FileManager.default.createDirectory(at: vesperDir, withIntermediateDirectories: true)
-        self.storageUrl = vesperDir.appendingPathComponent("memories.json")
+        let appDir = appSupport.appendingPathComponent("ferriteSuite", isDirectory: true)
+        try? FileManager.default.createDirectory(at: appDir, withIntermediateDirectories: true)
+        self.storageUrl = appDir.appendingPathComponent("memories.json")
         
         load()
         if memories.isEmpty {
@@ -170,7 +170,7 @@ public final class VesperMemoryStore {
         )
         addMemory(
             category: .operatorNote,
-            title: "Vesper Mission Directives",
+            title: "ferriteSuite Mission Directives",
             content: "Always prioritize non-destructive hardware inspection, autonomous risk confirmation, and multi-subgraph execution.",
             isPinned: true
         )

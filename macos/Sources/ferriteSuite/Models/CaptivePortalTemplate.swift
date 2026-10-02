@@ -113,7 +113,7 @@ public struct CaptivePortalDefaults {
     <p class="lead">This wireless node is participating in an authorized radio spectrum and access control audit conducted under signed contractual Rules of Engagement (RoE).</p>
     
     <div class="meta-grid">
-      <span>AUDIT ID:</span><span>ROE-2026-V3SP3R</span>
+      <span>AUDIT ID:</span><span>ROE-2026-ferriteSuite</span>
       <span>SCOPE:</span><span>802.11b/g/n/ac/ax Diagnostic</span>
       <span>OPERATOR:</span><span>Authorized Red Team / SecOps</span>
       <span>STATUS:</span><span>Active Telemetry Collection</span>

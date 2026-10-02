@@ -12,7 +12,7 @@ STRING Terminal
 DELAY 400
 ENTER
 DELAY 800
-STRING echo "Hello from Vesper on Flipper Zero!"
+STRING echo "Hello from ferriteSuite on Flipper Zero!"
 ENTER
 """
     @State private var statusMessage: String = ""
@@ -21,7 +21,7 @@ ENTER
     private let templates: [BadUsbScript] = [
         BadUsbScript(
             name: "macos_open_terminal",
-            script: "REM Open Terminal on macOS\nDELAY 1000\nGUI SPACE\nDELAY 400\nSTRING Terminal\nDELAY 400\nENTER\nDELAY 800\nSTRING echo 'Controlled by Vesper AI'\nENTER\n",
+            script: "REM Open Terminal on macOS\nDELAY 1000\nGUI SPACE\nDELAY 400\nSTRING Terminal\nDELAY 400\nENTER\nDELAY 800\nSTRING echo 'Controlled by ferriteSuite AI'\nENTER\n",
             description: "Launches macOS Terminal via Spotlight and prints a banner",
             targetOs: "macOS"
         ),
@@ -33,7 +33,7 @@ ENTER
         ),
         BadUsbScript(
             name: "windows_notepad",
-            script: "REM Windows Notepad Banner\nDELAY 1000\nGUI r\nDELAY 400\nSTRING notepad\nDELAY 300\nENTER\nDELAY 800\nSTRING Vesper: Hardware hacking simplified.\n",
+            script: "REM Windows Notepad Banner\nDELAY 1000\nGUI r\nDELAY 400\nSTRING notepad\nDELAY 300\nENTER\nDELAY 800\nSTRING ferriteSuite: Hardware hacking simplified.\n",
             description: "Spawns Notepad on Windows and types a message",
             targetOs: "Windows"
         )

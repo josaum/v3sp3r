@@ -207,7 +207,7 @@ private struct QuickstartTabContent: View {
                     title: "Connect Flipper via USB CDC or BLE",
                     icon: "cable.connector",
                     color: VesperTheme.accentCyan,
-                    desc: "Plug your Flipper Zero into your Mac with USB-C. V3SP3R automatically probes `/dev/cu.usbmodemflip_*` at 230,400 baud. The bottom-left telemetry indicator turns bright green once connected."
+                    desc: "Plug your Flipper Zero into your Mac with USB-C. ferriteSuite automatically probes `/dev/cu.usbmodemflip_*` at 230,400 baud. The bottom-left telemetry indicator turns bright green once connected."
                 )
                 
                 stepCard(
@@ -231,7 +231,7 @@ private struct QuickstartTabContent: View {
                     title: "Connect Claude Desktop / WebMCP",
                     icon: "network",
                     color: VesperTheme.neonGreen,
-                    desc: "V3SP3R includes an embedded WebMCP bridge on `http://127.0.0.1:8765/sse`. Add this URL to your `claude_desktop_config.json` or Cursor to let external LLMs read, transmit, and flash directly through V3SP3R."
+                    desc: "ferriteSuite includes an embedded WebMCP bridge on `http://127.0.0.1:8765/sse`. Add this URL to your `claude_desktop_config.json` or Cursor to let external LLMs read, transmit, and flash directly through ferriteSuite."
                 )
                 
                 stepCard(
@@ -520,7 +520,7 @@ private struct FirmwareMatrixTabContent: View {
                 .font(.title3.bold())
                 .foregroundColor(VesperTheme.primaryTextColor)
             
-            Text("V3SP3R supports seamless flashing and OTA synchronizing with all major Flipper community and official distributions.")
+            Text("ferriteSuite supports seamless flashing and OTA synchronizing with all major Flipper community and official distributions.")
                 .font(.subheadline)
                 .foregroundColor(.secondary)
             
@@ -688,7 +688,7 @@ private struct BadUsbTabContent: View {
                         DELAY 200
                         ENTER
                         DELAY 800
-                        STRINGLN echo 'V3SP3R Operational' && whoami
+                        STRINGLN echo 'ferriteSuite Operational' && whoami
                         """
                         copyAction(script, "Copied macOS DuckyScript template")
                     }
@@ -706,7 +706,7 @@ private struct BadUsbTabContent: View {
                 DELAY 200
                 ENTER
                 DELAY 800
-                STRINGLN echo 'V3SP3R Operational' && whoami
+                STRINGLN echo 'ferriteSuite Operational' && whoami
                 """)
                 .font(.system(size: 11, design: .monospaced))
                 .foregroundColor(VesperTheme.neonGreen)

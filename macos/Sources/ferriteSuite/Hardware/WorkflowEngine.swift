@@ -434,7 +434,7 @@ public final class WorkflowEngine {
             if !settings.openRouterApiKey.isEmpty {
                 try? await openRouter.streamChat(
                     messages: [
-                        ["role": "system", "content": "You are Vesper AI, an expert RF and hardware security auditor operating under acknowledged Rules of Engagement."],
+                        ["role": "system", "content": "You are ferriteSuite, an expert RF and hardware security auditor operating under acknowledged Rules of Engagement."],
                         ["role": "user", "content": prompt]
                     ],
                     apiKey: settings.openRouterApiKey,
@@ -500,7 +500,7 @@ public final class WorkflowEngine {
             var aiResult = ""
             try await openRouter.streamChat(
                 messages: [
-                    ["role": "system", "content": "You are Vesper AI, an elite tactical assistant operating with Flipper Zero hardware."],
+                    ["role": "system", "content": "You are ferriteSuite, an elite tactical assistant operating with Flipper Zero hardware."],
                     ["role": "user", "content": prompt]
                 ],
                 apiKey: settings.openRouterApiKey,

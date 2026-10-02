@@ -17,7 +17,7 @@ public struct QuickstartSheetView: View {
             // Header
             HStack {
                 VStack(alignment: .leading, spacing: 2) {
-                    Text("V3SP3R OPERATOR ONBOARDING")
+                    Text("ferriteSuite OPERATOR ONBOARDING")
                         .font(.system(size: 13, weight: .black, design: .monospaced))
                         .foregroundColor(VesperTheme.accentCyan)
                     Text("Interactive System Walkthrough")
@@ -118,7 +118,7 @@ public struct QuickstartSheetView: View {
                 .font(.title3.bold())
                 .foregroundColor(VesperTheme.primaryTextColor)
             
-            Text("Plug in your Flipper Zero using USB-C. V3SP3R automatically scans serial ports (`/dev/cu.usbmodemflip_*`) and starts bidirectional CLI communication.")
+            Text("Plug in your Flipper Zero using USB-C. ferriteSuite automatically scans serial ports (`/dev/cu.usbmodemflip_*`) and starts bidirectional CLI communication.")
                 .font(.subheadline)
                 .multilineTextAlignment(.center)
                 .foregroundColor(.secondary)
@@ -208,7 +208,7 @@ public struct QuickstartSheetView: View {
                 .font(.title3.bold())
                 .foregroundColor(VesperTheme.primaryTextColor)
             
-            Text("V3SP3R runs an embedded Model Context Protocol (MCP) server on port \(server.port). Connect Claude Desktop or Cursor to pilot your Flipper Zero from external AI environments.")
+            Text("ferriteSuite runs an embedded Model Context Protocol (MCP) server on port \(server.port). Connect Claude Desktop or Cursor to pilot your Flipper Zero from external AI environments.")
                 .font(.subheadline)
                 .multilineTextAlignment(.center)
                 .foregroundColor(.secondary)

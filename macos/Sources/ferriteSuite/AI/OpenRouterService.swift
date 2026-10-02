@@ -34,7 +34,7 @@ public final class OpenRouterService {
         request.httpMethod = "POST"
         request.setValue("Bearer \(apiKey)", forHTTPHeaderField: "Authorization")
         request.setValue("https://github.com/vesper-flipper/vesper", forHTTPHeaderField: "HTTP-Referer")
-        request.setValue("Vesper macOS Desktop", forHTTPHeaderField: "X-Title")
+        request.setValue("ferriteSuite macOS Desktop", forHTTPHeaderField: "X-Title")
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         
         var payload: [String: Any] = [

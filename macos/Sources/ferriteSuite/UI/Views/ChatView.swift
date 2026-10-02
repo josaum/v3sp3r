@@ -680,6 +680,21 @@ private struct MessageRow: View {
                             .textSelection(.enabled)
                         
                         if message.role == .assistant {
+                            if let prov = message.provenance {
+                                HStack(spacing: 5) {
+                                    Image(systemName: prov.icon)
+                                        .font(.system(size: 9, weight: .bold))
+                                    Text(prov.label)
+                                        .font(.system(size: 8.5, weight: .black, design: .monospaced))
+                                }
+                                .padding(.horizontal, 6)
+                                .padding(.vertical, 2)
+                                .background(prov == .hardwareVerified ? VesperTheme.neonGreen.opacity(0.18) : (prov == .toolProven ? VesperTheme.accentCyan.opacity(0.18) : Color.purple.opacity(0.18)))
+                                .foregroundColor(prov == .hardwareVerified ? VesperTheme.neonGreen : (prov == .toolProven ? VesperTheme.accentCyan : Color.purple))
+                                .cornerRadius(4)
+                                .padding(.bottom, 2)
+                            }
+                            
                             HStack(spacing: 12) {
                                 Spacer()
                                 

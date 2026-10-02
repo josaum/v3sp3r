@@ -1,12 +1,12 @@
 <p align="center">
-  <img src="assets/branding/hero_banner.jpg" alt="V3SP3R Hero Banner" width="100%" />
+  <img src="assets/branding/hero_banner.jpg" alt="ferriteSuite Hero Banner" width="100%" />
 </p>
 
 <p align="center">
-  <img src="assets/branding/app_icon.jpg" alt="V3SP3R App Icon" width="120" style="border-radius: 24px;" />
+  <img src="assets/branding/app_icon.jpg" alt="ferriteSuite App Icon" width="120" style="border-radius: 24px;" />
 </p>
 
-# V3SP3R — Sovereign AI Brain & Hardware Lab for Flipper Zero & FerriteOS
+# ferriteSuite — Sovereign AI Brain & Hardware Lab for Flipper Zero & FerriteOS
 
 > **Talk to your hardware like it's your partner-in-hacking.** ferriteSuite turns your pocket security toolkit into an autonomous, AI-commanded hardware lab. Built as a native macOS SwiftUI command center, ferriteSuite bridges natural language reasoning directly into raw RF, Sub-GHz, NFC, RFID, Infrared, and bare-metal embedded coprocessors.
 
@@ -20,11 +20,11 @@
 
 ## ⚡ Highlights & State-of-the-Art Architecture
 
-V3SP3R is engineered around dual execution tracks: a cloud/local LLM multimodal reasoning engine (OpenRouter / local models) and a **sovereign, deterministic embedded core** powered by **FerriteOS** (`crates/ferrite-*`).
+ferriteSuite is engineered around dual execution tracks: a cloud/local LLM multimodal reasoning engine (OpenRouter / local models) and a **sovereign, deterministic embedded core** powered by **FerriteOS** (`crates/ferrite-*`).
 
 ```
 ┌───────────────────────────────────────────────────────────────────────────┐
-│                          V3SP3R COMMAND CENTER                            │
+│                     ferriteSuite COMMAND CENTER                           │
 │                     macOS Native (SwiftUI 6)                              │
 ├───────────────────────────────────────────────────────────────────────────┤
 │                             AI BRAIN & ORCHESTRATION                      │
@@ -44,7 +44,7 @@ V3SP3R is engineered around dual execution tracks: a cloud/local LLM multimodal 
 
 ## 🔬 FerriteOS Deep Integration
 
-V3SP3R embeds the complete FerriteOS ecosystem as a high-speed, offline coprocessor:
+ferriteSuite embeds the complete FerriteOS ecosystem as a high-speed, offline coprocessor:
 
 ### 1. Deterministic NLP & Sovereign Planning
 - Offline intent extraction that transforms natural language prompts into structured hardware plans (`Verb`, `Target`, `Action`).
@@ -138,10 +138,11 @@ scaffolding were removed; see git history to recover it.
 
 Removing the Android client also orphaned two things that are still in the tree:
 
-- `mentra-bridge/` relayed smart-glasses traffic to the Android app. No remaining
-  code speaks that protocol, so the server currently has no client.
 - `docs/architecture.md` and `docs/vesper_system.txt` documented the removed
   client and were deleted.
+- `mentra-bridge/` relayed smart-glasses traffic to the Android app. No code
+  spoke that protocol, so it had no client and was deleted too. The Mentra
+  Smart Glasses integration is therefore gone.
 
 ---
 
@@ -159,23 +160,22 @@ v3sp3r/
 │   ├── ferrite-rf/             # 55+ Sub-GHz, NFC, and RFID decoders
 │   └── ferrite-wire/           # SPEC-011 wire protocol codec & test suites
 ├── macos/                      # Native macOS SwiftUI 6 Application
-│   ├── Sources/VesperMac/
+│   ├── Sources/ferriteSuite/
 │   │   ├── Hardware/           # Flipper BLE/Serial, FerriteOSService, SPEC-011
 │   │   ├── UI/                 # Oscilloscope, Workbench, Chat, Ops Center
 │   │   └── Models/             # Signal, State, and Telemetry models
 │   └── Package.swift
-├── mentra-bridge/              # Smart glasses bridge server (Node.js) — no client; see note
-└── docs/                       # Protocol schemas
+├── docs/                       # Protocol schemas
 ```
 
 ---
 
 ## 🔒 Security & Responsible Disclosure
 
-V3SP3R is engineered for authorized security research, RF engineering, CTF competitions, and educational hardware exploration. Always ensure you possess explicit authorization from the target system's owner prior to testing.
+ferriteSuite is engineered for authorized security research, RF engineering, CTF competitions, and educational hardware exploration. Always ensure you possess explicit authorization from the target system's owner prior to testing.
 
 ---
 
 ## 📄 License
 
-V3SP3R is released under the **GNU General Public License v3.0**. See the [LICENSE](LICENSE) file for complete details.
+ferriteSuite is released under the **GNU General Public License v3.0**. See the [LICENSE](LICENSE) file for complete details.

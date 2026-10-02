@@ -189,7 +189,7 @@ public final class FlipperToolExecutor {
                     let mark = res.passed ? "✅ [PASS]" : "⚠️ [WARN]"
                     return "\(mark) \(res.title) (\(res.category))\n   \(res.detail)"
                 }.joined(separator: "\n\n")
-                return ToolResult(toolCallId: "", output: "V3SP3R Hardware & Firmware Diagnostic Suite Results:\n\n\(formatted)")
+                return ToolResult(toolCallId: "", output: "ferriteSuite Hardware & Firmware Diagnostic Suite Results:\n\n\(formatted)")
                 
             case "ferrite_preflight":
                 let ferrite = FerriteOSService.shared
@@ -274,7 +274,7 @@ public final class FlipperToolExecutor {
                 
             case "portal_list_templates":
                 let templates = CaptivePortalService.shared.templates
-                var out = "V3SP3R Captive Portal Templates (\(templates.count)):\n\n"
+                var out = "ferriteSuite Captive Portal Templates (\(templates.count)):\n\n"
                 for t in templates {
                     out.append("• ID: \(t.id)\n  Title: \(t.title)\n  Category: \(t.category)\n  Description: \(t.description)\n  Size: \(t.htmlContent.count) bytes\n\n")
                 }

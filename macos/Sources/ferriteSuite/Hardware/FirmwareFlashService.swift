@@ -121,7 +121,7 @@ public final class FirmwareFlashService {
         
         var request = URLRequest(url: url)
         request.setValue("application/vnd.github.v3+json", forHTTPHeaderField: "Accept")
-        request.setValue("Vesper-Desktop/1.0", forHTTPHeaderField: "User-Agent")
+        request.setValue("ferriteSuite-Desktop/1.0", forHTTPHeaderField: "User-Agent")
         
         guard let (data, resp) = try? await URLSession.shared.data(for: request),
               let http = resp as? HTTPURLResponse, http.statusCode == 200,
@@ -181,7 +181,7 @@ public final class FirmwareFlashService {
         
         var request = URLRequest(url: url)
         request.setValue("application/vnd.github.v3+json", forHTTPHeaderField: "Accept")
-        request.setValue("Vesper-Desktop/1.0", forHTTPHeaderField: "User-Agent")
+        request.setValue("ferriteSuite-Desktop/1.0", forHTTPHeaderField: "User-Agent")
         
         guard let (data, resp) = try? await URLSession.shared.data(for: request),
               let http = resp as? HTTPURLResponse, http.statusCode == 200,
@@ -298,10 +298,10 @@ public final class FirmwareFlashService {
         }
         
         let cachesDir = fileManager.urls(for: .cachesDirectory, in: .userDomainMask).first!
-        let vesperCache = cachesDir.appendingPathComponent("Vesper/firmware", isDirectory: true)
-        try? fileManager.createDirectory(at: vesperCache, withIntermediateDirectories: true)
+        let ferriteCache = cachesDir.appendingPathComponent("ferriteSuite/firmware", isDirectory: true)
+        try? fileManager.createDirectory(at: ferriteCache, withIntermediateDirectories: true)
         
-        let localFile = vesperCache.appendingPathComponent(release.assetName)
+        let localFile = ferriteCache.appendingPathComponent(release.assetName)
         
         let (tempUrl, _) = try await URLSession.shared.download(from: url)
         if fileManager.fileExists(atPath: localFile.path) {
@@ -313,7 +313,7 @@ public final class FirmwareFlashService {
         flashStatus = "Extracting firmware bundle..."
         flashLogs.append("[Archive] Download complete (\(release.assetName)). Unpacking...")
         
-        let extractDir = vesperCache.appendingPathComponent("extracted_\(release.tagName)", isDirectory: true)
+        let extractDir = ferriteCache.appendingPathComponent("extracted_\(release.tagName)", isDirectory: true)
         try? fileManager.removeItem(at: extractDir)
         try? fileManager.createDirectory(at: extractDir, withIntermediateDirectories: true)
         
@@ -400,10 +400,10 @@ public final class FirmwareFlashService {
         }
         
         let cachesDir = fileManager.urls(for: .cachesDirectory, in: .userDomainMask).first!
-        let vesperCache = cachesDir.appendingPathComponent("Vesper/gpio_firmware", isDirectory: true)
-        try? fileManager.createDirectory(at: vesperCache, withIntermediateDirectories: true)
+        let ferriteCache = cachesDir.appendingPathComponent("ferriteSuite/gpio_firmware", isDirectory: true)
+        try? fileManager.createDirectory(at: ferriteCache, withIntermediateDirectories: true)
         
-        let binFile = vesperCache.appendingPathComponent(release.assetName)
+        let binFile = ferriteCache.appendingPathComponent(release.assetName)
         let (tempUrl, _) = try await URLSession.shared.download(from: url)
         if fileManager.fileExists(atPath: binFile.path) {
             try? fileManager.removeItem(at: binFile)
@@ -446,7 +446,7 @@ public final class FirmwareFlashService {
         if release.assetName.hasSuffix(".tgz") || release.assetName.hasSuffix(".tar.gz") {
             flashProgress = 0.50
             flashStatus = "Unpacking firmware bundle..."
-            let extractDir = vesperCache.appendingPathComponent("extracted_\(release.tagName)", isDirectory: true)
+            let extractDir = ferriteCache.appendingPathComponent("extracted_\(release.tagName)", isDirectory: true)
             try? fileManager.removeItem(at: extractDir)
             try? fileManager.createDirectory(at: extractDir, withIntermediateDirectories: true)
             

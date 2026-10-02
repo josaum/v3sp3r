@@ -23,7 +23,7 @@ public struct SettingsView: View {
             VStack(alignment: .leading, spacing: 24) {
                 // Header
                 VStack(alignment: .leading, spacing: 4) {
-                    Text("Vesper Configuration")
+                    Text("ferriteSuite Configuration")
                         .font(.title2.bold())
                     Text("Manage AI model credentials, autonomous risk limits, and hardware interfaces.")
                         .font(.subheadline)
@@ -147,7 +147,7 @@ public struct SettingsView: View {
                                 .cornerRadius(6)
                             }
                             
-                            Text("V3SP3R executes directly through your host's installed `pi` coding agent harness (`@earendil-works/pi-coding-agent`), inheriting all models, provider configs, and API tokens from `~/.pi/agent/` without any duplicate credentials.")
+                            Text("ferriteSuite executes directly through your host's installed `pi` coding agent harness (`@earendil-works/pi-coding-agent`), inheriting all models, provider configs, and API tokens from `~/.pi/agent/` without any duplicate credentials.")
                                 .font(.caption)
                                 .foregroundColor(.secondary)
                             
@@ -735,7 +735,7 @@ public struct SettingsView: View {
                         VStack(alignment: .leading, spacing: 2) {
                             Text("Max Autonomous Mission Steps")
                                 .font(.subheadline.bold())
-                            Text("Maximum chained actions Vesper can execute unattended before requesting operator review.")
+                            Text("Maximum chained actions ferriteSuite can execute unattended before requesting operator review.")
                                 .font(.caption)
                                 .foregroundColor(.secondary)
                         }

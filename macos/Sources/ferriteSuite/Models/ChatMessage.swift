@@ -77,6 +77,28 @@ public struct ProactiveAction: Identifiable, Codable, Equatable {
     }
 }
 
+public enum MessageProvenance: String, Codable, CaseIterable {
+    case toolProven = "TOOL-PROVEN"
+    case modelAsserted = "MODEL-ASSERTED"
+    case hardwareVerified = "HARDWARE-VERIFIED"
+    
+    public var label: String {
+        switch self {
+        case .toolProven: return "TOOL-PROVEN"
+        case .modelAsserted: return "MODEL-ASSERTED"
+        case .hardwareVerified: return "HARDWARE-VERIFIED"
+        }
+    }
+    
+    public var icon: String {
+        switch self {
+        case .toolProven: return "checkmark.seal.fill"
+        case .modelAsserted: return "brain.head.profile"
+        case .hardwareVerified: return "cpu.fill"
+        }
+    }
+}
+
 public struct ChatMessage: Identifiable, Codable, Equatable {
     public let id: String
     public let role: MessageRole
@@ -85,6 +107,7 @@ public struct ChatMessage: Identifiable, Codable, Equatable {
     public var toolCalls: [ToolCall]
     public var toolResults: [ToolResult]
     public var suggestedActions: [ProactiveAction]
+    public var provenance: MessageProvenance?
     public let timestamp: Date
     public var isStreaming: Bool
     
@@ -96,6 +119,7 @@ public struct ChatMessage: Identifiable, Codable, Equatable {
         toolCalls: [ToolCall] = [],
         toolResults: [ToolResult] = [],
         suggestedActions: [ProactiveAction] = [],
+        provenance: MessageProvenance? = nil,
         timestamp: Date = Date(),
         isStreaming: Bool = false
     ) {
@@ -106,6 +130,7 @@ public struct ChatMessage: Identifiable, Codable, Equatable {
         self.toolCalls = toolCalls
         self.toolResults = toolResults
         self.suggestedActions = suggestedActions
+        self.provenance = provenance
         self.timestamp = timestamp
         self.isStreaming = isStreaming
     }

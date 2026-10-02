@@ -21,7 +21,7 @@ public final class VesperAgent {
     public init() {
         let welcome = ChatMessage(
             role: .assistant,
-            content: "Vesper online. Connected to macOS desktop workstation. Ready to operate your Flipper Zero over USB or BLE. Type a command, ask a hardware question, or tap a proactive action card below.",
+            content: "ferriteSuite online. Connected to macOS desktop workstation. Ready to operate your Flipper Zero over USB or BLE. Type a command, ask a hardware question, or tap a proactive action card below.",
             suggestedActions: [
                 ProactiveAction(title: "Hardware Health Self-Test", promptOrCommand: "Run Flipper Diagnostic Health Self-Test", icon: "cross.case.fill", category: "Workflow"),
                 ProactiveAction(title: "Sub-GHz Spectrum Recon", promptOrCommand: "Run Sub-GHz Spectrum Recon Workflow", icon: "waveform.path.ecg", category: "Workflow"),

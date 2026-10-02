@@ -4,6 +4,9 @@
 /build
 /captures
 
+# LEIO Code index (local tool state, never commit)
+.leio-code/
+
 # Log files
 *.log
 
@@ -13,10 +16,10 @@ Thumbs.db
 ehthumbs.db
 Desktop.ini
 
-# Node (mentra-bridge)
-mentra-bridge/node_modules/
-mentra-bridge/dist/
-mentra-bridge/.env
+# Node
+node_modules/
+dist/
+.env
 
 # Environment / secrets
 .env

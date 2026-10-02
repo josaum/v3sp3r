@@ -1,18 +1,21 @@
 // swift-tools-version: 6.0
 import PackageDescription
 
+// The executable name must stay in sync with CFBundleExecutable in bundle.sh.
+let appName = "ferriteSuite"
+
 let package = Package(
-    name: "VesperMac",
+    name: appName,
     platforms: [
         .macOS(.v14)
     ],
     products: [
-        .executable(name: "VesperMac", targets: ["VesperMac"])
+        .executable(name: appName, targets: [appName])
     ],
     targets: [
         .executableTarget(
-            name: "VesperMac",
-            path: "Sources/VesperMac"
+            name: appName,
+            path: "Sources/ferriteSuite"
         )
     ]
 )

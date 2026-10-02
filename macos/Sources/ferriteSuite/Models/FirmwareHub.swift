@@ -67,7 +67,7 @@ public enum FlipperFirmwareDistro: String, Codable, CaseIterable, Identifiable {
 }
 
 extension Notification.Name {
-    public static let navigateToSection = Notification.Name("VesperNavigateToSection")
+    public static let navigateToSection = Notification.Name("ferriteSuiteNavigateToSection")
 }
 
 public enum GPIOBoardType: String, Codable, CaseIterable, Identifiable {

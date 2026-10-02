@@ -1,4 +1,4 @@
-# Contributing to V3SP3R
+# Contributing to ferriteSuite
 
 Thanks for your interest in contributing! Vesper is an open-source project and we welcome contributions of all kinds — bug fixes, new features, documentation, and more.
 
@@ -7,8 +7,8 @@ Thanks for your interest in contributing! Vesper is an open-source project and w
 1. **Fork** the repository on GitHub
 2. **Clone** your fork locally:
    ```bash
-   git clone https://github.com/YOUR_USERNAME/V3SP3R.git
-   cd V3SP3R
+   git clone https://github.com/josaum/v3sp3r.git
+   cd v3sp3r
    ```
 3. **Create a branch** for your work:
    ```bash
